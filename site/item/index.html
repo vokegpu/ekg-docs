@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Overview - EKG</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Overview";
+        var mkdocs_page_input_path = "item.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> EKG
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../home/">Home</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">UI</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../abstract/">Abstract</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">EKG</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Overview</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="overview">Overview</h1>
+<ul>
+<li>Fundamentals</li>
+<li>Examples</li>
+<li>Methods</li>
+</ul>
+<h1 id="fundamentals">Fundamentals</h1>
+<p>The EKG library contains an item collector named <code>ekg::item</code>, the item is a recursive vector collection.</p>
+<h1 id="examples">Examples</h1>
+<p>The item contains the following fields:</p>
+<ul>
+<li><code>value</code> display-text/tag of item. </li>
+<li><code>attr</code> the attribute flag defines the rendering, and processing behavior.</li>
+<li><code>child_list</code> child list to other items.</li>
+<li><code>component</code> geometry data of item component.</li>
+</ul>
+<p>Setting a value to an item is simple: </p>
+<pre><code class="language-cpp">ekg::item item(&quot;animals&quot;); // constructor explicit
+ekg::item item {&quot;animals&quot;}; // initialization-list implicit
+ekg::item item = {&quot;animals&quot;}; // assign initialization-list implicit
+
+ekg::item item {}; // initialization-list implicit
+item.value = &quot;animals&quot;; // accessing the field, but is not too recommendedd
+</code></pre>
+<p>Item contains attr (attributes) flags and state flags, both manually configurable or automatically by setting the value component with special chars.</p>
+<p>Special chars:</p>
+<ul>
+<li><code>\t</code> add automatically the attribute <code>ekg::attr::separator</code>.</li>
+<li><code>\\</code> add automatically the attribute <code>ekg::attr::box</code>.</li>
+<li><code>\1</code> add automatically the attribute <code>ekg::attr::category</code>.</li>
+<li><code>\2</code> add automatically the attribute <code>ekg::attr::row</code>.</li>
+<li><code>\3</code> add automatically the attribute <code>ekg::attr::row_member</code>.</li>
+<li><code>\4</code> add automatically the attribute <code>ekg::attr::unselectable</code>.</li>
+</ul>
+<pre><code class="language-cpp">ekg::item item {&quot;Animals&quot;};
+item.set_value(&quot;\t\\Select All&quot;);
+
+// insert a std::vector&lt;std::string&gt; to item.
+item.insert({&quot;\\Dogs&quot;});
+item.insert({&quot;\\Cats&quot;});
+item.insert({&quot;\\Humans&quot;});
+</code></pre>
+<p>You can iterate over the item children using for loop:</p>
+<pre><code class="language-cpp">ekg::item item(&quot;animals&quot;);
+item.insert({&quot;dogs&quot;, &quot;cats&quot;, &quot;humans&quot;});
+
+for (ekg::item &amp;items : item) {
+    std::cout &lt;&lt; items.value &lt;&lt; std::endl;
+}
+</code></pre>
+<h1 id="methods">Methods</h1>
+<p>Set value with attributes check, use this instead of setting directly the field. </p>
+<pre><code class="language-cpp">void set_value(std::string_view _value);
+</code></pre>
+<p>Initialize an item child without generating a copy.</p>
+<pre><code class="language-cpp">ekg::item &amp;emplace_back();
+</code></pre>
+<p>Insert an item copy in the child list.</p>
+<pre><code class="language-cpp">void push_back(const ekg::item &amp;item);
+</code></pre>
+<p>Insert an item by setting the value.</p>
+<pre><code class="language-cpp">void push_back(std::string_view item_value);
+</code></pre>
+<p>Insert a <code>std::vector&lt;ekg::item&gt;</code> child list.</p>
+<pre><code class="language-cpp">void insert(const std::vector&lt;std::string&gt; &amp;item_value_list);
+</code></pre>
+<p>Get the child item by index position.</p>
+<pre><code class="language-cpp">ekg::item &amp;at(uint64_t index);
+</code></pre>
+<p>Check if has item children.</p>
+<pre><code class="language-cpp">bool empty() const;
+</code></pre>
+<p>Get the size of the child list.</p>
+<pre><code class="language-cpp">uint64_t size() const;
+</code></pre>
+<p>Get begin iterator point.</p>
+<pre><code class="language-cpp">std::vector&lt;ekg::item&gt;::iterator begin();
+</code></pre>
+<p>Get end iterator point.</p>
+<pre><code class="language-cpp">std::vector&lt;ekg::item&gt;::iterator end();
+</code></pre>
+<p>Get const begin iterator point.</p>
+<pre><code class="language-cpp">std::vector&lt;ekg::item&gt;::const_iterator cbegin() const;
+</code></pre>
+<p>Get const end iterator point.</p>
+<pre><code class="language-cpp">std::vector&lt;ekg::item&gt;::const_iterator cend() const;
+</code></pre>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

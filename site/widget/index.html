@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Overview - EKG</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Overview";
+        var mkdocs_page_input_path = "widget.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> EKG
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../home/">Home</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">UI</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../abstract/">Abstract</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">EKG</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Overview</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="overview">Overview</h1>
+<ul>
+<li>
+<p>Abstract widget, and abstract UI data</p>
+</li>
+<li>
+<p>Type</p>
+</li>
+<li>
+<p>Level</p>
+</li>
+</ul>
+<h1 id="abstract-widget-and-abstract-ui-data">Abstract widget, and abstract UI data</h1>
+<p>EKG has two layers of objects: <code>ekg::ui::abstract_widget</code>, and <code>ekg::ui::abstract</code>. Both are used together but with different purposes.</p>
+<p><code>ekg::ui::abstract</code> objects work as intermediary data between the user-programmer, and the <code>ekg::ui::abstract_widget</code>, which is used for processing the logic, and rendering.</p>
+<p>This philosophy allows more control, and memory security for the application. While backing service tools handle the <code>ekg::ui::abstract_widget</code>, the user only has access to <code>ekg::ui::abstract</code>.</p>
+<h1 id="type">Type</h1>
+<p>Type represents different widgets, and helps check the instance of the current context widget object class, <code>ekg::type</code> contains the following enum(s) constant:</p>
+<ul>
+<li>
+<p><code>ekg::type::abstract</code> <a href="Abstract">refers to the abstract UI element</a></p>
+</li>
+<li>
+<p><code>ekg::type::frame</code> <a href="Frame">refers to the frame UI element</a></p>
+</li>
+<li>
+<p><code>ekg::type::button</code> <a href="Button">refers to the button UI element</a> </p>
+</li>
+<li>
+<p><code>ekg::type::label</code> <a href="Label">refers to the label UI element</a></p>
+</li>
+<li>
+<p><code>ekg::type::slider</code> <a href="Slider">refers to the slider UI element</a></p>
+</li>
+<li>
+<p><code>ekg::type::slider2d</code> <a href="Slider2d">refers to the slider 2D UI element</a> </p>
+</li>
+<li>
+<p><code>ekg::type::checkbox</code> <a href="Checkbox">refers to the frame UI element</a> </p>
+</li>
+<li>
+<p><code>ekg::type::textbox</code> <a href="Textbox">refers to the textbox UI element</a></p>
+</li>
+<li>
+<p><code>ekg::type::combobox</code> <a href="Combobox">refers to the combobox UI element</a> </p>
+</li>
+<li>
+<p><code>ekg::type::listbox</code> <a href="Listbox">refers to the listbox UI element</a> </p>
+</li>
+<li>
+<p><code>ekg::type::tab</code> <a href="Tab">refers to the tab UI element</a></p>
+</li>
+<li>
+<p><code>ekg::type::popup</code> <a href="Popup">refers to the popup UI element</a></p>
+</li>
+<li>
+<p><code>ekg::type::scroll</code> <a href="Scroll">refers to the scroll UI element</a></p>
+</li>
+</ul>
+<h1 id="level">Level</h1>
+<p>A level-constant <code>ekg::level::bottom_level</code>, and <code>ekg::level::top_level</code>defines how the widget should be processed and placed. Most of the widgets except popup(s), by default sets <code>ekg::level::bottom_level</code>.</p>
+<p>Normal placement(s) <code>ekg::level::bottom_level</code> is followed by <a href="Layout">layout service</a>, and can not interrupt the current processing widgets IO (input, events calling) context.</p>
+<p>Regular placement(s) <code>ekg::level::top_level</code> is followed by a private invocation of <a href="Layout">layout service</a> features, and has the ability to interrupt the current processing widgets IO (input, events calling) context. Top-level widgets can not be a child, this rule allows separating IO events processing between top-level and bottom-level widgets.</p>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

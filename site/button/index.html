@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Overview - EKG</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Overview";
+        var mkdocs_page_input_path = "button.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> EKG
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../home/">Home</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">UI</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../abstract/">Abstract</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">EKG</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Overview</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="overview">Overview</h1>
+<ul>
+<li>
+<p>Fundamentals</p>
+</li>
+<li>
+<p>Examples</p>
+</li>
+<li>
+<p>Methods</p>
+</li>
+</ul>
+<h1 id="fundamentals">Fundamentals</h1>
+<p>The button widget works fundamentally simply, you have a text, and the alignment of text. Each button has it is own optional <code>ekg::cpu::event</code> callback event <a href="Task">task</a>, where you can add one lambda function.</p>
+<p>The button widget contains two string sets <code>set_text</code> and <code>set_tag</code>, <code>set_tag</code> is reserved for user purposes, while <code>set_text</code> is the visible text of the widget button.</p>
+<h1 id="examples">Examples</h1>
+<p>For creating a simple button with no callback event.</p>
+<pre><code class="language-cpp">auto p_button = ekg::button(&quot;cat&quot;, ekg::dock::fill | ekg::next);
+</code></pre>
+<p>The first parameter is the visible text of a button. The second parameter is the docking alignment in the frame widget.</p>
+<p>To create a callback button, with <a href="../core/eventtask.md">tasks</a>.</p>
+<pre><code class="language-cpp">p_button-&gt;set_callback(new ekg::cpu::event(&quot;cat&quot;, nullptr, [](void *p_callback) {
+    ekg::log() &lt;&lt; &quot;Cat!&quot;;
+}));
+</code></pre>
+<p>This callback event is not deleted after execution, because it is batched, which means that all clicks will execute this <a href="../core/eventtask.md">task</a>.</p>
+<h1 id="methods">Methods</h1>
+<h3 id="button">Button</h3>
+<p>Set the <a href="../draw/fontrenderer.md">font</a> size of button text, <code>ekg::font::small</code> <code>ekg::font::normal</code> <code>ekg::font::big</code>.</p>
+<pre><code class="language-cpp">ekg::ui::button *set_font_size(ekg::font font);
+</code></pre>
+<p>Get the <a href="../draw/fontrenderer.md">font</a> size of button text, <code>ekg::font::small</code> <code>ekg::font::normal</code> <code>ekg::font::big</code>.</p>
+<pre><code class="language-cpp">ekg::font get_font_size();
+</code></pre>
+<p>Set <a href="../layout/layoutdock.md">dock</a> place, <code>fill</code> <code>next</code> <code>none</code> <code>right</code> <code>bottom</code>.</p>
+<pre><code class="language-cpp">ekg::ui::button *set_place(uint16_t dock);
+</code></pre>
+<p>Set dimension width in pixels.</p>
+<pre><code class="language-cpp">ekg::ui::button *set_width(float w);
+</code></pre>
+<p>Get dimension width in pixels.</p>
+<pre><code class="language-cpp">float get_width();
+</code></pre>
+<p>Set dimension height in <a href="../draw/fontrenderer.md">font</a> size scale (multiplied by).</p>
+<pre><code class="language-cpp">ekg::ui::button *set_scaled_height(int32_t h);
+</code></pre>
+<p>Get dimension height in <a href="../draw/fontrenderer.md">font</a> size scale (multiplied by).</p>
+<pre><code class="language-cpp">int32_t get_scaled_height();
+</code></pre>
+<p>Get dimension height in pixels.</p>
+<pre><code class="language-cpp">float get_height();
+</code></pre>
+<p>Set callback event <a href="../core/eventtask.md">task</a>.</p>
+<pre><code class="language-cpp">ekg::ui::button *set_callback(ekg::cpu::event *p_callback);
+</code></pre>
+<p>Get callback event <a href="../core/eventtask.md">task</a>.</p>
+<pre><code class="language-cpp">ekg::cpu::event *get_callback();
+</code></pre>
+<p>Set display text.</p>
+<pre><code class="language-cpp">ekg::ui::button *set_text(std::string_view text);
+</code></pre>
+<p>Get display text.</p>
+<pre><code class="language-cpp">std::string_view get_text();
+</code></pre>
+<p>Set button state pressed/callback.</p>
+<pre><code class="language-cpp">ekg::ui::button *set_value(bool state);
+</code></pre>
+<p>Get button state.</p>
+<pre><code class="language-cpp">bool get_value();
+</code></pre>
+<p>Set text <a href="../layout/layoutmask.md">alignment</a> dock, <code>center</code> <code>left</code> <code>right</code> <code>top</code> <code>bottom</code>.</p>
+<pre><code class="language-cpp">ekg::ui::button *set_text_align(uint16_t dock);
+</code></pre>
+<p>Get text alignment dock.</p>
+<pre><code class="language-cpp">uint16_t get_text_align();
+</code></pre>
+<h3 id="abstract">Abstract</h3>
+<p>Set tag for reserved purposes.</p>
+<pre><code class="language-cpp">ekg::ui::abstract *set_tag(std::string_view tag);
+</code></pre>
+<p>Get the tag for reserved purposes.</p>
+<pre><code class="language-cpp">std::string_view get_tag();
+</code></pre>
+<p>Add a child to the widget.</p>
+<pre><code class="language-cpp">ekg::ui::abstract *add_child(int32_t id);
+</code></pre>
+<p>Get the widget child id list.</p>
+<pre><code class="language-cpp">std::vector&lt;int32_t&gt; &amp;get_child_id_list();
+</code></pre>
+<p>Remove a child widget from the mother widget.</p>
+<pre><code class="language-cpp">ekg::ui::abstract *remove_child(int32_t id);
+</code></pre>
+<p>Set the widget ID.</p>
+<pre><code class="language-cpp">ekg::ui::abstract *set_id(int32_t id);
+</code></pre>
+<p>Get the widget ID.</p>
+<pre><code class="language-cpp">int32_t get_id();
+</code></pre>
+<p>Set parent (mother) widget ID.</p>
+<pre><code class="language-cpp">ekg::ui::abstract *set_parent_id(int32_t parent_id);
+</code></pre>
+<p>Get parent (mother) widget ID.</p>
+<pre><code class="language-cpp">int32_t get_parent_id();
+</code></pre>
+<p>Set the alive state of the widget.</p>
+<pre><code class="language-cpp">ekg::ui::abstract *set_alive(bool is_alive);
+</code></pre>
+<p>Get the alive state.</p>
+<pre><code class="language-cpp">bool is_alive();
+</code></pre>
+<p>Destroy the widget.</p>
+<pre><code class="language-cpp">void destroy();
+</code></pre>
+<p>Set the state of the widget, <code>visible</code> <code>invisible</code>.</p>
+<pre><code class="language-cpp">ekg::ui::abstract *set_state(const ekg::state &amp;_state);
+</code></pre>
+<p>Get the state of the widget, <code>visible</code> <code>invisible</code>.</p>
+<pre><code class="language-cpp">ekg::state get_state();
+</code></pre>
+<p>Set the <a href="Widget#Type">widget type</a>.</p>
+<pre><code class="language-cpp">ekg::ui::abstract *set_type(const ekg::type &amp;_type);
+</code></pre>
+<p>Get the <a href="Widget#Type">widget type</a>.</p>
+<pre><code class="language-cpp">ekg::type get_type();
+</code></pre>
+<p>Get the place <a href="../layout/layoutdock.md">dock</a>, <code>fill</code> <code>next</code> <code>none</code> <code>right</code> <code>bottom</code>.</p>
+<pre><code class="language-cpp">uint16_t get_place_dock();
+</code></pre>
+<p>Get the sync flags reference.</p>
+<pre><code class="language-cpp">uint16_t &amp;get_sync();
+</code></pre>
+<p>Reset the UI data front-end with the widget back-end.</p>
+<pre><code class="language-cpp">void reset();
+</code></pre>
+<p>Access to absolute widget back-end rectangle.</p>
+<pre><code class="language-cpp">ekg::rect &amp;widget();
+</code></pre>
+<p>Get the UI data front-end rectangle.</p>
+<pre><code class="language-cpp">ekg::rect &amp;ui();
+</code></pre>
+<p>Set scaled height layout in <a href="../draw/fontrenderer.md">font</a> size (multiplied by).</p>
+<pre><code class="language-cpp">ekg::ui::abstract *set_scaled_height_layout(int32_t scaled_size);
+</code></pre>
+<p>Check if the widget has a parent (mother widget).</p>
+<pre><code class="language-cpp">bool has_parent();
+</code></pre>
+<p>Check if the widget has children.</p>
+<pre><code class="language-cpp">bool has_children();
+</code></pre>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
