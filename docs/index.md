@@ -1,17 +1,33 @@
-# Welcome to MkDocs
+# EKG WIKI HOME
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+Welcome to the EKG wiki!  
 
-## Commands
+# UI
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+- [Widget](Widget)
 
-## Project layout
+- [Abstract](Abstract)  
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+- [Button](Button)  
+
+- [Checkbox](Checkbox)  
+
+- [Listbox](Listbox)  
+
+# Services & Features
+
+- [Layout](Layout)  
+- [Input](Input)
+- [Handler](Handler)
+- [Allocator](Allocator)
+- [GPU Tools](GPU-Tools)
+
+# Core
+
+- [IO Events](IO-Events)
+
+- [Task](Task)
+
+# Utility
+
+- [Item](Item)

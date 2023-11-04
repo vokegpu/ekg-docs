@@ -7,5 +7,3 @@
 - Methods
 
 # Fundamentals
-
-

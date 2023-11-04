@@ -1,8 +1,28 @@
 site_name: EKG
 theme:
     name: readthedocs
+
 nav:
     - 'Getting Started':
-        - Home: home.md
+        - Installation: installation.md
+        - Creating a GUI: creating-a-gui.md
+
     - 'UI':
         - Abstract: abstract.md
+        - Button: button.md
+        - Checkbox: checkbox.md
+        - Listbox: listbox.md
+        - Textbox: textbox.md
+
+    - 'Service':
+        - Input: input.md
+        - Handler: handler.md
+        - Allocator: allocator.md
+
+    - 'GPU':
+        - OpenGL API: opengl-api.md
+        - Vulkan API: vulkan-api.md
+
+    - 'FAQ':
+        - Motivation: faq-motivation.md
+        - Contributing: faq-contributing.md
