@@ -1,10 +1,4 @@
-# Overview
-
-- Fundamentals
-- Examples
-- Methods
-
-# Fundamentals
+# Item
 
 The EKG library contains an item collector named `ekg::item`, the item is a recursive vector collection.
 

@@ -24,7 +24,7 @@ nav:
         - Vulkan API: vulkan-api.md
 
     - 'Utility':
-        - Item: item.md
+        - item.md
 
     - 'FAQ':
         - Motivation: faq-motivation.md
