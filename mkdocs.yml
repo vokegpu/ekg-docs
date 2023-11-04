@@ -1,4 +1,7 @@
 site_name: EKG
+docs_dir: source
+site_dir: docs
+
 theme:
     name: readthedocs
 
