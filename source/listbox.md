@@ -1,9 +1,19 @@
 # Listbox
 
-The [listbox](/listbox/#Listbox) widget displays text fields as a 2D list. [Item](/item/#) stores each text field, representing a geometry component.
+The /listbox widget displays text fields as a 2D list. [Item](/item) stores each text field, representing a geometry component.
 
 # Container
 
-Each row is a component [container](/listbox/#Container), a [listbox](/listbox/#Listbox) [container](/listbox/#Container) allocate all [Items](/item/#Item) cursively opened, and dynamic calculate the visible index, based in components.
+Each row is a component container, a [listbox](/listbox) container allocates all [Items](/item) cursively opened, and dynamically calculates the visible index, based on the opened components count.
+
+When opening an [item](/item) component, the container increases the open counter, and when an [item](/item) component is closed, decreases the open counter. This simple arithmetic system is useful for estimating the container height.
+
+The height of a closed component is set to 0, it reduces the necessary 
+
+The rendering optimization is possible with a unique height, and by default is [font](/font) normal size. Calculating a dynamically visible index requires normalizing the scroll value with the estimated height. `scroll` means the scrolling value, `len` is the container components' length, and `height` is the container's estimated height.
+
+![](https://cdn.discordapp.com/attachments/1064693858245546045/1170436090063228939/848372603294974024.png?ex=6559088d&is=6546938d&hm=ecdad3b26c03adcd8c8242fb44d9be96cc461356831cfa59a7038cb73696def1&)
+
+The dynamic index calculation inverts the signal of the `scroll` because the scroll vector must subtract the position of the rectangle, and for the formula, it is not required, since we want to get normalized.
 
 
