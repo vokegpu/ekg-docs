@@ -1,1 +1,8 @@
-site_name: My Docs
+site_name: EKG
+theme:
+    name: readthedocs
+nav:
+    - 'Getting Started':
+        - Home: home.md
+    - 'UI':
+        - Abstract: abstract.md
