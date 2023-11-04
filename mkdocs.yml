@@ -23,6 +23,9 @@ nav:
         - OpenGL API: opengl-api.md
         - Vulkan API: vulkan-api.md
 
+    - 'Utility':
+        - Item: item.md
+
     - 'FAQ':
         - Motivation: faq-motivation.md
         - Contributing: faq-contributing.md
