@@ -1,5 +1,8 @@
 # ekg-docs
-official ekg docs 
+
+official ekg docs
+
+https://vokegpu.github.io/ekg-docs/
 
 # credits
 

@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Overview - EKG</title>
+    <title>Item - EKG</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Overview";
+        var mkdocs_page_name = "Item";
         var mkdocs_page_input_path = "item.md";
         var mkdocs_page_url = null;
       </script>
@@ -41,12 +41,52 @@
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption"><span class="caption-text">Getting Started</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../home/">Home</a>
+                  <li class="toctree-l1"><a class="" href="../installation.md">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../creating-a-gui.md">Creating a GUI</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">UI</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../abstract/">Abstract</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../button/">Button</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../checkbox/">Checkbox</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../listbox/">Listbox</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../textbox.md">Textbox</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Service</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="" href="../input.md">Input</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../handler.md">Handler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../allocator.md">Allocator</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">GPU</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="" href="../opengl-api.md">OpenGL API</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../vulkan-api.md">Vulkan API</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Utility</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Item</a>
+    <ul class="current">
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">FAQ</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="" href="../faq-motivation.md">Motivation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../faq-contributing.md">Contributing</a>
                   </li>
               </ul>
       </div>
@@ -63,7 +103,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Overview</li>
+          <li class="breadcrumb-item">Utility</li>
+      <li class="breadcrumb-item active">Item</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -72,13 +113,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="overview">Overview</h1>
-<ul>
-<li>Fundamentals</li>
-<li>Examples</li>
-<li>Methods</li>
-</ul>
-<h1 id="fundamentals">Fundamentals</h1>
+                <h1 id="item">Item</h1>
 <p>The EKG library contains an item collector named <code>ekg::item</code>, the item is a recursive vector collection.</p>
 <h1 id="examples">Examples</h1>
 <p>The item contains the following fields:</p>
@@ -162,6 +197,9 @@ for (ekg::item &amp;items : item) {
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../listbox/" class="btn btn-neutral float-left" title="Listbox"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
 
   <hr/>
 
@@ -182,6 +220,8 @@ for (ekg::item &amp;items : item) {
   <div class="rst-versions" role="note" aria-label="Versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     
+    
+      <span><a href="../listbox/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
   </span>
