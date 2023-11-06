@@ -15,5 +15,3 @@ The rendering optimization is possible with a unique height, and by default, it 
 The dynamic index calculation inverts the signal of the `scroll` because the scroll vector must subtract the position of the rectangle, and for the formula, it is not required, since we want to get normalized.
 
 All closed components are skipped in the rendering section, the [item](/ekg-docs/item/) component contains the count of total children, and it is used to increase the current index iteration.
-
-

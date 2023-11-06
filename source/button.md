@@ -8,7 +8,7 @@
 
 # Fundamentals
 
-The button widget works fundamentally simply, you have a text, and the alignment of text. Each button has it is own optional `ekg::cpu::event` callback event [task](Task), where you can add one lambda function.
+The button widget works fundamentally simply, you have a text, and the alignment of text. Each button has it is own optional `ekg::cpu::event` callback event [task](/ekg-docs/task), where you can add one lambda function.
 
 The button widget contains two string sets `set_text` and `set_tag`, `set_tag` is reserved for user purposes, while `set_text` is the visible text of the widget button.
 
@@ -22,7 +22,7 @@ auto p_button = ekg::button("cat", ekg::dock::fill | ekg::next);
 
 The first parameter is the visible text of a button. The second parameter is the docking alignment in the frame widget.
 
-To create a callback button, with [tasks](../core/eventtask.md).
+To create a callback button, with [tasks](/ekg-docs/task.md).
 
 ```cpp
 p_button->set_callback(new ekg::cpu::event("cat", nullptr, [](void *p_callback) {
@@ -30,13 +30,13 @@ p_button->set_callback(new ekg::cpu::event("cat", nullptr, [](void *p_callback) 
 }));
 ```
 
-This callback event is not deleted after execution, because it is batched, which means that all clicks will execute this [task](../core/eventtask.md).
+This callback event is not deleted after execution, because it is batched, which means that all clicks will execute this [task](/ekg-docs/task.md).
 
 # Methods
 
 ### Button
 
-Set the [font](../draw/fontrenderer.md) size of button text, `ekg::font::small` `ekg::font::normal` `ekg::font::big`.
+Set the [font](/ekg-docs/fontrenderer.md) size of button text, `ekg::font::small` `ekg::font::normal` `ekg::font::big`.
 
 ```cpp
 ekg::ui::button *set_font_size(ekg::font font);
@@ -260,7 +260,7 @@ Get the UI data front-end rectangle.
 ekg::rect &ui();
 ```
 
-Set scaled height layout in [font](../draw/fontrenderer.md) size (multiplied by).
+Set scaled height layout in [font](/ekg-docs/font/) size (multiplied by).
 
 ```cpp
 ekg::ui::abstract *set_scaled_height_layout(int32_t scaled_size);

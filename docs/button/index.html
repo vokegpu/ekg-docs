@@ -126,22 +126,22 @@
 </li>
 </ul>
 <h1 id="fundamentals">Fundamentals</h1>
-<p>The button widget works fundamentally simply, you have a text, and the alignment of text. Each button has it is own optional <code>ekg::cpu::event</code> callback event <a href="Task">task</a>, where you can add one lambda function.</p>
+<p>The button widget works fundamentally simply, you have a text, and the alignment of text. Each button has it is own optional <code>ekg::cpu::event</code> callback event <a href="/ekg-docs/task">task</a>, where you can add one lambda function.</p>
 <p>The button widget contains two string sets <code>set_text</code> and <code>set_tag</code>, <code>set_tag</code> is reserved for user purposes, while <code>set_text</code> is the visible text of the widget button.</p>
 <h1 id="examples">Examples</h1>
 <p>For creating a simple button with no callback event.</p>
 <pre><code class="language-cpp">auto p_button = ekg::button(&quot;cat&quot;, ekg::dock::fill | ekg::next);
 </code></pre>
 <p>The first parameter is the visible text of a button. The second parameter is the docking alignment in the frame widget.</p>
-<p>To create a callback button, with <a href="../core/eventtask.md">tasks</a>.</p>
+<p>To create a callback button, with <a href="/ekg-docs/task.md">tasks</a>.</p>
 <pre><code class="language-cpp">p_button-&gt;set_callback(new ekg::cpu::event(&quot;cat&quot;, nullptr, [](void *p_callback) {
     ekg::log() &lt;&lt; &quot;Cat!&quot;;
 }));
 </code></pre>
-<p>This callback event is not deleted after execution, because it is batched, which means that all clicks will execute this <a href="../core/eventtask.md">task</a>.</p>
+<p>This callback event is not deleted after execution, because it is batched, which means that all clicks will execute this <a href="/ekg-docs/task.md">task</a>.</p>
 <h1 id="methods">Methods</h1>
 <h3 id="button">Button</h3>
-<p>Set the <a href="../draw/fontrenderer.md">font</a> size of button text, <code>ekg::font::small</code> <code>ekg::font::normal</code> <code>ekg::font::big</code>.</p>
+<p>Set the <a href="/ekg-docs/fontrenderer.md">font</a> size of button text, <code>ekg::font::small</code> <code>ekg::font::normal</code> <code>ekg::font::big</code>.</p>
 <pre><code class="language-cpp">ekg::ui::button *set_font_size(ekg::font font);
 </code></pre>
 <p>Get the <a href="../draw/fontrenderer.md">font</a> size of button text, <code>ekg::font::small</code> <code>ekg::font::normal</code> <code>ekg::font::big</code>.</p>
@@ -253,7 +253,7 @@
 <p>Get the UI data front-end rectangle.</p>
 <pre><code class="language-cpp">ekg::rect &amp;ui();
 </code></pre>
-<p>Set scaled height layout in <a href="../draw/fontrenderer.md">font</a> size (multiplied by).</p>
+<p>Set scaled height layout in <a href="/ekg-docs/font/">font</a> size (multiplied by).</p>
 <pre><code class="language-cpp">ekg::ui::abstract *set_scaled_height_layout(int32_t scaled_size);
 </code></pre>
 <p>Check if the widget has a parent (mother widget).</p>
