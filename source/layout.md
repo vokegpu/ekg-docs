@@ -2,9 +2,9 @@
 
 Here you will read these main topics:
 
-- Fundamentals
-- Docking
-- Widgets
+- [Fundamentals](/ekg-docs/layout/#fundamentals)
+- [Docking](/ekg-docs/layout/#docking)
+- [Widgets](/ekg-docs/layout/#widgets)
 
 # Fundamentals
 

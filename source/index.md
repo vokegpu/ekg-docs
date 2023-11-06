@@ -4,30 +4,30 @@ Welcome to the EKG wiki!
 
 # UI
 
-- [Widget](Widget)
+- [Widget](/ekg-docs/widget/)
 
-- [Abstract](Abstract)  
+- [Abstract](/ekg-docs/abstract/)
 
-- [Button](Button)  
+- [Button](/ekg-docs/button/)
 
-- [Checkbox](Checkbox)  
+- [Checkbox](/ekg-docs/checkbox/)
 
-- [Listbox](Listbox)  
+- [Listbox](/ekg-docs/listbox/) 
 
 # Services & Features
 
-- [Layout](Layout)  
-- [Input](Input)
-- [Handler](Handler)
-- [Allocator](Allocator)
-- [GPU Tools](GPU-Tools)
+- [Layout](/ekg-docs/layout/)
+- [Input](/ekg-docs/input/)
+- [Handler](/ekg-docs/handler/)
+- [Allocator](/ekg-docs/allocator/)
+- [GPU Tools](/ekg-docs/gpu-tools/)
 
 # Core
 
-- [IO Events](IO-Events)
+- [IO Events](/ekg-docs/io-events/)
 
-- [Task](Task)
+- [Task](/ekg-docs/task/)
 
 # Utility
 
-- [Item](Item)
+- [Item](/ekg-docs/item/)

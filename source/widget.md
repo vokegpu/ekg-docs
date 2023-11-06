@@ -1,10 +1,10 @@
 # Overview
 
-- Abstract widget, and abstract UI data
+- [Abstract widget, and abstract UI data](/ekg-docs/widget/#abstract)
 
-- Type
+- [Type](/ekg-docs/widget/#type)
 
-- Level
+- [Level](/ekg-docs/widget/#level)
 
 # Abstract widget, and abstract UI data
 

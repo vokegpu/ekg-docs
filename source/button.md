@@ -1,10 +1,10 @@
 # Overview
 
-- Fundamentals
+- [Fundamentals](/ekg-docs/button/#fundamentals)
 
-- Examples
+- [Examples](/ekg-docs/button/#examples)
 
-- Methods
+- [Methods](/ekg-docs/button/#methods)
 
 # Fundamentals
 
