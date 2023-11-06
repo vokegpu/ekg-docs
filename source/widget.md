@@ -16,35 +16,22 @@ This philosophy allows more control, and memory security for the application. Wh
 
 # Type
 
-Type represents different widgets, and helps check the instance of the current context widget object class, `ekg::type` contains the following enum(s) constant:
+Type represents different widgets, and helps check the instance of the current context widget object class.
 
-| Tables | Are | Cool | |----------|:-------------:|------:| | col 1 is| left-aligned | $1600 |
-
-- `ekg::type::abstract` [refers to the abstract UI element](/ekg-docs/abstract/)
-
-- `ekg::type::frame` [refers to the frame UI element](/ekg-docs/frame/)
-
-- `ekg::type::button` [refers to the button UI element](/ekg-docs/frame/)
-
-- `ekg::type::label` [refers to the label UI element](/ekg-docs/label/)
-
-- `ekg::type::slider` [refers to the slider UI element](/ekg-docs/slider/)
-
-- `ekg::type::slider2d` [refers to the slider 2D UI element](/ekg-docs/slider2d/)
-
-- `ekg::type::checkbox` [refers to the frame UI element](/ekg-docs/checkbox/)
-
-- `ekg::type::textbox` [refers to the textbox UI element](/ekg-docs/textbox/)
-
-- `ekg::type::combobox` [refers to the combobox UI element](/ekg-docs/combobox/)
-
-- `ekg::type::listbox` [refers to the listbox UI element](/ekg-docs/listbox/)
-
-- `ekg::type::tab` [refers to the tab UI element](/ekg-docs/tab/)
-
-- `ekg::type::popup` [refers to the popup UI element](/ekg-docs/popup/)
-
-- `ekg::type::scroll` [refers to the scroll UI element](/ekg-docs/scroll/)
+| Type                  | Widget                          |
+| --------------------- | ------------------------------- |
+| `ekg::type::abstract` | [Abstract](/ekg-docs/abstract/) |
+| `ekg::type::frame`    | [Frame](/ekg-docs/frame/)       |
+| `ekg::type::label`    | [Label](/ekg-docs/label/)       |
+| `ekg::type::slider`   | [Slider](/ekg-docs/slider/)     |
+| `ekg::type::slider2d` | [Slider2D](/ekg-docs/slider2d/) |
+| `ekg::type::checkbox` | [Checkbox](/ekg-docs/checkbox/) |
+| `ekg::type::textbox`  | [Textbox](/ekg-docs/textbox/)   |
+| `ekg::type::combobox` | [Combobox](/ekg-docs/combobox/) |
+| `ekg::type::listbox`  | [Listbox](/ekg-docs/listbox/)   |
+| `ekg::type::tab`      | [Tab](/ekg-docs/tab/)           |
+| `ekg::type::popup`    | [Popup](/ekg-docs/popup/)       |
+| `ekg::type::scroll`   | [Scroll](/ekg-docs/scroll/)     |
 
 # Level
 

@@ -127,52 +127,69 @@
 <p><code>ekg::ui::abstract</code> objects work as intermediary data between the user-programmer, and the <code>ekg::ui::abstract_widget</code>, which is used for processing the logic, and rendering.</p>
 <p>This philosophy allows more control, and memory security for the application. While backing service tools handle the <code>ekg::ui::abstract_widget</code>, the user only has access to <code>ekg::ui::abstract</code>.</p>
 <h1 id="type">Type</h1>
-<p>Type represents different widgets, and helps check the instance of the current context widget object class, <code>ekg::type</code> contains the following enum(s) constant:</p>
-<ul>
-<li>
-<p><code>ekg::type::abstract</code> <a href="Abstract">refers to the abstract UI element</a></p>
-</li>
-<li>
-<p><code>ekg::type::frame</code> <a href="Frame">refers to the frame UI element</a></p>
-</li>
-<li>
-<p><code>ekg::type::button</code> <a href="Button">refers to the button UI element</a> </p>
-</li>
-<li>
-<p><code>ekg::type::label</code> <a href="Label">refers to the label UI element</a></p>
-</li>
-<li>
-<p><code>ekg::type::slider</code> <a href="Slider">refers to the slider UI element</a></p>
-</li>
-<li>
-<p><code>ekg::type::slider2d</code> <a href="Slider2d">refers to the slider 2D UI element</a> </p>
-</li>
-<li>
-<p><code>ekg::type::checkbox</code> <a href="Checkbox">refers to the frame UI element</a> </p>
-</li>
-<li>
-<p><code>ekg::type::textbox</code> <a href="Textbox">refers to the textbox UI element</a></p>
-</li>
-<li>
-<p><code>ekg::type::combobox</code> <a href="Combobox">refers to the combobox UI element</a> </p>
-</li>
-<li>
-<p><code>ekg::type::listbox</code> <a href="Listbox">refers to the listbox UI element</a> </p>
-</li>
-<li>
-<p><code>ekg::type::tab</code> <a href="Tab">refers to the tab UI element</a></p>
-</li>
-<li>
-<p><code>ekg::type::popup</code> <a href="Popup">refers to the popup UI element</a></p>
-</li>
-<li>
-<p><code>ekg::type::scroll</code> <a href="Scroll">refers to the scroll UI element</a></p>
-</li>
-</ul>
+<p>Type represents different widgets, and helps check the instance of the current context widget object class.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Widget</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ekg::type::abstract</code></td>
+<td><a href="/ekg-docs/abstract/">Abstract</a></td>
+</tr>
+<tr>
+<td><code>ekg::type::frame</code></td>
+<td><a href="/ekg-docs/frame/">Frame</a></td>
+</tr>
+<tr>
+<td><code>ekg::type::label</code></td>
+<td><a href="/ekg-docs/label/">Label</a></td>
+</tr>
+<tr>
+<td><code>ekg::type::slider</code></td>
+<td><a href="/ekg-docs/slider/">Slider</a></td>
+</tr>
+<tr>
+<td><code>ekg::type::slider2d</code></td>
+<td><a href="/ekg-docs/slider2d/">Slider2D</a></td>
+</tr>
+<tr>
+<td><code>ekg::type::checkbox</code></td>
+<td><a href="/ekg-docs/checkbox/">Checkbox</a></td>
+</tr>
+<tr>
+<td><code>ekg::type::textbox</code></td>
+<td><a href="/ekg-docs/textbox/">Textbox</a></td>
+</tr>
+<tr>
+<td><code>ekg::type::combobox</code></td>
+<td><a href="/ekg-docs/combobox/">Combobox</a></td>
+</tr>
+<tr>
+<td><code>ekg::type::listbox</code></td>
+<td><a href="/ekg-docs/listbox/">Listbox</a></td>
+</tr>
+<tr>
+<td><code>ekg::type::tab</code></td>
+<td><a href="/ekg-docs/tab/">Tab</a></td>
+</tr>
+<tr>
+<td><code>ekg::type::popup</code></td>
+<td><a href="/ekg-docs/popup/">Popup</a></td>
+</tr>
+<tr>
+<td><code>ekg::type::scroll</code></td>
+<td><a href="/ekg-docs/scroll/">Scroll</a></td>
+</tr>
+</tbody>
+</table>
 <h1 id="level">Level</h1>
 <p>A level-constant <code>ekg::level::bottom_level</code>, and <code>ekg::level::top_level</code>defines how the widget should be processed and placed. Most of the widgets except popup(s), by default sets <code>ekg::level::bottom_level</code>.</p>
-<p>Normal placement(s) <code>ekg::level::bottom_level</code> is followed by <a href="Layout">layout service</a>, and can not interrupt the current processing widgets IO (input, events calling) context.</p>
-<p>Regular placement(s) <code>ekg::level::top_level</code> is followed by a private invocation of <a href="Layout">layout service</a> features, and has the ability to interrupt the current processing widgets IO (input, events calling) context. Top-level widgets can not be a child, this rule allows separating IO events processing between top-level and bottom-level widgets.</p>
+<p>Normal placement(s) <code>ekg::level::bottom_level</code> is followed by <a href="/ekg-docs/layout/">layout service</a>, and can not interrupt the current processing widgets IO (input, events calling) context.</p>
+<p>Regular placement(s) <code>ekg::level::top_level</code> is followed by a private invocation of <a href="/ekg-docs/layout/">layout service</a> features, and can interrupt the current processing widgets IO (input, events calling) context. Top-level widgets can not be a child, this rule allows separating IO events processing between top-level and bottom-level widgets.</p>
               
             </div>
           </div><footer>
