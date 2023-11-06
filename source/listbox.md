@@ -1,6 +1,6 @@
 # Listbox
 
-The [listbox]() widget displays text fields as a 2D list. [Item](/item/) stores each text field, representing a geometry component.
+The [listbox]() widget displays text fields as a 2D list. [Item](/ekg-docs/item/) stores each text field, representing a geometry component.
 
 # Container
 
