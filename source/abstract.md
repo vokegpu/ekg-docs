@@ -94,7 +94,7 @@ Get the state of the widget, `visible` `invisible`.
 ekg::state get_state();
 ```
 
-Set the [widget type](/ekg-docs/widget/#Type).
+Set the [widget type](/ekg-docs/widget/#type).
 
 ```cpp
 ekg::ui::abstract *set_type(const ekg::type &_type);
