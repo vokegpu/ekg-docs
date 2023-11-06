@@ -16,6 +16,7 @@ nav:
         - Checkbox: checkbox.md
         - Listbox: listbox.md
         - Textbox: textbox.md
+        - Widget: widget.md
 
     - 'Service':
         - Input: input.md
