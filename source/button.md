@@ -212,13 +212,13 @@ Set the state of the widget, `visible` `invisible`.
 ekg::ui::abstract *set_state(const ekg::state &_state);
 ```
 
-Get the state of the widget, `visible` `invisible`.
+Get the state of the [widget](/ekg-docs/widget/), `visible` `invisible`.
 
 ```cpp
 ekg::state get_state();
 ```
 
-Set the [widget type](Widget#Type).
+Set the [widget type](/ekg-docs/widget/#type).
 
 ```cpp
 ekg::ui::abstract *set_type(const ekg::type &_type);

@@ -1,8 +1,8 @@
 # Overview
 
-- Fundamentals
+- [Fundamentals](/ekg-docs/abstract/#fundamentals)
 
-- Methods
+- [Methods](/ekg-docs/abstract/#methods)
 
 # Fundamentals
 
@@ -76,7 +76,7 @@ Get the alive state.
 bool is_alive();
 ```
 
-Destroy the widget.
+Destroy the [widget](/ekg-docs/widget/#widget).
 
 ```cpp
 void destroy();

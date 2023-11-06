@@ -18,36 +18,38 @@ This philosophy allows more control, and memory security for the application. Wh
 
 Type represents different widgets, and helps check the instance of the current context widget object class, `ekg::type` contains the following enum(s) constant:
 
-- `ekg::type::abstract` [refers to the abstract UI element](Abstract)
+| Tables | Are | Cool | |----------|:-------------:|------:| | col 1 is| left-aligned | $1600 |
 
-- `ekg::type::frame` [refers to the frame UI element](Frame)
+- `ekg::type::abstract` [refers to the abstract UI element](/ekg-docs/abstract/)
 
-- `ekg::type::button` [refers to the button UI element](Button) 
+- `ekg::type::frame` [refers to the frame UI element](/ekg-docs/frame/)
 
-- `ekg::type::label` [refers to the label UI element](Label)
+- `ekg::type::button` [refers to the button UI element](/ekg-docs/frame/)
 
-- `ekg::type::slider` [refers to the slider UI element](Slider)
+- `ekg::type::label` [refers to the label UI element](/ekg-docs/label/)
 
-- `ekg::type::slider2d` [refers to the slider 2D UI element](Slider2d) 
+- `ekg::type::slider` [refers to the slider UI element](/ekg-docs/slider/)
 
-- `ekg::type::checkbox` [refers to the frame UI element](Checkbox) 
+- `ekg::type::slider2d` [refers to the slider 2D UI element](/ekg-docs/slider2d/)
 
-- `ekg::type::textbox` [refers to the textbox UI element](Textbox)
+- `ekg::type::checkbox` [refers to the frame UI element](/ekg-docs/checkbox/)
 
-- `ekg::type::combobox` [refers to the combobox UI element](Combobox) 
+- `ekg::type::textbox` [refers to the textbox UI element](/ekg-docs/textbox/)
 
-- `ekg::type::listbox` [refers to the listbox UI element](Listbox) 
+- `ekg::type::combobox` [refers to the combobox UI element](/ekg-docs/combobox/)
 
-- `ekg::type::tab` [refers to the tab UI element](Tab)
+- `ekg::type::listbox` [refers to the listbox UI element](/ekg-docs/listbox/)
 
-- `ekg::type::popup` [refers to the popup UI element](Popup)
+- `ekg::type::tab` [refers to the tab UI element](/ekg-docs/tab/)
 
-- `ekg::type::scroll` [refers to the scroll UI element](Scroll)
+- `ekg::type::popup` [refers to the popup UI element](/ekg-docs/popup/)
+
+- `ekg::type::scroll` [refers to the scroll UI element](/ekg-docs/scroll/)
 
 # Level
 
 A level-constant `ekg::level::bottom_level`, and `ekg::level::top_level`defines how the widget should be processed and placed. Most of the widgets except popup(s), by default sets `ekg::level::bottom_level`.
 
-Normal placement(s) `ekg::level::bottom_level` is followed by [layout service](Layout), and can not interrupt the current processing widgets IO (input, events calling) context.
+Normal placement(s) `ekg::level::bottom_level` is followed by [layout service](/ekg-docs/layout/), and can not interrupt the current processing widgets IO (input, events calling) context.
 
-Regular placement(s) `ekg::level::top_level` is followed by a private invocation of [layout service](Layout) features, and has the ability to interrupt the current processing widgets IO (input, events calling) context. Top-level widgets can not be a child, this rule allows separating IO events processing between top-level and bottom-level widgets.
+Regular placement(s) `ekg::level::top_level` is followed by a private invocation of [layout service](/ekg-docs/layout/) features, and can interrupt the current processing widgets IO (input, events calling) context. Top-level widgets can not be a child, this rule allows separating IO events processing between top-level and bottom-level widgets.
