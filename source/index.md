@@ -18,7 +18,7 @@ Welcome to the EKG wiki!
 
 - [Layout](/ekg-docs/layout/)
 - [Input](/ekg-docs/input/)
-- [Handler](/ekg-docs/handler/)
+- [Handler](/ekg-docs/handler-service/)
 - [Allocator](/ekg-docs/allocator/)
 - [GPU Tools](/ekg-docs/gpu-tools/)
 

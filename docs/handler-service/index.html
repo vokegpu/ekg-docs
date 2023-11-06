@@ -13,7 +13,7 @@
       <script>
         // Current page data
         var mkdocs_page_name = "Overview";
-        var mkdocs_page_input_path = "task.md";
+        var mkdocs_page_input_path = "handler-service.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -118,21 +118,21 @@
 <p><a href="/ekg-docs/task/#runtime">Runtime</a></p>
 </li>
 <li>
-<p><a href="/ekg-docs/task/#execution">Execution</a></p>
+<p><a href="/ekg-docs/task/#task">Task</a></p>
 </li>
 </ul>
 <h1 id="runtime">Runtime</h1>
 <p>The event system and handler service exist for two different purposes, the handler is a task manager that works with callback events (tasks) and executes the main tasks of the EKG runtime core.
 The event system exists to release UI events. </p>
-<h1 id="execution">Execution</h1>
-<p>The structure of a task is simple.</p>
+<h1 id="task">Task</h1>
+<p>The structure of a <a href="/ekg-docs/handler-service/#task">task</a> is simple.</p>
 <pre><code class="language-cpp">ekg::cpu::event task {
     .p_tag = &quot;task event cat 1&quot;,
     .p_callback = nullptr,
     .function = [](void *p_callback) {};
 };
 </code></pre>
-<p>For dispatching a task is simple, reference or copy <code>ekg::core-&gt;service_handler.generate()</code></p>
+<p>For dispatching a <a href="/ekg-docs/handler-service/#task">task</a> is simple, reference or copy <code>ekg::core-&gt;service_handler.generate()</code></p>
 <pre><code class="language-cpp">auto &amp;task = ekg::core-&gt;service_handler.generate();
 task.p_tag = &quot;cat&quot;;
 task.p_callback = nullptr;
