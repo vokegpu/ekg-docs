@@ -41,7 +41,7 @@
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption"><span class="caption-text">Getting Started</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="" href="../installation.md">Installation</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="../creating-a-gui.md">Creating a GUI</a>
                   </li>
@@ -121,11 +121,61 @@
 <p><a href="/ekg-docs/listbox/#fundamentals">Fundamentals</a></p>
 </li>
 <li>
+<p><a href="/ekg-docs/listbox/#methods">Methods</a></p>
+</li>
+<li>
 <p><a href="/ekg-docs/listbox/#container">Container</a></p>
 </li>
 </ul>
 <h1 id="fundamentals">Fundamentals</h1>
 <p>The <a href="/ekg-docs/listbox/#listbox">listbox</a> <a href="/ekg-docs/widget/">widget</a> displays text fields as a 2D list. <a href="/ekg-docs/item/">Item</a> stores each text field, representing a geometry component.</p>
+<p>The first <a href="/ekg-docs/item/">items</a> represent the category column, and the sub-<a href="/ekg-docs/item/">items</a> from the category represent the rows.</p>
+<pre><code class="language-cpp">ekg::item &amp;item = p_listbox-&gt;item();
+
+item.insert(&quot;Cats&quot;);   // category: Cats
+item.insert(&quot;Dogs&quot;);   // category: Dogs
+item.insert(&quot;Plants&quot;); // category: Plants
+
+item.at(0).insert(&quot;Potato&quot;);
+item.at(1).insert(&quot;Toto&quot;);
+item.at(2).insert(&quot;Flower&quot;);
+</code></pre>
+<p>Each <a href="/ekg-docs/listbox/#container">container</a> category is independent of the others, however, EKG <a href="/ekg-docs/listbox/">listbox</a> contains one mode to link all <a href="/ekg-docs/item/">items</a>, named, single column mode.</p>
+<pre><code>ekg::item &amp;item = p_listbox-&gt;item();
+
+item.insert(&quot;Name&quot;);        // category: Name
+item.insert(&quot;Description&quot;); // category: Description
+item.insert(&quot;Status&quot;);      // category: Status
+
+p_listbox-&gt;set_single_column_mode(true);
+
+item.at(0).insert(&quot;Potato&quot;);
+item.at(1).insert(&quot;Cat&quot;);
+item.at(2).insert(&quot;Playing with kitty-friends!&quot;);
+
+item.at(0).insert(&quot;Chiquinha&quot;);
+item.at(1).insert(&quot;Cat&quot;);
+item.at(2).insert(&quot;Carrying of children kitties!&quot;);
+</code></pre>
+<p>The single-column mode can also reserve empty spaces, to prevent issues in processing, but it is possible to perform a filling.</p>
+<pre><code class="language-cpp">item.fill(0, ekg::attr::box | ekg::attr::unselectable); // edit attributes
+item.fill(0, &quot;Name&quot;); // edit name
+</code></pre>
+<h1 id="methods">Methods</h1>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
 <h1 id="container">Container</h1>
 <p>Each row is a component container, a <a href="/ekg-docs/listbox/">listbox</a> container allocates all <a href="/ekg-docs/item/">Items</a> cursively opened and dynamically calculates the visible index, based on the opened components count.</p>
 <p>When opening an <a href="/ekg-docs/item/">item</a> component, the container increases the open counter, and when an <a href="/ekg-docs/item/">item</a> component is closed, it decreases the open counter. This simple arithmetic system is useful for estimating container height.</p>

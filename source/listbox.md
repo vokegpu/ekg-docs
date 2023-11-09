@@ -24,12 +24,16 @@ item.at(1).insert("Toto");
 item.at(2).insert("Flower");
 ```
 
-```cpp
+Each [container](/ekg-docs/listbox/#container) category is independent of the others, however, EKG [listbox](/ekg-docs/listbox/) contains one mode to link all [items](/ekg-docs/item/), named, single column mode.
+
+```
 ekg::item &item = p_listbox->item();
 
 item.insert("Name");        // category: Name
 item.insert("Description"); // category: Description
 item.insert("Status");      // category: Status
+
+p_listbox->set_single_column_mode(true);
 
 item.at(0).insert("Potato");
 item.at(1).insert("Cat");
@@ -38,6 +42,13 @@ item.at(2).insert("Playing with kitty-friends!");
 item.at(0).insert("Chiquinha");
 item.at(1).insert("Cat");
 item.at(2).insert("Carrying of children kitties!");
+```
+
+The single-column mode can also reserve empty spaces, to prevent issues in processing, but it is possible to perform a filling.
+
+```cpp
+item.fill(0, ekg::attr::box | ekg::attr::unselectable); // edit attributes
+item.fill(0, "Name"); // edit name
 ```
 
 # Methods
