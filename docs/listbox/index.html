@@ -162,20 +162,9 @@ item.at(2).insert(&quot;Carrying of children kitties!&quot;);
 item.fill(0, &quot;Name&quot;); // edit name
 </code></pre>
 <h1 id="methods">Methods</h1>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td></td>
-<td></td>
-</tr>
-</tbody>
-</table>
+<p>Set dimension width in pixels.</p>
+<pre><code class="language-cpp">ekg::ui::listbox *set_width(float w);
+</code></pre>
 <h1 id="container">Container</h1>
 <p>Each row is a component container, a <a href="/ekg-docs/listbox/">listbox</a> container allocates all <a href="/ekg-docs/item/">Items</a> cursively opened and dynamically calculates the visible index, based on the opened components count.</p>
 <p>When opening an <a href="/ekg-docs/item/">item</a> component, the container increases the open counter, and when an <a href="/ekg-docs/item/">item</a> component is closed, it decreases the open counter. This simple arithmetic system is useful for estimating container height.</p>

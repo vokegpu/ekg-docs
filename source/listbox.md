@@ -53,9 +53,11 @@ item.fill(0, "Name"); // edit name
 
 # Methods
 
-| Name | Description |
-| ---- | ----------- |
-|      |             |
+Set dimension width in pixels.
+
+```cpp
+ekg::ui::listbox *set_width(float w);
+```
 
 # Container
 
