@@ -2,11 +2,49 @@
 
 - [Fundamentals](/ekg-docs/listbox/#fundamentals)
 
+- [Methods](/ekg-docs/listbox/#methods)
+
 - [Container](/ekg-docs/listbox/#container)
 
 # Fundamentals
 
 The [listbox](/ekg-docs/listbox/#listbox) [widget](/ekg-docs/widget/) displays text fields as a 2D list. [Item](/ekg-docs/item/) stores each text field, representing a geometry component.
+
+The first [items](/ekg-docs/item/) represent the category column, and the sub-[items](/ekg-docs/item/) from the category represent the rows.
+
+```cpp
+ekg::item &item = p_listbox->item();
+
+item.insert("Cats");   // category: Cats
+item.insert("Dogs");   // category: Dogs
+item.insert("Plants"); // category: Plants
+
+item.at(0).insert("Potato");
+item.at(1).insert("Toto");
+item.at(2).insert("Flower");
+```
+
+```cpp
+ekg::item &item = p_listbox->item();
+
+item.insert("Name");        // category: Name
+item.insert("Description"); // category: Description
+item.insert("Status");      // category: Status
+
+item.at(0).insert("Potato");
+item.at(1).insert("Cat");
+item.at(2).insert("Playing with kitty-friends!");
+
+item.at(0).insert("Chiquinha");
+item.at(1).insert("Cat");
+item.at(2).insert("Carrying of children kitties!");
+```
+
+# Methods
+
+| Name | Description |
+| ---- | ----------- |
+|      |             |
 
 # Container
 
