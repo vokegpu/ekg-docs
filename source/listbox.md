@@ -26,7 +26,7 @@ item.at(2).insert("Flower");
 
 Each [container](/ekg-docs/listbox/#container) category is independent of the others, however, EKG [listbox](/ekg-docs/listbox/) contains one mode to link all [items](/ekg-docs/item/), named, single column mode.
 
-```
+```cpp
 ekg::item &item = p_listbox->item();
 
 item.insert("Name");        // category: Name
@@ -58,6 +58,14 @@ Set dimension width in pixels.
 ```cpp
 ekg::ui::listbox *set_width(float w);
 ```
+
+Get dimension width in pixels.
+
+```cpp
+float get_width();
+```
+
+Set dimension height in factor-height, see [here](/ekg-docs/widget/#dimension).
 
 # Container
 
