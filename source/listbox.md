@@ -67,6 +67,30 @@ float get_width();
 
 Set dimension height in factor-height, see [here](/ekg-docs/widget/#dimension).
 
+```cpp
+ekg::ui::listbox *set_scaled_height(int32_t factor);
+```
+
+Set [layout dock](/ekg-docs/layout/#dock) position.
+
+```cpp
+ekg::ui::listbox *set_place(uint16_t dock);
+```
+
+Get the [item](/ekg-docs/item/) data.
+
+```cpp
+ekg::item &item();
+```
+
+Set the category [font](/ekg-docs/font/) used.
+
+```cpp
+
+```
+
+
+
 # Container
 
 Each row is a component container, a [listbox](/ekg-docs/listbox/) container allocates all [Items](/ekg-docs/item/) cursively opened and dynamically calculates the visible index, based on the opened components count.
