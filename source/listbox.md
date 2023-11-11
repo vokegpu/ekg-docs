@@ -86,10 +86,26 @@ ekg::item &item();
 Set the category [font](/ekg-docs/font/) used.
 
 ```cpp
-
+ekg::ui::listbox *set_category_font_size(ekg::font font);
 ```
 
+Get the category [font](/ekg-docs/font/) used.
 
+```cpp
+ekg::font get_category_font_size();
+```
+
+Set the [item](/ekg-docs/item/) [font](/ekg-docs/font/) used.
+
+```cpp
+ekg::ui::listbox *set_item_font_size(ekg::font font);
+```
+
+Get the [item](/ekg-docs/item/) [font](/ekg-docs/font/) used.
+
+```cpp
+
+```
 
 # Container
 
