@@ -126,11 +126,14 @@
 <li>
 <p><a href="/ekg-docs/widget/#level">Level</a></p>
 </li>
+<li>
+<p><a href="/ekg-docs/widget/#dimension">Dimension</a></p>
+</li>
 </ul>
 <h1 id="abstract-widget-and-abstract-ui-data">Abstract widget, and abstract UI data</h1>
 <p>EKG has two layers of objects: <code>ekg::ui::abstract_widget</code>, and <code>ekg::ui::abstract</code>. Both are used together but with different purposes.</p>
-<p><code>ekg::ui::abstract</code> objects work as intermediary data between the user-programmer, and the <code>ekg::ui::abstract_widget</code>, which is used for processing the logic, and rendering.</p>
-<p>This philosophy allows more control, and memory security for the application. While backing service tools handle the <code>ekg::ui::abstract_widget</code>, the user only has access to <code>ekg::ui::abstract</code>.</p>
+<p><code>ekg::ui::abstract</code> objects work as intermediary data between the user-programmer, and the <code>ekg::ui::abstract_widget</code>, which is used to process the logic and render.</p>
+<p>This philosophy allows more control, and memory security for the application. While backing service tools handle the <code>ekg::ui::abstract_widget</code>, the user can only access <code>ekg::ui::abstract</code>.</p>
 <h1 id="type">Type</h1>
 <p>Type represents different widgets, and helps check the instance of the current context widget object class.</p>
 <table>
@@ -195,6 +198,9 @@
 <p>A level-constant <code>ekg::level::bottom_level</code>, and <code>ekg::level::top_level</code>defines how the widget should be processed and placed. Most of the widgets except popup(s), by default sets <code>ekg::level::bottom_level</code>.</p>
 <p>Normal placement(s) <code>ekg::level::bottom_level</code> is followed by <a href="/ekg-docs/layout/">layout service</a>, and can not interrupt the current processing widgets IO (input, events calling) context.</p>
 <p>Regular placement(s) <code>ekg::level::top_level</code> is followed by a private invocation of <a href="/ekg-docs/layout/">layout service</a> features, and can interrupt the current processing widgets IO (input, events calling) context. Top-level widgets can not be a child, this rule allows separating IO events processing between top-level and bottom-level widgets.</p>
+<h1 id="dimension">Dimension</h1>
+<p>The dimension of a <a href="/ekg-docs/widget/">widget</a> contains differences between the horizontal and vertical axes. The width is based on pixels, and the height is based on a factor. The height factor is a multiple of <a href="/ekg-docs/font/#sizes">font-size</a>.</p>
+<p>If a <a href="/ekg-docs/widget/">widget</a> height factor is 2, and the <a href="/ekg-docs/widget/">widget</a> <a href="/e">font</a> setting is <code>ekg::font::normal</code>, then the size is <code>2*font_size</code>.</p>
               
             </div>
           </div><footer>

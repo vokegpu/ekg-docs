@@ -141,7 +141,7 @@ item.at(1).insert(&quot;Toto&quot;);
 item.at(2).insert(&quot;Flower&quot;);
 </code></pre>
 <p>Each <a href="/ekg-docs/listbox/#container">container</a> category is independent of the others, however, EKG <a href="/ekg-docs/listbox/">listbox</a> contains one mode to link all <a href="/ekg-docs/item/">items</a>, named, single column mode.</p>
-<pre><code>ekg::item &amp;item = p_listbox-&gt;item();
+<pre><code class="language-cpp">ekg::item &amp;item = p_listbox-&gt;item();
 
 item.insert(&quot;Name&quot;);        // category: Name
 item.insert(&quot;Description&quot;); // category: Description
@@ -162,8 +162,38 @@ item.at(2).insert(&quot;Carrying of children kitties!&quot;);
 item.fill(0, &quot;Name&quot;); // edit name
 </code></pre>
 <h1 id="methods">Methods</h1>
+<p>Set single-column mode state.</p>
+<pre><code class="language-cpp">ekg::ui::listbox *set_single_column_mode(bool state);
+</code></pre>
+<p>Get single-column mode state.</p>
+<pre><code class="language-cpp">bool is_single_column_mode();
+</code></pre>
 <p>Set dimension width in pixels.</p>
 <pre><code class="language-cpp">ekg::ui::listbox *set_width(float w);
+</code></pre>
+<p>Get dimension width in pixels.</p>
+<pre><code class="language-cpp">float get_width();
+</code></pre>
+<p>Set dimension height in factor-height, see <a href="/ekg-docs/widget/#dimension">here</a>.</p>
+<pre><code class="language-cpp">ekg::ui::listbox *set_scaled_height(int32_t factor);
+</code></pre>
+<p>Set <a href="/ekg-docs/layout/#dock">layout dock</a> position.</p>
+<pre><code class="language-cpp">ekg::ui::listbox *set_place(uint16_t dock);
+</code></pre>
+<p>Get the <a href="/ekg-docs/item/">item</a> data.</p>
+<pre><code class="language-cpp">ekg::item &amp;item();
+</code></pre>
+<p>Set the category <a href="/ekg-docs/font/">font</a> used.</p>
+<pre><code class="language-cpp">ekg::ui::listbox *set_category_font_size(ekg::font font);
+</code></pre>
+<p>Get the category <a href="/ekg-docs/font/">font</a> used.</p>
+<pre><code class="language-cpp">ekg::font get_category_font_size();
+</code></pre>
+<p>Set the <a href="/ekg-docs/item/">item</a> <a href="/ekg-docs/font/">font</a> used.</p>
+<pre><code class="language-cpp">ekg::ui::listbox *set_item_font_size(ekg::font font);
+</code></pre>
+<p>Get the <a href="/ekg-docs/item/">item</a> <a href="/ekg-docs/font/">font</a> used.</p>
+<pre><code class="language-cpp">ekg::font get_item_font_size();
 </code></pre>
 <h1 id="container">Container</h1>
 <p>Each row is a component container, a <a href="/ekg-docs/listbox/">listbox</a> container allocates all <a href="/ekg-docs/item/">Items</a> cursively opened and dynamically calculates the visible index, based on the opened components count.</p>

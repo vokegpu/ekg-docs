@@ -53,6 +53,18 @@ item.fill(0, "Name"); // edit name
 
 # Methods
 
+Set single-column mode state.
+
+```cpp
+ekg::ui::listbox *set_single_column_mode(bool state);
+```
+
+Get single-column mode state.
+
+```cpp
+bool is_single_column_mode();
+```
+
 Set dimension width in pixels.
 
 ```cpp
@@ -104,7 +116,7 @@ ekg::ui::listbox *set_item_font_size(ekg::font font);
 Get the [item](/ekg-docs/item/) [font](/ekg-docs/font/) used.
 
 ```cpp
-
+ekg::font get_item_font_size();
 ```
 
 # Container
