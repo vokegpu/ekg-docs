@@ -162,20 +162,27 @@ item.at(2).insert(&quot;Carrying of children kitties!&quot;);
 item.fill(0, &quot;Name&quot;); // edit name
 </code></pre>
 <h1 id="methods">Methods</h1>
+<h3 id="listbox">Listbox</h3>
 <p>Set single-column mode state.</p>
 <pre><code class="language-cpp">ekg::ui::listbox *set_single_column_mode(bool state);
 </code></pre>
 <p>Get single-column mode state.</p>
 <pre><code class="language-cpp">bool is_single_column_mode();
 </code></pre>
-<p>Set dimension width in pixels.</p>
+<p>Set dimension width in pixels, see details <a href="/ekg-docs/widget/#dimension">here</a>.</p>
 <pre><code class="language-cpp">ekg::ui::listbox *set_width(float w);
 </code></pre>
-<p>Get dimension width in pixels.</p>
+<p>Get dimension width in pixels, see details <a href="/ekg-docs/widget/#dimension">here</a>.</p>
 <pre><code class="language-cpp">float get_width();
 </code></pre>
-<p>Set dimension height in factor-height, see <a href="/ekg-docs/widget/#dimension">here</a>.</p>
+<p>Set dimension height in factor-height, see details <a href="/ekg-docs/widget/#dimension">here</a>.</p>
 <pre><code class="language-cpp">ekg::ui::listbox *set_scaled_height(int32_t factor);
+</code></pre>
+<p>Get dimension height in factor-height, see details <a href="/ekg-docs/widget/#dimension">here</a>.</p>
+<pre><code class="language-cpp">int32_t get_scaled_height();
+</code></pre>
+<p>Get dimension height in pixels, see details <a href="/ekg-docs/widget/#dimension">here</a>.</p>
+<pre><code class="language-cpp">float get_height();
 </code></pre>
 <p>Set <a href="/ekg-docs/layout/#dock">layout dock</a> position.</p>
 <pre><code class="language-cpp">ekg::ui::listbox *set_place(uint16_t dock);
@@ -194,6 +201,83 @@ item.fill(0, &quot;Name&quot;); // edit name
 </code></pre>
 <p>Get the <a href="/ekg-docs/item/">item</a> <a href="/ekg-docs/font/">font</a> used.</p>
 <pre><code class="language-cpp">ekg::font get_item_font_size();
+</code></pre>
+<h3 id="abstract">Abstract</h3>
+<p>Abstract</p>
+<p>Set tag (reserved purposes).</p>
+<pre><code class="language-cpp">ekg::ui::abstract *set_tag(std::string_view tag);
+</code></pre>
+<p>Get the tag (reserved purposes).</p>
+<pre><code class="language-cpp">std::string_view get_tag();
+</code></pre>
+<p>Set the <a href="/ekg-docs/widget/">widget</a> ID, see details <a href="/ekg-docs/widget/#family">here</a>.</p>
+<pre><code class="language-cpp">ekg::ui::abstract *set_id(int32_t id);
+</code></pre>
+<p>Get the <a href="/ekg-docs/widget/">widget</a> ID, see details <a href="/ekg-docs/widget/#family">here</a>.</p>
+<pre><code class="language-cpp">int32_t get_id();
+</code></pre>
+<p>Set parent mother <a href="/ekg-docs/widget/">widget</a> ID, see details <a href="/ekg-docs/widget/#family">here</a>.</p>
+<pre><code class="language-cpp">ekg::ui::abstract *set_parent_id(int32_t parent_id);
+</code></pre>
+<p>Get parent mother <a href="/ekg-docs/widget/">widget</a> ID, see details <a href="/ekg-docs/widget/#family">here</a>.</p>
+<pre><code class="language-cpp">int32_t get_parent_id();
+</code></pre>
+<p>Add a child to the <a href="/ekg-docs/widget/">widget</a>, see details <a href="/ekg-docs/widget/#family">here</a>.</p>
+<pre><code class="language-cpp">ekg::ui::abstract *add_child(int32_t id);
+</code></pre>
+<p>Get the <a href="/ekg-docs/widget/">widget</a> child id list, see details <a href="/ekg-docs/widget/#family">here</a>.</p>
+<pre><code class="language-cpp">std::vector&lt;int32_t&gt; &amp;get_child_id_list();
+</code></pre>
+<p>Remove a child <a href="/ekg-docs/widget/">widget</a> from the mother <a href="/ekg-docs/widget/#family">widget</a>, see details <a href="/ekg-docs/widget/#family">here</a>.</p>
+<pre><code class="language-cpp">ekg::ui::abstract *remove_child(int32_t id);
+</code></pre>
+<p>Check if the <a href="/ekg-docs/widget/">widget</a> has a parent mother <a href="/ekg-docs/widget/">widget</a>, see details <a href="/ekg-docs/widget/#family">here</a>.</p>
+<pre><code class="language-cpp">bool has_parent();
+</code></pre>
+<p>Check if the <a href="/ekg-docs/widget/">widget</a> has children, see details <a href="/ekg-docs/widget/#family">here</a>.</p>
+<pre><code class="language-cpp">bool has_children();
+</code></pre>
+<p>Set <a href="/ekg-docs/widget/">widget</a> alive state.</p>
+<pre><code class="language-cpp">ekg::ui::abstract *set_alive(bool state);
+</code></pre>
+<p>Get <a href="/ekg-docs/widget/">widget</a> alive state.</p>
+<pre><code class="language-cpp">bool is_alive();
+</code></pre>
+<p>Destroy the <a href="/ekg-docs/widget/#family">widget</a>.</p>
+<pre><code class="language-cpp">void destroy();
+</code></pre>
+<p>Set the <a href="/ekg-docs/widget/#state">widget state</a>.</p>
+<pre><code class="language-cpp">ekg::ui::abstract *set_state(const ekg::state &amp;_state);
+</code></pre>
+<p>Get the <a href="/ekg-docs/widget/#state">widget state</a>.</p>
+<pre><code class="language-cpp">ekg::state get_state();
+</code></pre>
+<p>Set the <a href="/ekg-docs/widget/#type">widget type</a>.</p>
+<pre><code class="language-cpp">ekg::ui::abstract *set_type(const ekg::type &amp;_type);
+</code></pre>
+<p>Get the <a href="/ekg-docs/widget/#type">widget type</a>.</p>
+<pre><code class="language-cpp">ekg::type get_type();
+</code></pre>
+<p>Set the <a href="/ekg-docs/widget/#level">widget level</a>.</p>
+<pre><code class="language-cpp">ekg::ui::abstract *set_level(const ekg::type &amp;_level);
+</code></pre>
+<p>Get the <a href="/ekg-docs/widget/#level">widget level</a>.</p>
+<pre><code class="language-cpp">ekg::type get_level();
+</code></pre>
+<p>Get <a href="/ekg-docs/layout/#dock">layout dock</a> position.</p>
+<pre><code class="language-cpp">uint16_t get_place_dock();
+</code></pre>
+<p>Get the sync flags reference.</p>
+<pre><code class="language-cpp">uint16_t &amp;get_sync();
+</code></pre>
+<p>Reset the UI data front-end with the <a href="/ekg-docs/widget/">widget</a> back-end.</p>
+<pre><code class="language-cpp">void reset();
+</code></pre>
+<p>Access to absolute <a href="/ekg-docs/widget/">widget</a> back-end rectangle.</p>
+<pre><code class="language-cpp">ekg::rect &amp;widget();
+</code></pre>
+<p>Get the UI data front-end rectangle.</p>
+<pre><code class="language-cpp">ekg::rect &amp;ui();
 </code></pre>
 <h1 id="container">Container</h1>
 <p>Each row is a component container, a <a href="/ekg-docs/listbox/">listbox</a> container allocates all <a href="/ekg-docs/item/">Items</a> cursively opened and dynamically calculates the visible index, based on the opened components count.</p>

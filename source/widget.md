@@ -6,7 +6,11 @@
 
 - [Level](/ekg-docs/widget/#level)
 
+- [State](/ekg-docs/widget/#state)
+
 - [Dimension](/ekg-docs/widget/#dimension)
+
+- [Family](/ekg-docs/widget/#family)
 
 # Abstract widget, and abstract UI data
 
@@ -43,8 +47,12 @@ Normal placement(s) `ekg::level::bottom_level` is followed by [layout service](/
 
 Regular placement(s) `ekg::level::top_level` is followed by a private invocation of [layout service](/ekg-docs/layout/) features, and can interrupt the current processing widgets IO (input, events calling) context. Top-level widgets can not be a child, this rule allows separating IO events processing between top-level and bottom-level widgets.
 
+# State
+
 # Dimension
 
 The dimension of a [widget](/ekg-docs/widget/) contains differences between the horizontal and vertical axes. The width is based on pixels, and the height is based on a factor. The height factor is a multiple of [font-size](/ekg-docs/font/#sizes).
 
 If a [widget](/ekg-docs/widget/) height factor is 2, and the [widget](/ekg-docs/widget/) [font](/e) setting is `ekg::font::normal`, then the size is `2*font_size`.
+
+# Family
