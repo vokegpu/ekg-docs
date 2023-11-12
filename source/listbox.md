@@ -135,8 +135,6 @@ ekg::font get_item_font_size();
 
 ### Abstract
 
-Abstract
-
 Set tag (reserved purposes).
 
 ```cpp

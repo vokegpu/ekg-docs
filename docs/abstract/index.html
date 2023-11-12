@@ -125,79 +125,83 @@
 </li>
 </ul>
 <h1 id="fundamentals">Fundamentals</h1>
-<p>The abstract widget is not used for the user-programmer part and is not recommended for any purpose. Abstract widget is used by the runtime core as a polymorphism heritage base for handling everything. </p>
+<p>The abstract <a href="/ekg-docs/widget/">widget</a> is not used for the user-programmer part and is not recommended for any purpose. <a href="/ekg-docs/widget/#abstract widget, and abstract ui data">Abstract widget</a> is used by the runtime core as a polymorphism heritage base for handling everything. </p>
 <h1 id="methods">Methods</h1>
-<p>Set tag for reserved purposes.</p>
+<h3 id="abstract">Abstract</h3>
+<p>Set tag (reserved purposes).</p>
 <pre><code class="language-cpp">ekg::ui::abstract *set_tag(std::string_view tag);
 </code></pre>
-<p>Get the tag for reserved purposes.</p>
+<p>Get the tag (reserved purposes).</p>
 <pre><code class="language-cpp">std::string_view get_tag();
 </code></pre>
-<p>Add a child to the widget.</p>
-<pre><code class="language-cpp">ekg::ui::abstract *add_child(int32_t id);
-</code></pre>
-<p>Get the widget child id list.</p>
-<pre><code class="language-cpp">std::vector&lt;int32_t&gt; &amp;get_child_id_list();
-</code></pre>
-<p>Remove a child widget from the mother widget.</p>
-<pre><code class="language-cpp">ekg::ui::abstract *remove_child(int32_t id);
-</code></pre>
-<p>Set the widget ID.</p>
+<p>Set the <a href="/ekg-docs/widget/">widget</a> ID, see details <a href="/ekg-docs/widget/#family">here</a>.</p>
 <pre><code class="language-cpp">ekg::ui::abstract *set_id(int32_t id);
 </code></pre>
-<p>Get the widget ID.</p>
+<p>Get the <a href="/ekg-docs/widget/">widget</a> ID, see details <a href="/ekg-docs/widget/#family">here</a>.</p>
 <pre><code class="language-cpp">int32_t get_id();
 </code></pre>
-<p>Set parent (mother) widget ID.</p>
+<p>Set parent mother <a href="/ekg-docs/widget/">widget</a> ID, see details <a href="/ekg-docs/widget/#family">here</a>.</p>
 <pre><code class="language-cpp">ekg::ui::abstract *set_parent_id(int32_t parent_id);
 </code></pre>
-<p>Get parent (mother) widget ID.</p>
+<p>Get parent mother <a href="/ekg-docs/widget/">widget</a> ID, see details <a href="/ekg-docs/widget/#family">here</a>.</p>
 <pre><code class="language-cpp">int32_t get_parent_id();
 </code></pre>
-<p>Set the alive state of the widget.</p>
-<pre><code class="language-cpp">ekg::ui::abstract *set_alive(bool is_alive);
+<p>Add a child to the <a href="/ekg-docs/widget/">widget</a>, see details <a href="/ekg-docs/widget/#family">here</a>.</p>
+<pre><code class="language-cpp">ekg::ui::abstract *add_child(int32_t id);
 </code></pre>
-<p>Get the alive state.</p>
+<p>Get the <a href="/ekg-docs/widget/">widget</a> child id list, see details <a href="/ekg-docs/widget/#family">here</a>.</p>
+<pre><code class="language-cpp">std::vector&lt;int32_t&gt; &amp;get_child_id_list();
+</code></pre>
+<p>Remove a child <a href="/ekg-docs/widget/">widget</a> from the mother <a href="/ekg-docs/widget/#family">widget</a>, see details <a href="/ekg-docs/widget/#family">here</a>.</p>
+<pre><code class="language-cpp">ekg::ui::abstract *remove_child(int32_t id);
+</code></pre>
+<p>Check if the <a href="/ekg-docs/widget/">widget</a> has a parent mother <a href="/ekg-docs/widget/">widget</a>, see details <a href="/ekg-docs/widget/#family">here</a>.</p>
+<pre><code class="language-cpp">bool has_parent();
+</code></pre>
+<p>Check if the <a href="/ekg-docs/widget/">widget</a> has children, see details <a href="/ekg-docs/widget/#family">here</a>.</p>
+<pre><code class="language-cpp">bool has_children();
+</code></pre>
+<p>Set <a href="/ekg-docs/widget/">widget</a> alive state.</p>
+<pre><code class="language-cpp">ekg::ui::abstract *set_alive(bool state);
+</code></pre>
+<p>Get <a href="/ekg-docs/widget/">widget</a> alive state.</p>
 <pre><code class="language-cpp">bool is_alive();
 </code></pre>
-<p>Destroy the <a href="/ekg-docs/widget/#widget">widget</a>.</p>
+<p>Destroy the <a href="/ekg-docs/widget/#family">widget</a>.</p>
 <pre><code class="language-cpp">void destroy();
 </code></pre>
-<p>Set the state of the widget, <code>visible</code> <code>invisible</code>.</p>
+<p>Set the <a href="/ekg-docs/widget/#state">widget state</a>.</p>
 <pre><code class="language-cpp">ekg::ui::abstract *set_state(const ekg::state &amp;_state);
 </code></pre>
-<p>Get the state of the widget, <code>visible</code> <code>invisible</code>.</p>
+<p>Get the <a href="/ekg-docs/widget/#state">widget state</a>.</p>
 <pre><code class="language-cpp">ekg::state get_state();
 </code></pre>
 <p>Set the <a href="/ekg-docs/widget/#type">widget type</a>.</p>
 <pre><code class="language-cpp">ekg::ui::abstract *set_type(const ekg::type &amp;_type);
 </code></pre>
-<p>Get the <a href="Widget#Type">widget type</a>.</p>
+<p>Get the <a href="/ekg-docs/widget/#type">widget type</a>.</p>
 <pre><code class="language-cpp">ekg::type get_type();
 </code></pre>
-<p>Get the place <a href="../layout/layoutdock.md">dock</a>, <code>fill</code> <code>next</code> <code>none</code> <code>right</code> <code>bottom</code>.</p>
+<p>Set the <a href="/ekg-docs/widget/#level">widget level</a>.</p>
+<pre><code class="language-cpp">ekg::ui::abstract *set_level(const ekg::type &amp;_level);
+</code></pre>
+<p>Get the <a href="/ekg-docs/widget/#level">widget level</a>.</p>
+<pre><code class="language-cpp">ekg::type get_level();
+</code></pre>
+<p>Get <a href="/ekg-docs/layout/#dock">layout dock</a> position.</p>
 <pre><code class="language-cpp">uint16_t get_place_dock();
 </code></pre>
 <p>Get the sync flags reference.</p>
 <pre><code class="language-cpp">uint16_t &amp;get_sync();
 </code></pre>
-<p>Reset the UI data front-end with the widget back-end.</p>
+<p>Reset the UI data front-end with the <a href="/ekg-docs/widget/">widget</a> back-end.</p>
 <pre><code class="language-cpp">void reset();
 </code></pre>
-<p>Access to absolute widget back-end rectangle.</p>
+<p>Access to absolute <a href="/ekg-docs/widget/">widget</a> back-end rectangle.</p>
 <pre><code class="language-cpp">ekg::rect &amp;widget();
 </code></pre>
 <p>Get the UI data front-end rectangle.</p>
 <pre><code class="language-cpp">ekg::rect &amp;ui();
-</code></pre>
-<p>Set scaled height layout in <a href="../draw/fontrenderer.md">font</a> size (multiplied by).</p>
-<pre><code class="language-cpp">ekg::ui::abstract *set_scaled_height_layout(int32_t scaled_size);
-</code></pre>
-<p>Check if the widget has a parent (mother widget).</p>
-<pre><code class="language-cpp">bool has_parent();
-</code></pre>
-<p>Check if the widget has children.</p>
-<pre><code class="language-cpp">bool has_children();
 </code></pre>
               
             </div>

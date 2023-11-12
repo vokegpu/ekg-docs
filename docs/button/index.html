@@ -128,13 +128,13 @@
 </li>
 </ul>
 <h1 id="fundamentals">Fundamentals</h1>
-<p>The button widget works fundamentally simply, you have a text, and the alignment of text. Each button has it is own optional <code>ekg::cpu::event</code> callback event <a href="/ekg-docs/handler-service/#task">task</a>, where you can add one lambda function.</p>
-<p>The button widget contains two string sets <code>set_text</code> and <code>set_tag</code>, <code>set_tag</code> is reserved for user purposes, while <code>set_text</code> is the visible text of the widget button.</p>
+<p>The <a href="/ekg-docs/button/">button</a> <a href="/ekg-docs/widget/">widget</a> works fundamentally simply, you have a text, and the alignment of text. Each button has it is own optional <code>ekg::cpu::event</code> callback event <a href="/ekg-docs/handler-service/#task">task</a>, where one lambda function is optional.</p>
+<p>The <a href="/ekg-docs/button/">button</a> <a href="/ekg-docs/widget/">widget</a> contains two string sets <code>set_text</code> and <code>set_tag</code>, <code>set_tag</code> is reserved for user purposes, while <code>set_text</code> is the visible text of the <a href="/ekg-docs/widget/">widget</a> <a href="/ekg-docs/button/">button</a>.</p>
 <h1 id="examples">Examples</h1>
-<p>For creating a simple button with no callback event.</p>
+<p>For creating a simple <a href="/ekg-docs/button/">button</a> with no callback event.</p>
 <pre><code class="language-cpp">auto p_button = ekg::button(&quot;cat&quot;, ekg::dock::fill | ekg::next);
 </code></pre>
-<p>The first parameter is the visible text of a button. The second parameter is the docking alignment in the frame widget.</p>
+<p>The first parameter is the visible text of a <a href="/ekg-docs/button/">button</a>. The second parameter is the docking alignment in the frame widget.</p>
 <p>To create a callback button, with <a href="/ekg-docs/handler-service/#task">task</a>.</p>
 <pre><code class="language-cpp">p_button-&gt;set_callback(new ekg::cpu::event(&quot;cat&quot;, nullptr, [](void *p_callback) {
     ekg::log() &lt;&lt; &quot;Cat!&quot;;
@@ -143,25 +143,25 @@
 <p>This callback event is not deleted after execution, because it is batched, which means that all clicks will execute this <a href="/ekg-docs/handler-service/#task">task</a>.</p>
 <h1 id="methods">Methods</h1>
 <h3 id="button">Button</h3>
-<p>Set the <a href="/ekg-docs/fontrenderer.md">font</a> size of button text, <code>ekg::font::small</code> <code>ekg::font::normal</code> <code>ekg::font::big</code>.</p>
+<p>Set the <a href="/ekg-docs/font/#sizes">font-size</a> of <a href="/ekg-docs/button/">button</a> text.</p>
 <pre><code class="language-cpp">ekg::ui::button *set_font_size(ekg::font font);
 </code></pre>
-<p>Get the <a href="../draw/fontrenderer.md">font</a> size of button text, <code>ekg::font::small</code> <code>ekg::font::normal</code> <code>ekg::font::big</code>.</p>
+<p>Get the <a href="/ekg-docs/font/#sizes">font-size</a> of <a href="/ekg-docs/button/">button</a> text.</p>
 <pre><code class="language-cpp">ekg::font get_font_size();
 </code></pre>
-<p>Set <a href="../layout/layoutdock.md">dock</a> place, <code>fill</code> <code>next</code> <code>none</code> <code>right</code> <code>bottom</code>.</p>
+<p>Set <a href="/ekg-docs/layout/#dock">layout dock</a> position.</p>
 <pre><code class="language-cpp">ekg::ui::button *set_place(uint16_t dock);
 </code></pre>
-<p>Set dimension width in pixels.</p>
+<p>Set dimension width in pixels, see details <a href="/ekg-docs/widget/#dimension">here</a>.</p>
 <pre><code class="language-cpp">ekg::ui::button *set_width(float w);
 </code></pre>
-<p>Get dimension width in pixels.</p>
+<p>Get dimension width in pixels, see details <a href="/ekg-docs/widget/#dimension">here</a>.</p>
 <pre><code class="language-cpp">float get_width();
 </code></pre>
-<p>Set dimension height in <a href="../draw/fontrenderer.md">font</a> size scale (multiplied by).</p>
+<p>Set dimension height in scale factor, see details <a href="/ekg-docs/widget/#dimension">here</a>.</p>
 <pre><code class="language-cpp">ekg::ui::button *set_scaled_height(int32_t h);
 </code></pre>
-<p>Get dimension height in <a href="../draw/fontrenderer.md">font</a> size scale (multiplied by).</p>
+<p>Get dimension height in scale factor, see details <a href="/ekg-docs/widget/#dimension">here</a>.</p>
 <pre><code class="language-cpp">int32_t get_scaled_height();
 </code></pre>
 <p>Get dimension height in pixels.</p>
@@ -179,90 +179,93 @@
 <p>Get display text.</p>
 <pre><code class="language-cpp">std::string_view get_text();
 </code></pre>
-<p>Set button state pressed/callback.</p>
+<p>Set <a href="/ekg-docs/button/">button</a> state pressed/callback.</p>
 <pre><code class="language-cpp">ekg::ui::button *set_value(bool state);
 </code></pre>
-<p>Get button state.</p>
+<p>Get <a href="/ekg-docs/button/">button</a> state.</p>
 <pre><code class="language-cpp">bool get_value();
 </code></pre>
-<p>Set text <a href="../layout/layoutmask.md">alignment</a> dock, <code>center</code> <code>left</code> <code>right</code> <code>top</code> <code>bottom</code>.</p>
+<p>Set text <a href="/ekg-docs/layout/#mask alignment">alignment dock</a>.</p>
 <pre><code class="language-cpp">ekg::ui::button *set_text_align(uint16_t dock);
 </code></pre>
-<p>Get text alignment dock.</p>
+<p>Get text <a href="/ekg-docs/layout/#mask alignment">alignment dock</a>.</p>
 <pre><code class="language-cpp">uint16_t get_text_align();
 </code></pre>
 <h3 id="abstract">Abstract</h3>
-<p>Set tag for reserved purposes.</p>
+<p>Set tag (reserved purposes).</p>
 <pre><code class="language-cpp">ekg::ui::abstract *set_tag(std::string_view tag);
 </code></pre>
-<p>Get the tag for reserved purposes.</p>
+<p>Get the tag (reserved purposes).</p>
 <pre><code class="language-cpp">std::string_view get_tag();
 </code></pre>
-<p>Add a child to the widget.</p>
-<pre><code class="language-cpp">ekg::ui::abstract *add_child(int32_t id);
-</code></pre>
-<p>Get the widget child id list.</p>
-<pre><code class="language-cpp">std::vector&lt;int32_t&gt; &amp;get_child_id_list();
-</code></pre>
-<p>Remove a child widget from the mother widget.</p>
-<pre><code class="language-cpp">ekg::ui::abstract *remove_child(int32_t id);
-</code></pre>
-<p>Set the widget ID.</p>
+<p>Set the <a href="/ekg-docs/widget/">widget</a> ID, see details <a href="/ekg-docs/widget/#family">here</a>.</p>
 <pre><code class="language-cpp">ekg::ui::abstract *set_id(int32_t id);
 </code></pre>
-<p>Get the widget ID.</p>
+<p>Get the <a href="/ekg-docs/widget/">widget</a> ID, see details <a href="/ekg-docs/widget/#family">here</a>.</p>
 <pre><code class="language-cpp">int32_t get_id();
 </code></pre>
-<p>Set parent (mother) widget ID.</p>
+<p>Set parent mother <a href="/ekg-docs/widget/">widget</a> ID, see details <a href="/ekg-docs/widget/#family">here</a>.</p>
 <pre><code class="language-cpp">ekg::ui::abstract *set_parent_id(int32_t parent_id);
 </code></pre>
-<p>Get parent (mother) widget ID.</p>
+<p>Get parent mother <a href="/ekg-docs/widget/">widget</a> ID, see details <a href="/ekg-docs/widget/#family">here</a>.</p>
 <pre><code class="language-cpp">int32_t get_parent_id();
 </code></pre>
-<p>Set the alive state of the widget.</p>
-<pre><code class="language-cpp">ekg::ui::abstract *set_alive(bool is_alive);
+<p>Add a child to the <a href="/ekg-docs/widget/">widget</a>, see details <a href="/ekg-docs/widget/#family">here</a>.</p>
+<pre><code class="language-cpp">ekg::ui::abstract *add_child(int32_t id);
 </code></pre>
-<p>Get the alive state.</p>
+<p>Get the <a href="/ekg-docs/widget/">widget</a> child id list, see details <a href="/ekg-docs/widget/#family">here</a>.</p>
+<pre><code class="language-cpp">std::vector&lt;int32_t&gt; &amp;get_child_id_list();
+</code></pre>
+<p>Remove a child <a href="/ekg-docs/widget/">widget</a> from the mother <a href="/ekg-docs/widget/#family">widget</a>, see details <a href="/ekg-docs/widget/#family">here</a>.</p>
+<pre><code class="language-cpp">ekg::ui::abstract *remove_child(int32_t id);
+</code></pre>
+<p>Check if the <a href="/ekg-docs/widget/">widget</a> has a parent mother <a href="/ekg-docs/widget/">widget</a>, see details <a href="/ekg-docs/widget/#family">here</a>.</p>
+<pre><code class="language-cpp">bool has_parent();
+</code></pre>
+<p>Check if the <a href="/ekg-docs/widget/">widget</a> has children, see details <a href="/ekg-docs/widget/#family">here</a>.</p>
+<pre><code class="language-cpp">bool has_children();
+</code></pre>
+<p>Set <a href="/ekg-docs/widget/">widget</a> alive state.</p>
+<pre><code class="language-cpp">ekg::ui::abstract *set_alive(bool state);
+</code></pre>
+<p>Get <a href="/ekg-docs/widget/">widget</a> alive state.</p>
 <pre><code class="language-cpp">bool is_alive();
 </code></pre>
-<p>Destroy the widget.</p>
+<p>Destroy the <a href="/ekg-docs/widget/#family">widget</a>.</p>
 <pre><code class="language-cpp">void destroy();
 </code></pre>
-<p>Set the state of the widget, <code>visible</code> <code>invisible</code>.</p>
+<p>Set the <a href="/ekg-docs/widget/#state">widget state</a>.</p>
 <pre><code class="language-cpp">ekg::ui::abstract *set_state(const ekg::state &amp;_state);
 </code></pre>
-<p>Get the state of the <a href="/ekg-docs/widget/">widget</a>, <code>visible</code> <code>invisible</code>.</p>
+<p>Get the <a href="/ekg-docs/widget/#state">widget state</a>.</p>
 <pre><code class="language-cpp">ekg::state get_state();
 </code></pre>
 <p>Set the <a href="/ekg-docs/widget/#type">widget type</a>.</p>
 <pre><code class="language-cpp">ekg::ui::abstract *set_type(const ekg::type &amp;_type);
 </code></pre>
-<p>Get the <a href="Widget#Type">widget type</a>.</p>
+<p>Get the <a href="/ekg-docs/widget/#type">widget type</a>.</p>
 <pre><code class="language-cpp">ekg::type get_type();
 </code></pre>
-<p>Get the place <a href="../layout/layoutdock.md">dock</a>, <code>fill</code> <code>next</code> <code>none</code> <code>right</code> <code>bottom</code>.</p>
+<p>Set the <a href="/ekg-docs/widget/#level">widget level</a>.</p>
+<pre><code class="language-cpp">ekg::ui::abstract *set_level(const ekg::type &amp;_level);
+</code></pre>
+<p>Get the <a href="/ekg-docs/widget/#level">widget level</a>.</p>
+<pre><code class="language-cpp">ekg::type get_level();
+</code></pre>
+<p>Get <a href="/ekg-docs/layout/#dock">layout dock</a> position.</p>
 <pre><code class="language-cpp">uint16_t get_place_dock();
 </code></pre>
 <p>Get the sync flags reference.</p>
 <pre><code class="language-cpp">uint16_t &amp;get_sync();
 </code></pre>
-<p>Reset the UI data front-end with the widget back-end.</p>
+<p>Reset the UI data front-end with the <a href="/ekg-docs/widget/">widget</a> back-end.</p>
 <pre><code class="language-cpp">void reset();
 </code></pre>
-<p>Access to absolute widget back-end rectangle.</p>
+<p>Access to absolute <a href="/ekg-docs/widget/">widget</a> back-end rectangle.</p>
 <pre><code class="language-cpp">ekg::rect &amp;widget();
 </code></pre>
 <p>Get the UI data front-end rectangle.</p>
 <pre><code class="language-cpp">ekg::rect &amp;ui();
-</code></pre>
-<p>Set scaled height layout in <a href="/ekg-docs/font/">font</a> size (multiplied by).</p>
-<pre><code class="language-cpp">ekg::ui::abstract *set_scaled_height_layout(int32_t scaled_size);
-</code></pre>
-<p>Check if the widget has a parent (mother widget).</p>
-<pre><code class="language-cpp">bool has_parent();
-</code></pre>
-<p>Check if the widget has children.</p>
-<pre><code class="language-cpp">bool has_children();
 </code></pre>
               
             </div>
