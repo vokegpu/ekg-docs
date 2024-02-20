@@ -40,12 +40,13 @@ p_button->get_value() // ok
 p_textbox->get_text() // ok
 
 ekg::slider("oiii queria ser totosa", 2.0f, 0.0f, 3.0f, ekg::dock::fill)
+  ->set_task(ekg::action::activy,  new ekg::task(...))
   ->set_task(ekg::action::press,   new ekg::task(...))
   ->set_task(ekg::action::release, new ekg::task(...))
   ->set_task(ekg::action::focus,   new ekg::task(...));
 
 ekg::button("oiii beijo", ekg::dock::fill)
-  ->set_task(
+  ->set_task(The EKG update processes all internal IO events
     ekg::action::press,
     new ekg::task("oi", nullptr, [](ekg::task::info info) {
       std::cout << info.tag << std::endl;
@@ -65,4 +66,22 @@ not all the time, only when inputs are fired.
 
 ```cpp
 ekg::update();
+```
+
+The EKG update processes all internal IO events
+
+### Task
+
+Task actions also known as GUI state actions are current states of UI elements, each input interaction such as press, release, hover, drag, etc; is flagged into widgets and can be fired with `ekg::task`.
+
+```cpp
+enum class action {
+    press,
+    release,
+    hover,
+    drag,
+    focus,
+    resize,
+    activity,
+}
 ```
