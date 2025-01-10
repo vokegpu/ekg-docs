@@ -4,9 +4,7 @@ As known for creating GUI at user-programmer side is currently complex and old, 
 
 ---
 
-### EKG has big plans for now 🐈‍⬛
-
-#### The problem
+## The problem
 
 I was looking the code for create widgets and I noticed one thing, I mean, is not hard to notice that; the GUI creation method is horrible.
 
@@ -17,7 +15,7 @@ ekg::label("Meow!", ekg::dock::fill);
 ekg::button("Meow Here", ekg::dock::fill | ekg::dock::next);
 ```
 
-And voala we have this simple GUI frame.  
+And voila we have this simple GUI frame.  
 [splash-meow-gui](../splash/splash-meow.gui.png?raw=true)
 
 I do not think it is a simple-easy way to create GUIs, increasing the complexity make worse to create. So the point is not rewrite all the entire library but only focus on the important parts, the user-programmer side.
@@ -47,12 +45,12 @@ Normally a GUI runtime OO-based have naturally overheads, there is no problem, l
 ```c++
 class abstract {
 protected:
-    ekg::id id {}; // like wtf
+  ekg::id id {}; // like wtf
 public:
-    popup *do_some_stupid_thing();
-    popup *do_meows();
-    popup *bla_bla_setts();
-    bla_t getters_bla();
+  popup *do_some_stupid_thing();
+  popup *do_meows();
+  popup *bla_bla_setts();
+  bla_t getters_bla();
 };
 ```
 
@@ -61,9 +59,9 @@ If we want create a new element like a popup, we must create a class based from 
 ```c++
 class popup : public ekg::ui::abstract {
 protected:
-    int32_t wtf_number_for_something {};
+  int32_t wtf_number_for_something {};
 public:
-    popup *may_we_boom();
+  popup *may_we_boom();
 }
 ```
 
@@ -71,9 +69,9 @@ Doing like this way, is extremly bloated. The user-programmer side projection is
 
 ```c++
 ekg::frame("meow", {.x = 0.0f, .y = 0.0f, .w = 200.0f}, ekg::dock::none)
-    ->set_drag(ekg::dock::top)
-    ->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right)
-    ->lol_really_builder_pattern("?");
+  ->set_drag(ekg::dock::top)
+  ->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right)
+  ->lol_really_builder_pattern("?");
 ```
 
 UI-object concept needs many getters/setters, this was a stupid decision made in the past, Rina, why did you made this? God.
@@ -119,3 +117,100 @@ return ekg::allocate_sampler(
 ```
 
 Cool ya?
+
+---
+
+## The solution
+
+Today most of programmers do not want to hardcode or write large codes for small output(s), so imagine a large bloated code to output graphical user interface, a mess.
+
+The C++ std version used in EKG is 17, but EKG does not even implement any of features, rarely `constexpr` or new `std::` features; may you find only `std::string_view`, which you can think okay, we do not need to be forced to use alternative ways, as example, you can have a macro instead the use of `template`:
+
+```c++
+#define ekg_lerp(a, b, t) a + (b - a) * t
+
+namespace ekg {
+  template<typename t>
+  t lerp(t a, t b, t delta) {
+    return a + (b - a) * delta;
+  }
+}
+
+// both are the same, so any-way
+
+ekg_lerp(1.0f, 2.0f, 0.5); // 1.5f
+ekg::lerp<float>(1.0f, 2.0f, 0.5); // 1.5f
+```
+
+If we can macro for these operations, why we need C++17 then?
+
+At sametime we have consistency of macro but we have a bad image for the community, "hey you must use `insert-modern-cpp-features`". Now, I will think better, instead making confuses decisions.
+
+#### Widget creation
+
+Now we must take all the previous knowneldge and apply for the user-programmer widget creation.
+
+Descriptors for create each UI element, descriptors for options, descriptors for details, descriptors for internal functions, descriptors for themes, and all descriptors for user-programmer application-side-input(s).
+
+```c++
+bool do_something {};
+
+ekg::stack my_window {
+  .p_tag = "window-meow",
+  .children = {
+    ekg::make<ekg::ui::frame>(
+      { 
+        .p_tag = "idk a frame?",
+        .type = ekg::type::frame,
+        .options = {
+          .rect = {.w = 50.0f, .h = 50.0f},
+          .resize = ekg::dock::none,
+          .drag = ekg::dock::full
+        }
+      }
+    ),
+    ekg::make<ekg::ui::label>(
+      {
+        .p_tag = "idk meow?",
+        .p_text = "tijolo",
+        .dock = ekg::dock::fill,
+        .options = {
+          .text_dock = ekg::dock::left
+        }
+      }
+    ),
+    ekg::make<ekg::ui::checkbox>(
+      {
+        .p_tag = "idk ?<>?<>?>> meow?",
+        .p_text = "click here if u brain",
+        .value = ekg::value<bool>(&do_something),
+        .options = {
+          .text_dock = ekg::dock::left
+        }
+      },
+    )
+  }
+};
+```
+
+And voila^2, new protype model. But it keeps bloated, how can we simplify this?
+
+Well we can, here is:
+
+```c++
+ekg::stack my_window {
+  .p_tag = "window-meow",
+  .children = {
+    ekg::frame("idomeow", /* blabla */),
+    ekg::label("blabla", ekg::dock::fill),
+    // ...
+  }
+};
+```
+
+# Runtime
+
+As all explained previous, we have a problem and a solution, now we need to discuss how implement it, and how make it memory-safe.
+
+-- `ekg::make` the fundamentals of memory creation instance.
+-- `ekg::ui::i*` the fundamentals of interface-descriptors.
