@@ -21,7 +21,7 @@ ekg::button("Meow Here", ekg::dock::fill | ekg::dock::next);
 ```
 
 And voila we have this simple GUI frame.  
-[splash-meow-gui](../splash/splash-meow-gui.png?raw=true)
+![splash-meow-gui](../splash/splash-meow-gui.png?raw=true)
 
 I do not think it is a simple-easy way to create GUIs, increasing the complexity make worse to create. So the point is not rewrite all the entire library but only focus on the important parts, the user-programmer side.
 
