@@ -2,9 +2,14 @@
 
 As known for creating GUI at user-programmer side is currently complex and old, to change it, we will discuss here.
 
+The new-rules for this project:
+* [project-rules](./project-rules.md)
+
 ---
 
-## The problem
+## The Problem
+
+#### Status-Quo
 
 I was looking the code for create widgets and I noticed one thing, I mean, is not hard to notice that; the GUI creation method is horrible.
 
@@ -20,9 +25,9 @@ And voila we have this simple GUI frame.
 
 I do not think it is a simple-easy way to create GUIs, increasing the complexity make worse to create. So the point is not rewrite all the entire library but only focus on the important parts, the user-programmer side.
 
-#### User-programmer side
+#### User-Programmer Side
 
-`User-programmer` means you, the one who use the EKG library, so you are called user-programmer, for almost 3 years I did not even think about you, I was only focusing on the runtime and widgets. Because of this, some stupids decisions was made for EKG, like the part of creating widgets.
+`User-programmer` means you, the one who use the EKG library, so you are called user-programmer, for almost 3 years I did not even think about you, I was only focusing on the runtime and widgets. Because of this, some stupids decisions were made for EKG, like the part of creating widgets.
 
 May you think, how we can improve it? And the anwser is:  
 NO MORE useless OO (Object-Oriented) features.
@@ -38,7 +43,7 @@ The point obvious here:
 -- Why [OO](https://en.wikipedia.org/wiki/Object-oriented_programming) is used here?   
 -- Why is there lot of bloat setters/getters?
 
-#### Answering all these questions
+#### Answering All These Questions
 
 Normally a GUI runtime OO-based have naturally overheads, there is no problem, like we need focus on the algorithm and not only in [branchless programming](https://en.algorithmica.org/hpc/pipelining/branchless/). EKG created the UI-object concept, if the user-programmer created an element, user-programmer only has acess to the UI-object, a simple rule, but bloated.
 
@@ -120,7 +125,7 @@ Cool ya?
 
 ---
 
-## The solution
+## The Solution
 
 Today most of programmers do not want to hardcode or write large codes for small output(s), so imagine a large bloated code to output graphical user interface, a mess.
 
@@ -146,7 +151,7 @@ If we can macro for these operations, why we need C++17 then?
 
 At sametime we have consistency of macro but we have a bad image for the community, "hey you must use `insert-modern-cpp-features`". Now, I will think better, instead making confuses decisions.
 
-#### Widget creation
+#### Widget Creation
 
 Now we must take all the previous knowneldge and apply for the user-programmer widget creation.
 
@@ -155,13 +160,12 @@ Descriptors for create each UI element, descriptors for options, descriptors for
 ```c++
 bool do_something {};
 
-ekg::stack my_window {
+ekg::stack_t my_window {
   .p_tag = "window-meow",
   .children = {
-    ekg::make<ekg::ui::frame>(
+    ekg::make<ekg::frame_t>(
       { 
         .p_tag = "idk a frame?",
-        .type = ekg::type::frame,
         .options = {
           .rect = {.w = 50.0f, .h = 50.0f},
           .resize = ekg::dock::none,
@@ -169,7 +173,7 @@ ekg::stack my_window {
         }
       }
     ),
-    ekg::make<ekg::ui::label>(
+    ekg::make<ekg::label_t>(
       {
         .p_tag = "idk meow?",
         .p_text = "tijolo",
@@ -179,7 +183,7 @@ ekg::stack my_window {
         }
       }
     ),
-    ekg::make<ekg::ui::checkbox>(
+    ekg::make<ekg::checkbox_t>(
       {
         .p_tag = "idk ?<>?<>?>> meow?",
         .p_text = "click here if u brain",
@@ -198,7 +202,7 @@ And voila^2, new protype model. But it keeps bloated, how can we simplify this?
 Well we can, here is:
 
 ```c++
-ekg::stack my_window {
+ekg::stack_t my_window {
   .p_tag = "window-meow",
   .children = {
     ekg::frame("idomeow", /* blabla */),
@@ -210,7 +214,112 @@ ekg::stack my_window {
 
 # Runtime
 
-As all explained previous, we have a problem and a solution, now we need to discuss how implement it, and how make it memory-safe.
+As all explained previous, we have one problem and one solution, now we need to discuss how to implement implement, exploiting memory-safe points.
 
--- `ekg::make` the fundamentals of memory creation instance.
--- `ekg::ui::i*` the fundamentals of interface-descriptors.
+## Fundamentals
+
+#### Summary
+
+* Properties is a descriptor for abstract widgets, which address a generic content (by-widget descriptors), also children.
+```c++
+// namespace ekg::ui
+struct properties_t {
+public:
+  const char *p_tag {};
+  ekg::type type {};
+  void *p_descriptor {};
+  void *p_widget {};
+  ekg::ui::properties_t *p_abs_parent_properties {};
+  ekg::ui::properties_t *p_parent {};
+  std::vector<ekg::ui::properties_t*> children {};
+  bool is_parentable {};
+}
+```
+
+#### Memory Creation Instace `ekg::make`
+
+`ekg::make` must be a template function, which create a descriptor named data-descriptor and generate what we will call here a `widget`; strictly created under some rules:
+
+1- A widget descriptor must be created under a internal-cache, and no application-side, we want make sure that we are not handling trash memory.
+
+2- The widget must implement OO features, and use of addressed data-descriptor, initialized at once.
+
+3- The current `ekg::make<t>` invoke must be inside a valid stack-instace.
+
+```c++
+#define ekg_cast_to_any_as_ptr(t, any) (t*)((void*)&any)
+
+template<typename t>
+ekg::ui::abstract *ekg::make(t descriptor) {
+  if (ekg::runtime::p_current_stack == nullptr) { // rule 3
+    ekg::log(ekg::log::error) << "Failed failed to create a widget instance, the current stack instance is null"
+    return nullptr;
+  } 
+
+  ekg::ui::abstract *p_created_widget {
+    nullptr
+  };
+
+  ekg::ui::properties_t properties {
+    .p_tag = descriptor.p_tag,
+    .type = descriptor.type,
+    .id = (descriptor.id = ekg::core->generate_new_unique_id())
+  };
+
+  switch (descriptor.type) {
+    case ekg::type::frame: {
+      ekg::frame_t *p_descriptor {
+        ekg_cast_to_any_as_ptr(ekg::frame_t, descriptor)
+      };
+
+      ekg::ui::frame *p_frame {
+        ekg::core->new_frame_instance()
+      };
+
+      p_created_widget = p_frame;
+      p_frame->descriptor = *p_descriptor;
+      properties.p_data = &p_frame->descriptor; // rule 2
+
+      break;
+    }
+    /* etc */
+  }
+
+  p_created_widget->properties = properties;
+  ekg::core->map_new_widget(p_created_widget); // rule 1
+
+  return p_created_widget;
+}
+```
+
+#### Register Properties and Descriptors
+
+By default, all widgets are able to collect other widgets. EKG must implement some internally methods to update and handle all these info(s). First, the ID for each widget, it needs to be generated with no collisions, but EKG does not need a complex ID system, just increasing one number is okay. 
+
+```C++
+ekg::id ekg::runtime::generate_new_unique_id() {
+  return ++this->global_id;
+}
+```
+
+For collecting, `ekg::ui::properties` contains a field named `children`, which is used on most of widgets.
+
+```C++
+void ekg::runtime::map_new_widget(
+  ekg::ui::abstract *p_widget
+) {
+  p_widget->properties.p_widget = p_widget;
+  this->mapped_widget[p_widget->properties.id] = p_widget;
+
+  if (this->p_current_parent && p_widget->is_parentable) {
+    ekg::ui::add_child_to_parent(
+      this->p_current_parent.properties.children,
+      this->p_widget->properties
+    );
+  }
+}
+```
+
+#### Widget Use-Case Reserved
+
+For handling 
