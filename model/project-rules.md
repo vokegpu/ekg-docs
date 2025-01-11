@@ -8,16 +8,17 @@ As example:
 ```c++
 // ekg/ui/frame
 namespace ekg {
-    struct frame_t {
-    public:
-        // descriptor fields
-    }
+  struct frame_t {
+  public:
+    // descriptor fields
+  }
 }
 
 namespace ekg::ui {
-    struct frame {
-    public:
-    }
+  struct frame : public ekg::ui::abstract {
+  public:
+    // frame widget fields
+  }
 }
 ```
 
