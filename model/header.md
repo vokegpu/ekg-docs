@@ -542,3 +542,7 @@ this->service_handler.allocate() = ekg::task {
   }
 };
 ```
+
+# References
+
+1- [Memory-Safety Code Example](./proof.md#Memory-Safety)
