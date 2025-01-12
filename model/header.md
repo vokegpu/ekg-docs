@@ -220,20 +220,54 @@ As all explained previous, we have one problem and one solution, now we need to 
 
 #### Summary
 
-* Properties is a descriptor for abstract widgets, which address a generic content (by-widget descriptors), also children.
+* Stack is where all widgets are store, used on application-side as GUI context.
 ```c++
-// namespace ekg::ui
+// namespace ekg (ekg/ui/stack.hpp)
+struct stack_t {
+public:
+  const char *p_tag {};
+  std::vector<ekg::ui::abstract*> children {};
+  uint64_t counter {};
+}
+``` 
+
+* Properties is a descriptor for abstract widgets, which address a generic content (by-widget), children, and user context-flags.
+```c++
+// namespace ekg (ekg/ui/properties.hpp)
 struct properties_t {
 public:
   const char *p_tag {};
   ekg::type type {};
+  ekg::id unique_id {};
   void *p_descriptor {};
   void *p_widget {};
-  ekg::ui::properties_t *p_abs_parent_properties {};
-  ekg::ui::properties_t *p_parent {};
-  std::vector<ekg::ui::properties_t*> children {};
+  void *p_stack {};
+  ekg::properties_t *p_abs_parent {};
+  ekg::properties_t *p_parent {};
+  std::vector<ekg::properties_t*> children {};
   bool is_parentable {};
 }
+```
+
+* Result is an enum type that contains useful generic flags for any-operations.
+```c++
+// namespace ekg (ekg/io/memory.hpp)
+enum result {
+  success,
+  failed,
+  widget_not_found
+};
+```
+
+* Flags is an uint64_t number type reserved for bits storage or enum storage.
+```c++
+// namespace ekg (ekg/io/memory.hpp)
+typedef uint64_t flags;
+```
+
+* ID is an uint64_t number type reserved for unique ID.
+```c++
+typedef uint64_t id;
 ```
 
 #### Memory Creation Instace `ekg::make`
@@ -247,11 +281,17 @@ public:
 3- The current `ekg::make<t>` invoke must be inside a valid stack-instace.
 
 ```c++
+// namespace * (ekg/io/memory.hpp)
 #define ekg_cast_to_any_as_ptr(t, any) (t*)((void*)&any)
 
+// namespace ekg (ekg/io/safety.hpp)
 template<typename t>
 ekg::ui::abstract *ekg::make(t descriptor) {
-  if (ekg::runtime::p_current_stack == nullptr) { // rule 3
+  ekg::stack_t *p_stack {
+    ekg::core->get_current_stack()
+  };
+
+  if (p_stack == nullptr) { // rule 3
     ekg::log(ekg::log::error) << "Failed failed to create a widget instance, the current stack instance is null"
     return nullptr;
   } 
@@ -260,10 +300,10 @@ ekg::ui::abstract *ekg::make(t descriptor) {
     nullptr
   };
 
-  ekg::ui::properties_t properties {
+  ekg::properties_t properties {
     .p_tag = descriptor.p_tag,
     .type = descriptor.type,
-    .id = (descriptor.id = ekg::core->generate_new_unique_id())
+    .unique_id = ekg::core->generate_unique_id()
   };
 
   switch (descriptor.type) {
@@ -273,20 +313,36 @@ ekg::ui::abstract *ekg::make(t descriptor) {
       };
 
       ekg::ui::frame *p_frame {
-        ekg::core->new_frame_instance()
+        ekg::core->new_widget_instance<ekg::ui::frame>() // rule 1
       };
 
-      p_created_widget = p_frame;
       p_frame->descriptor = *p_descriptor;
-      properties.p_data = &p_frame->descriptor; // rule 2
 
+      properties.p_descriptor = &p_frame->descriptor; // rule 2
+      properties.p_widget = &p_frame;
+
+      p_created_widget = p_frame;
       break;
     }
     /* etc */
   }
 
   p_created_widget->properties = properties;
-  ekg::core->map_new_widget(p_created_widget); // rule 1
+
+  ekg::properties_t *p_current_parent_properties {
+    ekg::core->get_current_parent_properties()
+  };
+
+  if (
+    p_created_widget->properties.is_parentable
+    &&
+    p_current_parent_properties != nullptr
+  ) {
+    ekg::add_child_to_parent(
+      &p_current_parent_properties,
+      &p_created_widget
+    );
+  }
 
   return p_created_widget;
 }
@@ -294,29 +350,42 @@ ekg::ui::abstract *ekg::make(t descriptor) {
 
 #### Register Properties and Descriptors
 
-By default, all widgets are able to collect other widgets. EKG must implement some internally methods to update and handle all these info(s). First, the ID for each widget, it needs to be generated with no collisions, but EKG does not need a complex ID system, just increasing one number is okay. 
+EKG previous used an ID system, but there is no reason for use that, as known the new stack-based system, we can separate each element by chunks of stacks, and then apply an AABB for stack query(s).
 
-```C++
-ekg::id ekg::runtime::generate_new_unique_id() {
-  return ++this->global_id;
+For collecting, `ekg::properties` contains a field named `children`, which is used on most of widgets.
+
+```c++
+// namespace ekg (ekg/io/algorithm.hpp)
+ekg::flags ekg::add_child_to_parent(
+  ekg::properties_t *p_parent_properties,
+  ekg::properties_t *p_child_properties
+) {
+  if (p_children == nullptr || p_properties == nullptr) {
+    ekg::log() << "Failed to add child to parent, `null`, `null`";
+    return ekg::result::failed;
+  }
+
+  if (
+    p_child_properties->p_parent != nullptr
+    &&
+    p_child_properties->p_parent->unique_id == p_parent_properties->unique_id
+  ) {
+    return ekg::result::success;
+  }
+
+  p_child_properties->p_parent = p_parent_properties;
+  p_child_properties->p_abs_parent = p_parent_properties->p_abs_parent;
+  p_parent_properties->children.push_back(p_properties);
+
+  return ekg::result::success;
 }
 ```
 
-For collecting, `ekg::ui::properties` contains a field named `children`, which is used on most of widgets.
-
-```C++
-void ekg::runtime::map_new_widget(
-  ekg::ui::abstract *p_widget
-) {
-  p_widget->properties.p_widget = p_widget;
-  this->mapped_widget[p_widget->properties.id] = p_widget;
-
-  if (this->p_current_parent && p_widget->is_parentable) {
-    ekg::ui::add_child_to_parent(
-      this->p_current_parent.properties.children,
-      this->p_widget->properties
-    );
-  }
+The unique ID is generated increasing a global ID.
+```c++
+// ekg::runtime::generate_unique_id
+ekg::id ekg::runtime::generate_unique_id() {
+  return ++this->global_id;
 }
 ```
 
@@ -325,5 +394,100 @@ void ekg::runtime::map_new_widget(
 For handling objects inside a widget, we can iterate over the children directly without searching for a hash.
 
 ```c++
-for (ekg::ui::properties_t *&)
+for (ekg::properties_t *&p_child_properties : this->properties.children) {
+  // do here any operation
+}
 ```
+
+#### Widget Lifetime
+
+Operations like destroy, all are managed by the recycler, we do not directly delete the `ekg::ui::abstract`, but set a flag, and make sure all unused are cleaned, for example:
+
+```c++
+// namespace ekg (ekg/io/algorithm.hpp)
+ekg::flag ekg::destroy(ekg::stack_t *p_stack, ekg::properties_t *p_destroy_widget_properties) {
+  if (p_stack == nullptr) {
+    ekg::log(ekg::log::error) << "Failed to destroy widget, `null` p_stack";
+    return ekg::result::failed;
+  }
+
+  if (p_destroy_widget_properties == nullptr) {
+    ekg::log(ekg::log::error) << "Failed to destroy widget, `null` p_destroy_widget_properties";
+    return ekg::result::failed;
+  }
+
+  uint64_t counter {
+    p_stack->counter++
+  };
+
+  p_destroy_widget_properties->was_destroy = true;
+
+  for (ekg::properties_t *&p_properties : p_destroy_widget_properties->children) {
+    ekg::destroy(p_stack, p_properties);
+  }
+
+  if (counter == 0) {
+    p_stack->counter = 0;
+
+    if (p_destroy_widget_properties->p_parent != nullptr) {
+      std::vector<ekg::properties_t*> &parent_children {
+        p_destroy_widget_properties->p_parent->children
+      };
+
+      parent_children.erase(
+        std::remove_if(
+          parent_children.begin(),
+          parent_children.end(),
+          [](ekg::properties_t *&p_properties) {
+            return p_properties->unique_id == p_destroy_widget_properties->unique_id
+          }
+        )
+      );
+    }
+  }
+
+  return ekg::result::success;
+}
+
+// namespace ekg (ekg/io/algorithm.hpp)
+ekg::flag ekg::find_and_destroy(
+  ekg::stack_t *p_stack,
+  std::string_view widget_tag
+) {
+  if (p_stack == nullptr) {
+    ekg::log(ekg::log::error) << "Failed to destroy widget, `null` stack";
+    return ekg::result::failed;
+  }
+
+  return ekg::destroy(p_stack, ekg::find(p_stack, widget_tag));
+}
+```
+
+```c++
+ekg::find_and_destroy(&this->my_gui, "frame-widget");
+ekg::destroy(&this->my_gui, ekg::find("frame-widget"));
+```
+
+After destroying everything recursively, we can safety delete from the memory using the recycler.
+
+```c++
+// ekg::runtime::initialize_internal_tasks
+this->service_handler.allocate() = ekg::task {
+  .info = {
+    .tag = "gc",
+    .p_data = nullptr
+  },
+  .function = [this](ekg::info &info) {
+    std::erase(
+      std::remove_if(
+        this->loaded_widget_list.begin(),
+        this->loaded_widget_list.end(),
+        [](std::unique_ptr<ekg::ui::abstract> &p_widget) {
+          return p_widget->properties.was_destroy;
+        }
+      ),
+      this->loaded_widget_list.end()
+    );
+  }
+};
+````
