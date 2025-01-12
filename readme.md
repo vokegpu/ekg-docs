@@ -7,4 +7,4 @@
 
 ## Contributing:
 * [EKG Project-Rules](./model/project-rules.md)
-* [EKG Model Archicteture](./model/header.md)
+* [EKG Model Architecture](./model/header.md)
