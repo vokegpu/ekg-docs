@@ -11,7 +11,7 @@ The new-rules for this project:
 
 #### Status-Quo
 
-I was looking the code for create widgets and I noticed one thing, I mean, is not hard to notice that; the GUI creation method is horrible.
+I was reading the code for create widgets and I noticed one thing, I mean, is not hard to notice that; the GUI creation method is horrible.
 
 You can stack widgets inside a frame/container bla-bla.
 ```c++
@@ -23,14 +23,14 @@ ekg::button("Meow Here", ekg::dock::fill | ekg::dock::next);
 And voila we have this simple GUI frame.  
 ![splash-meow-gui](../splash/splash-meow-gui.png?raw=true)
 
-I do not think it is a simple-easy way to create GUIs, increasing the complexity make worse to create. So the point is not rewrite all the entire library but only focus on the important parts, the user-programmer side.
+I do not think it is a simple-easy way to create GUIs, imagine increasing the complexity of GUI context, a lot of worse code to just create GUI. So the point is not rewrite all the entire library but only focus on the important parts, the user-programmer side.
 
 #### User-Programmer Side
 
 `User-programmer` means you, the one who use the EKG library, so you are called user-programmer, for almost 3 years I did not even think about you, I was only focusing on the runtime and widgets. Because of this, some stupids decisions were made for EKG, like the part of creating widgets.
 
 May you think, how we can improve it? And the anwser is:  
-NO MORE useless OO (Object-Oriented) features.
+NO useless OO (Object-Oriented) features.
 
 One obvious feature, the user-programmer interface with 3 layers concept:  
 -- user-programmer  
@@ -70,6 +70,16 @@ public:
 }
 ```
 
+And an abstract widget:
+```c++
+class popup_widget : public ekg::ui::abstract_widget {
+public: // always public
+  // internal reserved case fields
+public:
+  // virtuals method(s)
+}
+```
+
 Doing like this way, is extremly bloated. The user-programmer side projection is actually worse.  
 
 ```c++
@@ -87,7 +97,7 @@ Getters/setters is a cool way to improve security, but sometimes there is no rea
 
 Vulkan, DirectX 11/12, system libraries, wayland-clients (compositors), and more others technologies implements the object-state descriptors.
 
-Now EKG must follow this way too, also as necessary for a better GPU-API(s) standard compatibility.  
+Now EKG must follow this way too, also as necessary for a better between GPU-API(s) standard compatibility.  
 EKG already implemented descriptors for samplers objects. Lets look better.
 
 ```c++
@@ -153,7 +163,7 @@ At sametime we have consistency of macro but we have a bad image for the communi
 
 #### Widget Creation
 
-Now we must take all the previous knowneldge and apply for the user-programmer widget creation.
+Now we must take all the previous knowneldge and implement for the user-programmer widget creation.
 
 Descriptors for create each UI element, descriptors for options, descriptors for details, descriptors for internal functions, descriptors for themes, and all descriptors for user-programmer application-side-input(s).
 
@@ -211,6 +221,15 @@ ekg::stack_t my_window {
   }
 };
 ```
+
+#### Benefits
+
+Now some benefits we gain with this new model:
+
+* Stack-based system for better query performance and widget(s) internal-logic.
+* Memory-safety.
+* Easily by-widget theme, and options settings.
+* Recycle descriptors (properties, widgets-descriptors, etc).
 
 # Runtime
 
@@ -280,6 +299,38 @@ typedef uint64_t id;
 
 3- The current `ekg::make<t>` invoke must be inside a valid stack-instace.
 
+First, `std::unique_ptr` must be used for current updating widget(s), making safety the memory management for runtime, references are raw ptr(s), EKG does not care about it.
+
+```c++
+class runtime {
+protected:
+  std::vector<std::unique_ptr<ekg::ui::abstract>> loaded_widget_list {};
+  // fields etc
+};
+```
+
+For collection operations, EKG make a between raw and smart-ptr unsafe space, but user-programmer must follow the EKG standard for no-problems.
+
+```c++
+ekg::ui::abstract *ekg::runtime::push_back_widget_safety(ekg::ui::abstract *p_widget) {
+  return this->loaded_widget_list.emplace_back(
+    std::unique_ptr<ekg::ui::abstract>(p_widget)
+  );
+}
+```
+
+```c++
+// namesppace ekg (ekg/io/safety.hpp)
+template<typename t>
+t new_widget_instance(t ptr) {
+  return dynamic_cast<t>(
+    ekg::core->push_back_widget_safety(
+      dynamic_cast<ekg::ui::abstract*>(ptr)
+    ).get()
+  );
+}
+```
+
 ```c++
 // namespace * (ekg/io/memory.hpp)
 #define ekg_cast_to_any_as_ptr(t, any) (t*)((void*)&any)
@@ -313,7 +364,7 @@ ekg::ui::abstract *ekg::make(t descriptor) {
       };
 
       ekg::ui::frame *p_frame {
-        ekg::core->new_widget_instance<ekg::ui::frame>() // rule 1
+        ekg::core->new_widget_instance<ekg::ui::frame*>() // rule 1
       };
 
       p_frame->descriptor = *p_descriptor;
@@ -350,7 +401,7 @@ ekg::ui::abstract *ekg::make(t descriptor) {
 
 #### Register Properties and Descriptors
 
-EKG previous used an ID system, but there is no reason for use that, as known the new stack-based system, we can separate each element by chunks of stacks, and then apply an AABB for stack query(s).
+EKG previous used an ID system for hash mapping, but there is no reason for use that, as known the new stack-based system, we can separate each element by chunks of stacks, and then apply an AABB for stack query(s).
 
 For collecting, `ekg::properties` contains a field named `children`, which is used on most of widgets.
 
