@@ -45,3 +45,35 @@ int main() {
   return 0;
 }
 ```
+
+# Safe-Instance Creation
+
+```c++
+#include <iostream>
+#include <memory>
+#include <vector>
+
+struct abstract { const char *p_tag {}; virtual void meow() {};};
+struct meow : public abstract {};
+
+template<typename t>
+t *new_widget_instance(
+    std::vector<std::unique_ptr<abstract>> *p_core
+) {
+  return dynamic_cast<t*>(
+    p_core->emplace_back(
+      std::unique_ptr<abstract>(
+        dynamic_cast<abstract*>(new t {})
+      )
+    ).get()
+  );
+}
+
+int main() {
+    std::vector<std::unique_ptr<abstract>> core {};
+    abstract *p_meow {new_widget_instance<meow>(&core)};
+    p_meow->p_tag = "meow";
+    std::cout << p_meow->p_tag << std::endl; // assert meow
+    return 0;
+}
+```

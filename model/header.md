@@ -52,9 +52,9 @@ class abstract {
 protected:
   ekg::id id {}; // like wtf
 public:
-  popup *do_some_stupid_thing();
-  popup *do_meows();
-  popup *bla_bla_setts();
+  abstract *do_some_stupid_thing();
+  abstract *do_meows();
+  abstract *bla_bla_setts();
   bla_t getters_bla();
 };
 ```
@@ -231,11 +231,11 @@ Now some benefits we gain with this new model:
 * Easily by-widget theme, and options settings.
 * Recycle descriptors (properties, widgets-descriptors, etc).
 
-# Runtime
+---
+
+## Runtime Fundamentals
 
 As all explained previous, we have one problem and one solution, now we need to discuss how to implement implement, exploiting memory-safe points.
-
-## Fundamentals
 
 #### Summary
 
@@ -289,18 +289,11 @@ typedef uint64_t flags;
 typedef uint64_t id;
 ```
 
-#### Memory Creation Instace `ekg::make`
+#### Memory-Safety Implementation
 
-`ekg::make` must be a template function, which create a descriptor named data-descriptor and generate what we will call here a `widget`; strictly created under some rules:
+First `std::unique_ptr` must be used for current updating widget(s), making safety the memory management for runtime. References are raw ptr(s), EKG does not care about it.
 
-1- A widget descriptor must be created under a internal-cache, and no application-side, we want make sure that we are not handling trash memory.
-
-2- The widget must implement OO features, and use of addressed data-descriptor, initialized at once.
-
-3- The current `ekg::make<t>` invoke must be inside a valid stack-instace.
-
-First, `std::unique_ptr` must be used for current updating widget(s), making safety the memory management for runtime, references are raw ptr(s), EKG does not care about it.
-
+* [`std::vector<std::unique_ptr<ekg::ui::abstract>>`](./proof.md#Memory-Safety) code-safety proof.
 ```c++
 class runtime {
 protected:
@@ -311,7 +304,22 @@ protected:
 
 For collection operations, EKG make a between raw and smart-ptr unsafe space, but user-programmer must follow the EKG standard for no-problems.
 
+* [`new_widget_instance<t>()`](./proof.md#Safe-Instance-Creation) code-safety proof.
 ```c++
+// namespace ekg (ekg/io/safety.hpp)
+template<typename t>
+t *new_widget_instance() {
+  return dynamic_cast<t*>(
+    ekg::core->push_back_widget_safety(
+      std::unique_ptr<abstract>(
+        dynamic_cast<abstract*>(new t {})
+      )
+    ).get()
+  );
+}
+```
+```c++
+// namespace ekg (ekg/core/runtime.hpp)
 ekg::ui::abstract *ekg::runtime::push_back_widget_safety(ekg::ui::abstract *p_widget) {
   return this->loaded_widget_list.emplace_back(
     std::unique_ptr<ekg::ui::abstract>(p_widget)
@@ -319,22 +327,24 @@ ekg::ui::abstract *ekg::runtime::push_back_widget_safety(ekg::ui::abstract *p_wi
 }
 ```
 
-```c++
-// namesppace ekg (ekg/io/safety.hpp)
-template<typename t>
-t new_widget_instance(t ptr) {
-  return dynamic_cast<t>(
-    ekg::core->push_back_widget_safety(
-      dynamic_cast<ekg::ui::abstract*>(ptr)
-    ).get()
-  );
-}
-```
+#### Make
+
+Many widget-descriptors are not the same, then it is required to generic safety `static_cast` to any as ptr.
 
 ```c++
 // namespace * (ekg/io/memory.hpp)
 #define ekg_cast_to_any_as_ptr(t, any) (t*)((void*)&any)
+```
 
+Make function must be a template function `ekg::make<t>`, which create a descriptor named data-descriptor and generate what we will call here an `ekg::ui::abstract`; strictly created under some rules:
+
+1- A widget descriptor must be created under a internal-cache, and no application-side, we want make sure that we are not handling trash memory.
+
+2- The widget must implement OO features, and use of addressed data-descriptor, initialized at once.
+
+3- The current `ekg::make<t>` invoke must be inside a valid stack-instace.
+
+```c++
 // namespace ekg (ekg/io/safety.hpp)
 template<typename t>
 ekg::ui::abstract *ekg::make(t descriptor) {
@@ -364,7 +374,7 @@ ekg::ui::abstract *ekg::make(t descriptor) {
       };
 
       ekg::ui::frame *p_frame {
-        ekg::core->new_widget_instance<ekg::ui::frame*>() // rule 1
+        ekg::core->new_widget_instance<ekg::ui::frame>() // rule 1
       };
 
       p_frame->descriptor = *p_descriptor;
@@ -450,7 +460,7 @@ for (ekg::properties_t *&p_child_properties : this->properties.children) {
 }
 ```
 
-#### Widget Lifetime
+#### Widget Lifetime Memory-Safety
 
 Operations like destroy, all are managed by the recycler, we do not directly delete the `ekg::ui::abstract`, but set a flag, and make sure all unused are cleaned, for example:
 
@@ -543,6 +553,9 @@ this->service_handler.allocate() = ekg::task {
 };
 ```
 
-# References
+---
 
-1- [Memory-Safety Code Example](./proof.md#Memory-Safety)
+# Reference
+
+1- [Safe Instance Creation](./proof.md#Safe-Instance-Creation)  
+2- [Memory-Safety](./proof.md#Memory-Safety)
