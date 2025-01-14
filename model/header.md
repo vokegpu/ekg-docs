@@ -1,4 +1,4 @@
-# Architecture Model
+# Architecture-Model
 
 As known for creating GUI at user-programmer side is currently complex and old, to change it, we will discuss here.
 
