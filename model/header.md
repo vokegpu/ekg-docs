@@ -44,7 +44,7 @@ I do not think it is a simple-easy way to create GUIs, imagine increasing the co
 `User-programmer` means you, the one who use the EKG library, so you are called user-programmer, for almost 3 years I did not even think about you, I was only focusing on the runtime and widgets. Because of this, some stupids decisions were made for EKG, like the part of creating widgets.
 
 May you think, how we can improve it? And the anwser is:  
-NO useless OO (Object-Oriented) features.
+NO useless [OO](https://en.wikipedia.org/wiki/Object-oriented_programming) (Object-Oriented) features.
 
 One obvious feature, the user-programmer interface with 3 layers concept:  
 -- user-programmer  
@@ -59,7 +59,7 @@ The point obvious here:
 
 #### Answering All These Questions
 
-Normally a GUI runtime OO-based have naturally overheads, there is no problem, like we need focus on the algorithm and not only in [branchless programming](https://en.algorithmica.org/hpc/pipelining/branchless/). EKG created the UI-object concept, if the user-programmer created an element, user-programmer only has acess to the UI-object, a simple rule, but bloated.
+Normally a GUI runtime [OO](https://en.wikipedia.org/wiki/Object-oriented_programming)-based have naturally overheads, there is no problem, like we need focus on the algorithm and not only in [branchless programming](https://en.algorithmica.org/hpc/pipelining/branchless/). EKG created the UI-object concept, if the user-programmer created an element, user-programmer only has access to the UI-object, a simple rule, but bloated.
 
 ```c++
 class abstract {
@@ -354,7 +354,7 @@ Make function must be a template function `ekg::make<t>`, which create a descrip
 
 1- A widget descriptor must be created under a internal-cache, and no application-side, we want make sure that we are not handling trash memory.
 
-2- The widget must implement OO features, and use of addressed data-descriptor, initialized at once.
+2- The widget must implement [OO](https://en.wikipedia.org/wiki/Object-oriented_programming) features, and use of addressed data-descriptor, initialized at once.
 
 3- The current `ekg::make<t>` invoke must be inside a valid stack-instace.
 
