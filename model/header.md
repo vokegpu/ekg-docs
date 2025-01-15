@@ -249,7 +249,7 @@ Now some benefits we gain with this new model:
 
 ## Runtime Fundamentals
 
-As all explained previous, we have one problem and one solution, now we need to discuss how to implement implement, exploiting memory-safe points.
+As all explained previous, we have one problem and one solution, now we need to discuss how to implement, exploiting memory-safe points.
 
 #### Summary
 
