@@ -1,6 +1,6 @@
 # Project Rules
 
-1- All user-programmer side features, must be no longer by-package namespace separated.
+1- All user-programmer side features, must be no longer by-package namespace separated.  
 2- Only internal-objects and internal-features must be by-package namespace separated.
 
 As example:
