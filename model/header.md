@@ -14,7 +14,7 @@ This article contains some base-references created for prove everything written 
 
 ❤
 
-`all enumerated-morals is subjectively-sacred for us, all is insanely lovely fast and deathly, but kwnowneldge is ethic-objective as the fact of love existence`,
+`all enumerated-morals is subjectively-sacred for us, all is insanely lovely fast and deathly, but the knowledge is ethic-objective as the fact of love existence`,
 
 Thank you Astah 🐈‍⬛,  
 Thank you God.
