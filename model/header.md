@@ -6,7 +6,7 @@ As known for creating GUI at user-programmer side is currently complex and old, 
 
 EKG is a significant project of my life, I wasted lot of time coding EKG, but it is what I love to do, graphics, GUIs, and GPU-accelerated softwares.
 
-Many years coding EKG I made a lot of mistakes decisions and now after 3 years, I need to think better about my library. I am alone in this journey, but I believe we need sometimes do two-steps backward and re-write, re-do, re-think the archicteture of us projects.
+Many years coding EKG I made a lot of mistakes decisions and now after 3 years, I need to think better about my library. I am alone in this journey, but I believe we need sometimes do two-steps backward and re-write, re-do, re-think the architecture of us projects.
 
 This article contains some base-references created for prove everything written by me here, take a look on the basics of this article, the new-rules/code-of-conduct for this project, and code-safety references for written this article:  
 ~ [[1] Project-rules](./project-rules.md)  
