@@ -14,7 +14,7 @@ This article contains some base-references created for prove everything written 
 
 ❤
 
-`all enumerated-morals is subjectively-sacred for us, all is insanely lovely fast and deathly, but the knowledge is ethic-objective as the fact of love existence`,
+`all enumerated-morals are subjectively-sacred for us, all is insanely lovely fast and deathly, but the knowledge is ethic-objective as the fact of love existence`,
 
 Thank you Astah 🐈‍⬛,  
 Thank you God.
@@ -145,7 +145,7 @@ return ekg::allocate_sampler(
 );
 ```
 
-Cool ya?
+Cool?
 
 ---
 
@@ -427,7 +427,7 @@ ekg::ui::abstract *ekg::make(t descriptor) {
 
 EKG previous used an ID system for hash mapping, but there is no reason for use that, as known the new stack-based system, we can separate each element by chunks of stacks, and then apply an AABB for stack query(s).
 
-For collecting, `ekg::properties` contains a field named `children`, which is used on most of widgets.
+For collecting, `ekg::properties_t` contains a field named `children`, which is used on most of widgets.
 
 ```c++
 // namespace ekg (ekg/io/algorithm.hpp)
