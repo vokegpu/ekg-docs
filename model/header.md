@@ -307,7 +307,7 @@ typedef uint64_t id;
 
 First `std::unique_ptr` must be used for current updating widget(s), making safety the memory management for runtime. References are raw ptr(s), EKG does not care about it.
 
-* [`std::vector<std::unique_ptr<ekg::ui::abstract>>`](./proof.md#Memory-Safety) code-safety proof.
+* [`std::vector<std::unique_ptr<ekg::ui::abstract>>`](./code-safety.md#Memory-Safety) code-safety proof.
 ```c++
 class runtime {
 protected:
@@ -318,7 +318,7 @@ protected:
 
 For collection operations, EKG make a between raw and smart-ptr unsafe space, but user-programmer must follow the EKG standard for no-problems.
 
-* [`new_widget_instance<t>()`](./proof.md#Safe-Instance-Creation) code-safety proof.
+* [`new_widget_instance<t>()`](./code-safety.md#Safe-Instance-Creation) code-safety proof.
 ```c++
 // namespace ekg (ekg/io/safety.hpp)
 template<typename t>
