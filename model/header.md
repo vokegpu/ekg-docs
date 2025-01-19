@@ -324,7 +324,7 @@ For collection operations, EKG make a between raw and smart-ptr unsafe space, bu
 template<typename t>
 t *new_widget_instance() {
   return dynamic_cast<t*>(
-    ekg::core->push_back_widget_safety(
+    ekg::core->emplace_back_new_widget_safety(
       dynamic_cast<abstract*>(new t {})
     )
   );
@@ -332,7 +332,7 @@ t *new_widget_instance() {
 ```
 ```c++
 // namespace ekg (ekg/core/runtime.hpp)
-ekg::ui::abstract *ekg::runtime::push_back_widget_safety(ekg::ui::abstract *p_widget) {
+ekg::ui::abstract *ekg::runtime::emplace_back_new_widget_safety(ekg::ui::abstract *p_widget) {
   return this->loaded_widget_list.emplace_back(
     std::unique_ptr<ekg::ui::abstract>(p_widget)
   ).get();
