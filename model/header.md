@@ -64,7 +64,7 @@ Normally a GUI runtime [OO](https://en.wikipedia.org/wiki/Object-oriented_progra
 ```c++
 class abstract {
 protected:
-  ekg::id id {}; // like wtf
+  ekg::id_t id {}; // like wtf
 public:
   abstract *do_some_stupid_thing();
   abstract *do_meows();
@@ -271,7 +271,7 @@ struct properties_t {
 public:
   const char *p_tag {};
   ekg::type type {};
-  ekg::id unique_id {};
+  ekg::id_t unique_id {};
   void *p_descriptor {};
   void *p_widget {};
   void *p_stack {};
@@ -325,10 +325,8 @@ template<typename t>
 t *new_widget_instance() {
   return dynamic_cast<t*>(
     ekg::core->push_back_widget_safety(
-      std::unique_ptr<abstract>(
-        dynamic_cast<abstract*>(new t {})
-      )
-    ).get()
+      dynamic_cast<abstract*>(new t {})
+    )
   );
 }
 ```
@@ -337,7 +335,7 @@ t *new_widget_instance() {
 ekg::ui::abstract *ekg::runtime::push_back_widget_safety(ekg::ui::abstract *p_widget) {
   return this->loaded_widget_list.emplace_back(
     std::unique_ptr<ekg::ui::abstract>(p_widget)
-  );
+  ).get();
 }
 ```
 
@@ -431,7 +429,7 @@ For collecting, `ekg::properties_t` contains a field named `children`, which is 
 
 ```c++
 // namespace ekg (ekg/io/algorithm.hpp)
-ekg::flags ekg::add_child_to_parent(
+ekg::flags_t ekg::add_child_to_parent(
   ekg::properties_t *p_parent_properties,
   ekg::properties_t *p_child_properties
 ) {
@@ -441,7 +439,7 @@ ekg::flags ekg::add_child_to_parent(
   }
 
   if (
-    p_child_properties->p_parent != nullptr
+    p_child_properies->p_parent != nullptr
     &&
     p_child_properties->p_parent->unique_id == p_parent_properties->unique_id
   ) {
@@ -459,7 +457,7 @@ ekg::flags ekg::add_child_to_parent(
 The unique ID is generated increasing a global ID.
 ```c++
 // ekg::runtime::generate_unique_id
-ekg::id ekg::runtime::generate_unique_id() {
+ekg::id_t ekg::runtime::generate_unique_id() {
   return ++this->global_id;
 }
 ```
@@ -480,7 +478,7 @@ Operations like destroy, all are managed by the recycler, we do not directly del
 
 ```c++
 // namespace ekg (ekg/io/algorithm.hpp)
-ekg::flag ekg::destroy(ekg::stack_t *p_stack, ekg::properties_t *p_destroy_widget_properties) {
+ekg::flags_t ekg::destroy(ekg::stack_t *p_stack, ekg::properties_t *p_destroy_widget_properties) {
   if (p_stack == nullptr) {
     ekg::log(ekg::log::error) << "Failed to destroy widget, `null` p_stack";
     return ekg::result::failed;
@@ -525,7 +523,7 @@ ekg::flag ekg::destroy(ekg::stack_t *p_stack, ekg::properties_t *p_destroy_widge
 }
 
 // namespace ekg (ekg/io/algorithm.hpp)
-ekg::flag ekg::find_and_destroy(
+ekg::flags_t ekg::find_and_destroy(
   ekg::stack_t *p_stack,
   std::string_view widget_tag
 ) {

@@ -23,3 +23,5 @@ namespace ekg::ui {
 * 3- Non-OO features as descriptors, must end as a type `*_t`, and not a class.
 
 * 4- OO features must be a class.
+
+* 5- `typedef` must end as a type `*_t`.
