@@ -25,3 +25,5 @@ namespace ekg::ui {
 * 4- OO features must be a class.
 
 * 5- `typedef` must end as a type `*_t`.
+
+* 6- `extern` fields must be public `ekg::` namespace and not private `ekg::*private*::` namespace(s).
