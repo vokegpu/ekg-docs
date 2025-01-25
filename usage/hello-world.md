@@ -49,11 +49,56 @@ ekg::stack_t my_context {
 
 ### Valuable Ownership
 
-EKG works with ownership-reference for storing a UI element value, as exampled here:
+EKG works with ownership-reference for storing an UI element value, as exampled here:
 
 ```c++
 
 bool my_ref {};
-ekg::checkbox({.tag = "idk", .text = "should terminal meow?", .value = ekg::value_t<bool>(&my_ref)});
 
+ekg::checkbox(
+  {
+    .tag = "idk",
+    .text = "should terminal meow?",
+    .value = ekg::value<bool>(&my_ref)
+  }
+);
+```
+
+Once created, the reference address is the actual read-write value by widget , if `ekg::value<t>` was not directly set, an internal cache is used.
+
+```c++
+bool my_new_ref {};
+ekg::checkbox_t &checkbox {
+  ekg::find("idk")
+};
+
+checkbox.value.move(&my_new_ref);
+checkbox.value = ekg::value<bool>(&my_new_ref); // or
+```
+
+Setting a new reference address affect the internal value. 
+
+```c++
+ekg::checkbox_t checkbox {
+  ekg::checkbox(
+    {
+      .tag = "idk",
+      .text = "should terminal meow?",
+      .value = ekg::value<bool>(true)
+    }
+  )
+};
+
+if (
+    checkbox.value.get()
+    ||
+    (bool) checkbox.value
+    ||
+    static_cast<bool>(checkbox.value)
+  ) {
+  ekg::log() << "meow";
+}
+
+bool new_ref {};
+checkbox.value.move(&new_ref); // now is not anymore `true`
 ```
