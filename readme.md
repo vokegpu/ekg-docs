@@ -3,7 +3,9 @@
 🐈
 
 ## Programming GUIs with EKG
-* [EKG Setup](./setup/header.md)
+* [EKG Usage](./usage/header.md)
+* [EKG Setup](./usage/setup.md)
+* [EKG Hello-World](./usage/hello-world.md)
 
 ## Contributing:
 * [EKG Project-Rules](./model/project-rules.md)
