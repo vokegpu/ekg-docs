@@ -27,3 +27,5 @@ namespace ekg::ui {
 * 5- `typedef` must end as a type `*_t`.
 
 * 6- `extern` fields must be public `ekg::` namespace and not private `ekg::*private*::` namespace(s).
+
+* 7- Any service or specialized-manager must contains `init` and `quit` methods, same it is useless at moment.

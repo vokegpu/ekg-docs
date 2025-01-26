@@ -52,9 +52,7 @@ ekg::stack_t my_context {
 EKG works with ownership-reference for storing an UI element value, as exampled here:
 
 ```c++
-
 bool my_ref {};
-
 ekg::checkbox(
   {
     .tag = "idk",
