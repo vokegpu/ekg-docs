@@ -185,11 +185,11 @@ Descriptors for create each UI element, descriptors for options, descriptors for
 bool do_something {};
 
 ekg::stack_t my_window {
-  .p_tag = "window-meow",
+  .tag = "window-meow",
   .children = {
     ekg::make<ekg::frame_t>(
       { 
-        .p_tag = "idk a frame?",
+        .tag = "idk a frame?",
         .options = {
           .rect = {.w = 50.0f, .h = 50.0f},
           .resize = ekg::dock::none,
@@ -199,7 +199,7 @@ ekg::stack_t my_window {
     ),
     ekg::make<ekg::label_t>(
       {
-        .p_tag = "idk meow?",
+        .tag = "idk meow?",
         .p_text = "tijolo",
         .dock = ekg::dock::fill,
         .options = {
@@ -209,7 +209,7 @@ ekg::stack_t my_window {
     ),
     ekg::make<ekg::checkbox_t>(
       {
-        .p_tag = "idk ?<>?<>?>> meow?",
+        .tag = "idk ?<>?<>?>> meow?",
         .p_text = "click here if u brain",
         .value = ekg::value<bool>(&do_something),
         .options = {
@@ -227,7 +227,7 @@ Well we can, here is:
 
 ```c++
 ekg::stack_t my_window {
-  .p_tag = "window-meow",
+  .tag = "window-meow",
   .children = {
     ekg::frame("idomeow", /* blabla */),
     ekg::label("blabla", ekg::dock::fill),
@@ -258,7 +258,7 @@ As all explained previous, we have one problem and one solution, now we need to 
 // namespace ekg (ekg/ui/stack.hpp)
 struct stack_t {
 public:
-  const char *p_tag {};
+  std::string tag {};
   std::vector<ekg::ui::abstract*> children {};
   uint64_t counter {};
 }
@@ -269,7 +269,7 @@ public:
 // namespace ekg (ekg/ui/properties.hpp)
 struct properties_t {
 public:
-  const char *p_tag {};
+  std::string tag {};
   ekg::type type {};
   ekg::id_t unique_id {};
   void *p_descriptor {};
@@ -384,7 +384,7 @@ ekg::ui::abstract *ekg::make(t descriptor) {
   };
 
   ekg::properties_t properties {
-    .p_tag = descriptor.p_tag,
+    .tag = descriptor.tag,
     .type = descriptor.type,
     .unique_id = ekg::core->generate_unique_id()
   };
