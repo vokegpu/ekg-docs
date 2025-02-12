@@ -160,7 +160,7 @@ The C++ std version used in EKG is 17, but EKG does not even implement any of fe
 
 namespace ekg {
   template<typename t>
-  t lerp(t a, t b, t delta) {
+  constexpr t lerp(t a, t b, t delta) {
     return a + (b - a) * delta;
   }
 }
