@@ -1,8 +1,12 @@
-# Binding
+# Input-Binding Tag Style
 
-## Preface
+## Preface 🐄
 
 EKG needs standard a way for describing binding tag(s).
+
+🐈
+
+---
 
 ## Fundamentals
 
