@@ -10,4 +10,4 @@
 ## Contributing:
 * [EKG Code of Conduct and Style-Guide](https://github.com/vokegpu/code-of-conduct-and-style-guide)
 * [EKG Architecture-Model](./model/header.md)
-* [EKG Input-Binding Tag Style](./model/input-binding-style.md)
+* [EKG Input-Binding Tag Style](./model/input-binding-tag-style.md)
