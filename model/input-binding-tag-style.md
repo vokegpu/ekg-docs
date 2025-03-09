@@ -18,7 +18,7 @@ All mapped input(s) for custom tag(s) must follow a specific-case and text-descr
 
 E.g a button action:
 ```c++
-ekg::bind("button-call", "mouse-1");
+ekg::bind("button-active", "mouse-1");
 ```
 
 E.g a frame action:
@@ -35,7 +35,7 @@ As shown `<description>` is not necessary all the time.
 
 ### Notation
 
-- `call` a desired functionality of something, like of a button press-and-release-over is named `call`, or a slider bar-dragging is `call`.
+- `active` a desired functionality of something, like of a button press-and-release-over is named `active`, or a slider bar-dragging is `active`.
 - `action` a specific generic-case where needs a description.
 
 Others notations not written here are specialized, no notation-information is necessary.
