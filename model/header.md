@@ -46,7 +46,7 @@ I do not think it is a simple-easy way to create GUIs, imagine increasing the co
 May you think, how we can improve it? And the anwser is:  
 NO useless [OO](https://en.wikipedia.org/wiki/Object-oriented_programming) (Object-Oriented) features.
 
-One obvious feature, the user-programmer interface with 3 layers concept:  
+3 things:  
 -- user-programmer  
 -- ui-object  
 -- widget-object  
@@ -55,7 +55,7 @@ When a widget is created, the user-programmer only has access to the ui-object, 
 
 The point obvious here:  
 -- Why [OO](https://en.wikipedia.org/wiki/Object-oriented_programming) is used here?   
--- Why is there lot of bloat setters/getters?
+-- Why are there lot of bloat setters/getters?
 
 #### Answering All These Questions
 
@@ -184,41 +184,37 @@ Descriptors for create each UI element, descriptors for options, descriptors for
 ```c++
 bool do_something {};
 
-ekg::stack_t my_window {
-  .tag = "window-meow",
-  .children = {
-    ekg::make<ekg::frame_t>(
-      { 
-        .tag = "idk a frame?",
-        .options = {
-          .rect = {.w = 50.0f, .h = 50.0f},
-          .resize = ekg::dock::none,
-          .drag = ekg::dock::full
-        }
-      }
-    ),
-    ekg::make<ekg::label_t>(
-      {
-        .tag = "idk meow?",
-        .p_text = "tijolo",
-        .dock = ekg::dock::fill,
-        .options = {
-          .text_dock = ekg::dock::left
-        }
-      }
-    ),
-    ekg::make<ekg::checkbox_t>(
-      {
-        .tag = "idk ?<>?<>?>> meow?",
-        .p_text = "click here if u brain",
-        .value = ekg::value<bool>(&do_something),
-        .options = {
-          .text_dock = ekg::dock::left
-        }
-      },
-    )
+ekg::make<ekg::frame_t>(
+  { 
+    .tag = "idk a frame?",
+    .options = {
+    .rect = {.w = 50.0f, .h = 50.0f},
+    .resize = ekg::dock::none,
+    .drag = ekg::dock::full
   }
-};
+);
+
+ekg::make<ekg::label_t>(
+  {
+    .tag = "idk meow?",
+    .p_text = "tijolo",
+    .dock = ekg::dock::fill,
+    .options = {
+    .text_dock = ekg::dock::left
+  }
+);
+
+
+ekg::make<ekg::checkbox_t>(
+  {
+    .tag = "idk ?<>?<>?>> meow?",
+    .p_text = "click here if u brain",
+    .value = ekg::value<bool>(&do_something),
+    .options = {
+      .text_dock = ekg::dock::left
+    }
+  }
+);
 ```
 
 And voila^2, new protype model. But it keeps bloated, how can we simplify this?
@@ -226,14 +222,14 @@ And voila^2, new protype model. But it keeps bloated, how can we simplify this?
 Well we can, here is:
 
 ```c++
-ekg::stack_t my_window {
-  .tag = "window-meow",
-  .children = {
-    ekg::frame("idomeow", /* blabla */),
-    ekg::label("blabla", ekg::dock::fill),
-    // ...
-  }
+ekg::checkbox_t check {
+  /* add stuff */
 };
+
+ekg::make(check);
+
+check.p_text = "bla";
+ekg::make(bla);
 ```
 
 #### Benefits
@@ -334,7 +330,7 @@ For collection operations, EKG make a between raw and smart-ptr unsafe space, bu
 template<typename t>
 t *new_widget_instance() {
   return dynamic_cast<t*>(
-    ekg::core->emplace_back_new_widget_safety(
+    ekg::core->push_back_new_widget_safety(
       dynamic_cast<abstract*>(new t {})
     )
   );
