@@ -1,4 +1,38 @@
-# Memory-Safety
+# Raw-Pointers Unsafety Proof
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+
+struct meow_t {
+public:
+    std::string text {};
+public:    
+    operator std::string() {
+        return this->text;
+    }
+};
+
+int main() {
+    meow_t *p_meow {new meow_t {.text = "meow, meow, meow, meow"}};
+    std::vector<meow_t*> meow {};
+    meow.emplace_back() = p_meow;
+    
+    delete p_meow;
+    p_meow = nullptr;
+    
+    if (meow.at(0) != nullptr) {
+        std::cout << "meow = " << (std::string)(*meow.at(0)); // output: ???
+    }
+
+    // UB
+
+    return 0;
+}
+```
+
+# Renderable-Widget Proof
 
 ```c++
 #include <iostream>

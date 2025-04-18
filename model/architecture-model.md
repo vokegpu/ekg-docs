@@ -196,7 +196,7 @@ ekg::make<ekg::frame_t>(
 ekg::make<ekg::label_t>(
   {
     .tag = "idk meow?",
-    .p_text = "tijolo",
+    .text = "tijolo",
     .dock = ekg::dock::fill,
     .options = {
     .text_dock = ekg::dock::left
@@ -207,13 +207,18 @@ ekg::make<ekg::label_t>(
 ekg::make<ekg::checkbox_t>(
   {
     .tag = "idk ?<>?<>?>> meow?",
-    .p_text = "click here if u brain",
+    .text = "click here if u brain",
     .value = ekg::value<bool>(&do_something),
+    .text = {
+      .value =
+    }
     .options = {
-      .text_dock = ekg::dock::left
+      .text_dock = ekg::dock::left,
+      .
     }
   }
 );
+
 ```
 
 And voila^2, new protype model. But it keeps bloated, how can we simplify this?
@@ -227,350 +232,85 @@ ekg::checkbox_t check {
 
 ekg::make(check);
 
-check.p_text = "bla";
+check.text = "bla";
 ekg::make(bla);
+
+bla.text = "boo";
 ```
 
 #### Benefits
 
 Now some benefits we gain with this new model:
 
-* Stack-based system for better query performance and widget(s) internal-logic.
-* Memory-safety.
+* Memory-safety:  
+  | - | No raw-ptr or any kinda of smart-ptr for descriptors.  
+  | - | As proof here ptr(s) must not be used for user-programmer side](./code-safety#Raw-Pointers Unsafety Proof)
+
+* w
+* Stack-based memory for better query performance and widget(s) internal-logic.
 * Easily by-widget theme, and options settings.
-* Recycle descriptors (properties, widgets-descriptors, etc).
+* Recycle descriptors (widgets-descriptors, etc).
 
 ---
 
-## Runtime Fundamentals
+## Runtime
 
-As all explained previous, we have one problem and one solution, now we need to discuss how to implement, exploiting memory-safe points.
+### Model Fundamentals
 
-#### Summary
+EKG does not allow raw pointers for DESCRIPTORS case, because we need make the code safety, but how is this possible?
 
-* Stack is where all widgets are store, used on application-side as GUI context.
-```c++
-// namespace ekg (ekg/ui/stack.hpp)
-struct stack_t {
-public:
-  std::string tag {};
-  std::vector<ekg::ui::abstract*> children {};
-  uint64_t counter {};
-}
-``` 
+There is one solution: a pool. With pools we can store an unique specific descriptor, then, direct access by it is own index position.
 
-* Properties is a descriptor for abstract widgets, which address a generic content (by-widget), children, and user context-flags.
-```c++
-// namespace ekg (ekg/ui/properties.hpp)
-struct properties_t {
-public:
-  std::string tag {};
-  ekg::type type {};
-  ekg::id_t unique_id {};
-  void *p_descriptor {};
-  void *p_widget {};
-  void *p_stack {};
-  ekg::properties_t *p_abs_parent {};
-  ekg::properties_t *p_parent {};
-  std::vector<ekg::properties_t*> children {};
-  bool is_parentable {};
-public:
+```cpp
+// ekg/io/memory.hpp
+
+#include <vector>
+
+namespace ekg {
   template<typename t>
-  operator t&() {
-    return *static_cast<t*>(this->p_descriptor);
+  using pool = std::vector<t>;
+}
+```
+
+So we can store every single type of descritpors in each designed pool, as example:
+```cpp
+// ekg/core/runtime.hpp
+
+namespace ekg {
+  class runtime {
+  protected: // protected because we do not want to give master-access to user-programmer.
+    ekg::pool<ekg::checkbox_t> checkbox_pool {};
+    ekg::pool<ekg::button_t> button_pool {};
+    /* and all widgets */
   };
-
-  template<typename t>
-  operator t*() {
-    return static_cast<t*>(this->p_widget);
-  };
 }
 ```
 
-* Result is an enum type that contains useful generic flags for any-operations.
-```c++
-// namespace ekg (ekg/io/memory.hpp)
-enum result {
-  success,
-  failed,
-  widget_not_found
-};
+With this, we can develop the rest of algorithms and the connection between abstract widgets and data-descriptors.
+
+### Modern C++ Reference, Indexing and Sort
+
+EKG must give always a safe reference, if no index position is valid, we need make sure to give an empty safe-reference.
+
+```cpp
+#define QUERY_CHECKBOX(index) \
+  index >= this->checkbox_pool.size() ? this->empty_checkbox :a this->checkbox_pool.at(index); \
+\
+
+#define QUERY_DESCRIPTOR(index) \
+  
+
+  ekg::checkboux_t &checkbox {this->empty_checkbox};\
+  ekg::checkboux_t &checkbox {this->empty_checkbox};\
+  ekg::checkboux_t &checkbox {this->empty_checkbox};\
+  ekg::checkboux_t &checkbox {this->empty_checkbox};\
+  ekg::checkboux_t &checkbox {this->empty_checkbox};\
+  ekg::checkboux_t &checkbox {this->empty_checkbox};\
+  \
+  \
+  \
+  \
 ```
-
-* Flags is an uint64_t number type reserved for bits storage or enum storage.
-```c++
-// namespace ekg (ekg/io/memory.hpp)
-typedef uint64_t flags;
-```
-
-* ID is an uint64_t number type reserved for unique ID.
-```c++
-typedef uint64_t id;
-```
-
-#### Memory-Safety Implementation
-
-First `std::unique_ptr` must be used for current updating widget(s), making safety the memory management for runtime. References are raw ptr(s), EKG does not care about it.
-
-* [`std::vector<std::unique_ptr<ekg::ui::abstract>>`](./code-safety.md#Memory-Safety) code-safety proof.
-```c++
-class runtime {
-protected:
-  std::vector<std::unique_ptr<ekg::ui::abstract>> loaded_widget_list {};
-  // fields etc
-};
-```
-
-For collection operations, EKG make a between raw and smart-ptr unsafe space, but user-programmer must follow the EKG standard for no-problems.
-
-* [`new_widget_instance<t>()`](./code-safety.md#Safe-Instance-Creation) code-safety proof.
-```c++
-// namespace ekg (ekg/io/safety.hpp)
-template<typename t>
-t *new_widget_instance() {
-  return dynamic_cast<t*>(
-    ekg::core->push_back_new_widget_safety(
-      dynamic_cast<abstract*>(new t {})
-    )
-  );
-}
-```
-```c++
-// namespace ekg (ekg/core/runtime.hpp)
-ekg::ui::abstract *ekg::runtime::emplace_back_new_widget_safety(ekg::ui::abstract *p_widget) {
-  return this->loaded_widget_list.emplace_back(
-    std::unique_ptr<ekg::ui::abstract>(p_widget)
-  ).get();
-}
-```
-
-#### Make
-
-Many widget-descriptors are not the same, then it is required to generic safety `static_cast` to any as ptr.
-
-```c++
-// namespace * (ekg/io/memory.hpp)
-#define ekg_cast_to_any_as_ptr(t, any) (t*)((void*)&any)
-```
-
-Make function must be a template function `ekg::make<t>`, which create a descriptor named data-descriptor and generate what we will call here an `ekg::ui::abstract`; strictly created under some rules:
-
-1- A widget descriptor must be created under a internal-cache, and no application-side, we want make sure that we are not handling trash memory.
-
-2- The widget must implement [OO](https://en.wikipedia.org/wiki/Object-oriented_programming) features, and use of addressed data-descriptor, initialized at once.
-
-3- The current `ekg::make<t>` invoke must be inside a valid stack-instace.
-
-```c++
-// namespace ekg (ekg/io/safety.hpp)
-template<typename t>
-ekg::ui::abstract *ekg::make(t descriptor) {
-  ekg::stack_t *p_stack {
-    ekg::core->get_current_stack()
-  };
-
-  if (p_stack == nullptr) { // rule 3
-    ekg::log(ekg::log::error) << "Failed failed to create a widget instance, the current stack instance is null"
-    return nullptr;
-  } 
-
-  ekg::ui::abstract *p_created_widget {
-    nullptr
-  };
-
-  ekg::properties_t properties {
-    .tag = descriptor.tag,
-    .type = descriptor.type,
-    .unique_id = ekg::core->generate_unique_id()
-  };
-
-  switch (descriptor.type) {
-    case ekg::type::frame: {
-      ekg::frame_t *p_descriptor {
-        ekg_cast_to_any_as_ptr(ekg::frame_t, descriptor)
-      };
-
-      ekg::ui::frame *p_frame {
-        ekg::core->new_widget_instance<ekg::ui::frame>() // rule 1
-      };
-
-      p_frame->descriptor = *p_descriptor;
-
-      properties.p_descriptor = &p_frame->descriptor; // rule 2
-      properties.p_widget = &p_frame;
-
-      p_created_widget = p_frame;
-      break;
-    }
-    /* etc */
-  }
-
-  p_created_widget->properties = properties;
-
-  ekg::properties_t *p_current_parent_properties {
-    ekg::core->get_current_parent_properties()
-  };
-
-  if (
-    p_created_widget->properties.is_parentable
-    &&
-    p_current_parent_properties != nullptr
-  ) {
-    ekg::add_child_to_parent(
-      &p_current_parent_properties,
-      &p_created_widget
-    );
-  }
-
-  return p_created_widget;
-}
-```
-
-#### Register Properties and Descriptors
-
-EKG previous used an ID system for hash mapping, but there is no reason for use that, as known the new stack-based system, we can separate each element by chunks of stacks, and then apply an AABB for stack query(s).
-
-For collecting, `ekg::properties_t` contains a field named `children`, which is used on most of widgets.
-
-```c++
-// namespace ekg (ekg/io/algorithm.hpp)
-ekg::flags_t ekg::add_child_to_parent(
-  ekg::properties_t *p_parent_properties,
-  ekg::properties_t *p_child_properties
-) {
-  if (p_children == nullptr || p_properties == nullptr) {
-    ekg::log() << "Failed to add child to parent, `null`, `null`";
-    return ekg::result::failed;
-  }
-
-  if (
-    p_child_properies->p_parent != nullptr
-    &&
-    p_child_properties->p_parent->unique_id == p_parent_properties->unique_id
-  ) {
-    return ekg::result::success;
-  }
-
-  p_child_properties->p_parent = p_parent_properties;
-  p_child_properties->p_abs_parent = p_parent_properties->p_abs_parent;
-  p_parent_properties->children.push_back(p_properties);
-
-  return ekg::result::success;
-}
-```
-
-The unique ID is generated increasing a global ID.
-```c++
-// ekg::runtime::generate_unique_id
-ekg::id_t ekg::runtime::generate_unique_id() {
-  return ++this->global_id;
-}
-```
-
-#### Widget Use-Case Reserved
-
-For handling objects inside a widget, we can iterate over the children directly without searching for a hash.
-
-```c++
-for (ekg::properties_t *&p_child_properties : this->properties.children) {
-  // do here any operation
-}
-```
-
-#### Widget Lifetime Memory-Safety
-
-Operations like destroy, all are managed by the recycler, we do not directly delete the `ekg::ui::abstract`, but set a flag, and make sure all unused are cleaned, for example:
-
-```c++
-// namespace ekg (ekg/io/algorithm.hpp)
-ekg::flags_t ekg::destroy(ekg::stack_t *p_stack, ekg::properties_t *p_destroy_widget_properties) {
-  if (p_stack == nullptr) {
-    ekg::log(ekg::log::error) << "Failed to destroy widget, `null` p_stack";
-    return ekg::result::failed;
-  }
-
-  if (p_destroy_widget_properties == nullptr) {
-    ekg::log(ekg::log::error) << "Failed to destroy widget, `null` p_destroy_widget_properties";
-    return ekg::result::failed;
-  }
-
-  uint64_t counter {
-    p_stack->counter++
-  };
-
-  p_destroy_widget_properties->was_destroy = true;
-
-  for (ekg::properties_t *&p_properties : p_destroy_widget_properties->children) {
-    ekg::destroy(p_stack, p_properties);
-  }
-
-  if (counter == 0) {
-    p_stack->counter = 0;
-
-    if (p_destroy_widget_properties->p_parent != nullptr) {
-      std::vector<ekg::properties_t*> &parent_children {
-        p_destroy_widget_properties->p_parent->children
-      };
-
-      parent_children.erase(
-        std::remove_if(
-          parent_children.begin(),
-          parent_children.end(),
-          [](ekg::properties_t *&p_properties) {
-            return p_properties->unique_id == p_destroy_widget_properties->unique_id
-          }
-        )
-      );
-    }
-  }
-
-  return ekg::result::success;
-}
-
-// namespace ekg (ekg/io/algorithm.hpp)
-ekg::flags_t ekg::find_and_destroy(
-  ekg::stack_t *p_stack,
-  std::string_view widget_tag
-) {
-  if (p_stack == nullptr) {
-    ekg::log(ekg::log::error) << "Failed to destroy widget, `null` stack";
-    return ekg::result::failed;
-  }
-
-  return ekg::destroy(p_stack, ekg::find(p_stack, widget_tag));
-}
-```
-
-```c++
-ekg::find_and_destroy(&this->my_gui, "frame-widget");
-ekg::destroy(&this->my_gui, ekg::find("frame-widget"));
-```
-
-After destroying everything recursively, we can safety delete from the memory using the recycler.
-
-```c++
-// ekg::runtime::initialize_internal_tasks
-this->service_handler.allocate() = ekg::task {
-  .info = {
-    .tag = "gc",
-    .p_data = nullptr
-  },
-  .function = [this](ekg::info &info) {
-    std::erase(
-      std::remove_if(
-        this->loaded_widget_list.begin(),
-        this->loaded_widget_list.end(),
-        [](std::unique_ptr<ekg::ui::abstract> &p_widget) {
-          return p_widget->properties.was_destroy;
-        }
-      ),
-      this->loaded_widget_list.end()
-    );
-  }
-};
-```
-
----
 
 # Copyright
 
