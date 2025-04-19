@@ -257,8 +257,65 @@ Now some benefits we gain with this new model:
 
 EKG does not allow raw pointers for DESCRIPTORS case, because we need make the code safety, but how is this possible?
 
-There is one solution: a pool. With pools we can store an unique specific descriptor, then, direct access by it is own index position.
+### C++ Way Reference
 
+C++ references `meow_t &meow { /* address  */ };` allow compile-time safety accurace, while C-style references are complete dangerous in most of cases.
+C-style references requires strictly validations, if not, undefined behaviors occurs and there is no way to eficiently work on it. 
+
+```cpp
+struct meow_t {
+public:
+  bool was_created {};
+};
+
+ekg::flags_t create(meow_t *p_meow) {
+  if (p_meow == nullptr) { // validation needed;
+    // BUT it does not save you from your own mistakes: UNDETECTED DELETED MEMORY
+    return ekg::result::failed;
+  }
+
+  p_meow->was_created = true; // <- sign that was created
+  return ekg::result::success;
+}
+```
+
+Of course, we can do that, but nothing prevents you from any programming mistakes, handling memory in this way is hard, now imagine totally safe, it is impossible to set `nullptr` any of references automatically.
+
+```cpp
+meow_t meow {};
+create(&meow); // ok, created
+
+meow_t *p_meow {new meow_t {}};
+created(p_meow); // hm dangerous but ok, created
+
+delete p_meow;
+p_meow = nullptr; // (?) wha, how could you explicit set as nullptr always?
+create(p_meow); // (??)
+
+delete p_meow;
+create(p_meow); // (??) hbasjdhsbjhbdjh Biwbeihd
+```
+
+If we pass it to a structure, new issues will occur:
+```cpp
+struct meow_t {
+public:
+  meow_t *p_meow {};
+};
+
+// etc
+
+meow_t a {};
+meow_t b { .p_meow = &a }; // (?)
+```
+
+Unlike this, C++ references allow compile-time type and while programming, you will not make mistakes.
+
+### Pool
+
+There is one solution for unsafe memory: a pool.
+
+Pool is defined as:
 ```cpp
 // ekg/io/memory.hpp
 
@@ -270,24 +327,75 @@ namespace ekg {
 }
 ```
 
-Also, include an AT type:
+For defining how index elements from a pool:
 ```cpp
 // ekg/io/memory.hpp
 
+#include <cstdint>
+
 namespace ekg {
-  typedef uint64_t id;
+  typedef id_t uint64_t;
 
   struct at_t {
   public:
-    ekg::id id {};
+    ekg::id_t id {};
     size_t index {};
   };
 }
 ```
 
-So we can store every single type of descriptors in each designed pool, with safe query functions:
+When defining the descriptor, an empty-case must be defined, where point to a safety controlled not-found behavior.
+
 ```cpp
-// ekg/io/descriptor.hpp
+struct meow_t {
+public:
+  static meow_t not_found { .is_error_reserved = true };
+public:
+  bool is_error_reserved {};
+  ekg::at_t at_next {};
+public:
+  bool operator == (ekg::meow_t &other) {
+    return this->is_error_reserved == other.is_error_reserved;
+  }
+
+  bool operator != (ekg::meow_t &other) {
+    return this->is_error_reserved != other.is_error_reserved;
+  }
+};
+```
+
+With this descriptor-base done, we need now query it, and safety say if was found or not.
+
+```cpp
+meow_t &query(ekg::at_t at, ekg::pool<meow_t> &pool) {
+  return at.index >= pool.size() ? meow_t::not_found : pool.at(index);
+}
+```
+
+This pool system is totally safe, no raw-ptr, no any kinda of smart-ptr to "prevent" memory issues.
+
+```cpp
+ekg::pool<meow_t> meow_pool {};
+meow_pool.emplace_back();
+meow_t &a {meow_pool.at(0)};
+
+meow_pool.emplace_back();
+meow_t &b {meow_pool.at(1)};
+b.at_next.index = 0;
+
+meow_t &search_meow {query({.index = 3654}, meow_pool)};
+if (search_meow == ekg::meow_t::not_found) { 
+  return; // there is no possible crash here, unless you force
+}
+```
+
+### Resources
+
+With pools we can store an unique specific descriptor, then, direct access by it is own index position.
+So we can store every single type of descriptors in each designed pool, with safe query functions:
+
+```cpp
+// ekg/io/resources.hpp
 
 #include <array>
 #include <functional>
@@ -297,34 +405,40 @@ namespace ekg::io {
   public:
     ekg::pool<ekg::checkbox_t> checkbox_pool {};
     ekg::pool<ekg::button_t> button_pool {};
-  public:
-    std::array<void*(ekg::at_t &at), /* amount of widget-types */> {
-      [](ekg::at_t &at) {
-        return (
-          at.index >= ekg::io::resources.checkbox_pool.size()
-          ?
-          ekg::checkbox_t::not_found
-          :
-          ekg::io::resources.checkbox_pool.at(at.index)
-        ); 
-      }
-    };
   } resources;
+}
+
+namespace ekg {
+  template<typename t>
+  t &query(ekg::at_t &at) {
+    switch (at.id) {
+    case ekg::type::checkbox:
+      return *static_cast<t*>(
+        static_cast<void*>(
+          &ekg::resources.checkbox_pool.at(static_cast<size_t>(at.index))
+        )
+      );
+    }
+  }
 }
 ```
 
-With this, we can develop the rest of algorithms and the connection between abstract widgets and data-descriptors.
-
-### Modern C++ Reference, Indexing and Sort
-
-EKG must give always a safe reference, if no index position is valid, we need make sure to give an empty safe-reference.
-
-First we need to make s
+Querying any of descriptors is safe and flexible to runtime.
 
 ```cpp
+ekg::at_t find_my_checkbox { .id = ekg::type::checkbox, .index = 64 };
+ekg::checkbox_t &checkbox {ekg::query<ekg::checkbox_t>(find_my_checkbox)};
+
+if (checkbox == ekg::checkbox_t::not_found) {
+  ekg::log() << "not found :c";
+} else {
+  ekg::log() << "found :3";
+}
 ```
 
-If we want
+## Conclusion
+
+Now EKG is pool-safety, there is way to leak memory unless you force it.
 
 # Copyright
 
