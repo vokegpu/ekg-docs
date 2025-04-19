@@ -27,7 +27,7 @@ Thank you God.
 I was reading the code for create widgets and I noticed one thing, I mean, is not hard to notice that; the GUI creation method is horrible.
 
 You can stack widgets inside a frame/container bla-bla.
-```c++
+```cpp
 ekg::frame("meow", {.x = 0.0f, .y = 0.0f, .w = 200.0f}, ekg::dock::none);
 ekg::label("Meow!", ekg::dock::fill);
 ekg::button("Meow Here", ekg::dock::fill | ekg::dock::next);
@@ -60,7 +60,7 @@ The point obvious here:
 
 Normally a GUI runtime [OO](https://en.wikipedia.org/wiki/Object-oriented_programming)-based have naturally overheads, there is no problem, like we need focus on the algorithm and not only in [branchless programming](https://en.algorithmica.org/hpc/pipelining/branchless/). EKG created the UI-object concept, if the user-programmer created an element, user-programmer only has access to the UI-object, a simple rule, but bloated.
 
-```c++
+```cpp
 class abstract {
 protected:
   ekg::id_t id {}; // like wtf
@@ -74,7 +74,7 @@ public:
 
 If we want create a new element like a popup, we must create a class based from the `ekg::ui::abstract`.
 
-```c++
+```cpp
 class popup : public ekg::ui::abstract {
 protected:
   int32_t wtf_number_for_something {};
@@ -84,7 +84,7 @@ public:
 ```
 
 And an abstract widget:
-```c++
+```cpp
 class popup_widget : public ekg::ui::abstract_widget {
 public: // always public
   // internal reserved case fields
@@ -95,7 +95,7 @@ public:
 
 Doing like this way, is extremly bloated. The user-programmer side projection is actually worse.  
 
-```c++
+```cpp
 ekg::frame("meow", {.x = 0.0f, .y = 0.0f, .w = 200.0f}, ekg::dock::none)
   ->set_drag(ekg::dock::top)
   ->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right)
@@ -113,7 +113,7 @@ Vulkan, DirectX 11/12, system libraries, wayland-clients (compositors), and more
 Now EKG must follow this way too, also as necessary for a better between GPU-API(s) standard compatibility.  
 EKG already implemented descriptors for samplers objects. Lets look better.
 
-```c++
+```cpp
 uint32_t previous_size {f_renderer.font_size};
 f_renderer.set_size(512);
 
@@ -154,7 +154,7 @@ Today most of programmers do not want to hardcode or write large codes for small
 
 The C++ std version used in EKG is 17, but EKG does not even implement any of features, rarely `constexpr` or new `std::` features; may you find only `std::string_view`, which you can think okay, we do not need to be forced to use alternative ways, as example, you can have a macro instead the use of `template`:
 
-```c++
+```cpp
 #define ekg_lerp(a, b, t) a + (b - a) * t
 
 namespace ekg {
@@ -180,7 +180,7 @@ Now we must take all the previous knowneldge and implement for the user-programm
 
 Descriptors for create each UI element, descriptors for options, descriptors for details, descriptors for internal functions, descriptors for themes, and all descriptors for user-programmer application-side-input(s).
 
-```c++
+```cpp
 bool do_something {};
 
 ekg::make<ekg::frame_t>(
@@ -225,7 +225,7 @@ And voila^2, new protype model. But it keeps bloated, how can we simplify this?
 
 Well we can, here is:
 
-```c++
+```cpp
 ekg::checkbox_t check {
   /* add stuff */
 };
@@ -242,14 +242,12 @@ bla.text = "boo";
 
 Now some benefits we gain with this new model:
 
-* Memory-safety:  
-  | - | No raw-ptr or any kinda of smart-ptr for descriptors.  
-  | - | As proof here ptr(s) must not be used for user-programmer side](./code-safety#Raw-Pointers Unsafety Proof)
+* Memory-safe descriptors:  
+  | - | Recyclable descriptors with many possible designs.  
+  | - | Easily by-widget theme and many options settings.  
+  | - | No raw-ptr(s) or smart-ptr(s) for descriptors. As proven [here](./proofs#Raw-Pointers-Unsafety), it is too dangerous for an interface context.
 
-* w
-* Stack-based memory for better query performance and widget(s) internal-logic.
-* Easily by-widget theme, and options settings.
-* Recycle descriptors (widgets-descriptors, etc).
+* Stack-system for better query performance and widgets internal-logic.
 
 ---
 
@@ -272,17 +270,46 @@ namespace ekg {
 }
 ```
 
-So we can store every single type of descritpors in each designed pool, as example:
+Also, include an AT type:
 ```cpp
-// ekg/core/runtime.hpp
+// ekg/io/memory.hpp
 
 namespace ekg {
-  class runtime {
-  protected: // protected because we do not want to give master-access to user-programmer.
+  typedef uint64_t id;
+
+  struct at_t {
+  public:
+    ekg::id id {};
+    size_t index {};
+  };
+}
+```
+
+So we can store every single type of descriptors in each designed pool, with safe query functions:
+```cpp
+// ekg/io/descriptor.hpp
+
+#include <array>
+#include <functional>
+
+namespace ekg::io {
+  extern struct resources_t {
+  public:
     ekg::pool<ekg::checkbox_t> checkbox_pool {};
     ekg::pool<ekg::button_t> button_pool {};
-    /* and all widgets */
-  };
+  public:
+    std::array<void*(ekg::at_t &at), /* amount of widget-types */> {
+      [](ekg::at_t &at) {
+        return (
+          at.index >= ekg::io::resources.checkbox_pool.size()
+          ?
+          ekg::checkbox_t::not_found
+          :
+          ekg::io::resources.checkbox_pool.at(at.index)
+        ); 
+      }
+    };
+  } resources;
 }
 ```
 
@@ -292,25 +319,12 @@ With this, we can develop the rest of algorithms and the connection between abst
 
 EKG must give always a safe reference, if no index position is valid, we need make sure to give an empty safe-reference.
 
+First we need to make s
+
 ```cpp
-#define QUERY_CHECKBOX(index) \
-  index >= this->checkbox_pool.size() ? this->empty_checkbox :a this->checkbox_pool.at(index); \
-\
-
-#define QUERY_DESCRIPTOR(index) \
-  
-
-  ekg::checkboux_t &checkbox {this->empty_checkbox};\
-  ekg::checkboux_t &checkbox {this->empty_checkbox};\
-  ekg::checkboux_t &checkbox {this->empty_checkbox};\
-  ekg::checkboux_t &checkbox {this->empty_checkbox};\
-  ekg::checkboux_t &checkbox {this->empty_checkbox};\
-  ekg::checkboux_t &checkbox {this->empty_checkbox};\
-  \
-  \
-  \
-  \
 ```
+
+If we want
 
 # Copyright
 

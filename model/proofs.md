@@ -1,4 +1,6 @@
-# Raw-Pointers Unsafety Proof
+# Proofs
+
+## Raw-Pointers Unsafety
 
 ```cpp
 #include <iostream>
@@ -32,7 +34,83 @@ int main() {
 }
 ```
 
-# Renderable-Widget Proof
+## Safety-Descriptor Pool Query
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+#include <functional>
+#include <array>
+
+struct at_t {
+public:
+    size_t id {};
+    size_t index {};
+};
+
+struct meow_t { // descriptor
+public:
+    size_t id {};
+    std::string text {};
+public:    
+    operator std::string() {
+        return this->text;
+    }
+    
+    bool operator == (meow_t &other) {
+        return this->id == other.id;
+    }
+
+    bool operator != (meow_t &other) {
+        return this->id != other.id;
+    }
+};
+
+#define NOT_FOUND 34553453453
+
+static std::vector<meow_t> meow_pool {};
+static meow_t not_found_meow {.id = NOT_FOUND};
+
+static std::array<std::function<void*(size_t)>, 1> query_function {
+    [](size_t index) { 
+        return index >= meow_pool.size() ? &not_found_meow : &meow_pool.at(index);
+    }
+};
+
+enum type {
+    MEOW = 0
+};
+
+template<typename t>
+constexpr t &query(size_t index, size_t id) {
+    return *static_cast<t*>(query_function[id](index));
+}
+
+class abstract {
+public:
+    at_t at_descriptor { .id = type::MEOW, .index = 0 };
+};
+
+int main() {
+    meow_pool.emplace_back() = {.text = "MEOW-DESCRIPTOR"};
+    abstract boo {};
+
+    meow_t &slot0 {query<meow_t>(boo.at_descriptor.index, boo.at_descriptor.id)};
+    if (slot0 != not_found_meow) {
+        std::cout << "found: " << slot0.text << "\n";
+    }
+
+    meow_t &slot1 {query<meow_t>(1, type::MEOW)};
+    if (slot1 == not_found_meow) {
+        std::cout << "not found";
+    }
+
+    return 0;
+}
+```
+
+## Renderable-Widget Safety
 
 ```c++
 #include <iostream>
