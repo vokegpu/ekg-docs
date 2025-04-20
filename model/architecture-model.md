@@ -174,7 +174,7 @@ If we can macro for these operations, why we need C++17 then?
 
 At sametime we have consistency of macro but we have a bad image for the community, "hey you must use `insert-modern-cpp-features`". Now, I will think better, instead making confuses decisions.
 
-#### Widget Creation
+#### Design
 
 Now we must take all the previous knowneldge and implement for the user-programmer widget creation.
 
@@ -255,12 +255,51 @@ Now some benefits we gain with this new model:
 
 ### Model Fundamentals
 
-EKG does not allow raw pointers for DESCRIPTORS case, because we need make the code safety, but how is this possible?
+This applies to the descriptors, not the renderable widgets. Until descriptors memory-model are done, internal EKG systems will not implement pools for renderable widgets.
 
-### C++ Way Reference
+The argument is:
+> If usage of pointers are potentially unsafe, pointers must be not used, instead, a memory pool must be used.
 
-C++ references `meow_t &meow { /* address  */ };` allow compile-time safety accurace, while C-style references are complete dangerous in most of cases.
-C-style references requires strictly validations, if not, undefined behaviors occurs and there is no way to eficiently work on it. 
+### C++-Style Reference
+
+When executing programs in a OS, the memory accessed from the program is not directly the RAM, but a virtual place, reference is a pointer that points to the virtual place of something.
+
+There is two ways to describing a reference in C++:  
+  | - | C-style: `meow_t *p`.  
+  | - | C++-style: `meow_t &v`.  
+
+Both C and C are the same, as shown:
+```cpp
+void meow(int *p_meow) {
+  *p_meow = 40;
+}
+
+void meow(int &meow) {
+  meow = 40;
+}
+
+// x86-64 gcc 14.2
+meow(int*):
+  push rbp
+  mov  rbp, rsp
+  mov  QWORD PTR [rbp-8], rdi
+  mov  rax, QWORD PTR [rbp-8]
+  mov  DWORD PTR [rax], 40
+  nop
+  pop  rbp
+  ret
+meow(int&):
+  push rbp
+  mov  rbp, rsp
+  mov  QWORD PTR [rbp-8], rdi
+  mov  rax, QWORD PTR [rbp-8]
+  mov  DWORD PTR [rax], 40
+  nop
+  pop  rbp
+  ret
+```
+
+C-style reference is complete dangerous in most of cases, requires strictly validations and memory-handling, if not, undefined behaviors occurs and there is no way to eficiently work on it.
 
 ```cpp
 struct meow_t {
@@ -279,7 +318,7 @@ ekg::flags_t create(meow_t *p_meow) {
 }
 ```
 
-Of course, we can do that, but nothing prevents you from any programming mistakes, handling memory in this way is hard, now imagine totally safe, it is impossible to set `nullptr` any of references automatically.
+Of course, we can do that, but nothing prevents you from any programming mistakes, handling memory in this way is hard, now imagine it totally safe, it is impossible to set `nullptr` automatically all the time.
 
 ```cpp
 meow_t meow {};
@@ -294,26 +333,41 @@ create(p_meow); // (??)
 
 delete p_meow;
 create(p_meow); // (??) hbasjdhsbjhbdjh Biwbeihd
-```
-
-If we pass it to a structure, new issues will occur:
-```cpp
-struct meow_t {
-public:
-  meow_t *p_meow {};
-};
 
 // etc
 
 meow_t a {};
-meow_t b { .p_meow = &a }; // (?)
+meow_t b { .p_meow = &a }; // (?) this is horrible
+
 ```
 
-Unlike this, C++ references allow compile-time type and while programming, you will not make mistakes.
+Unlike this, C++ reference allow compile-time type-safe programming, so, no mistakes occur, because you are building with known types.
+
+```cpp
+std::vector<meow_t> meows(2);
+meow_t &meow {meows.at(0)}; // safe
+meow.text = "must meow?";
+
+{
+  meow_t &humm_meow {meows.at(0)};
+  humm_meow.text = "yes";
+
+  meow_t &second_meow {meows.at(1)};
+  second_meow.text = humm_meow.text;
+}
+
+meows.clear();
+
+if (!meows.empty()) {
+  // do here, safe
+}
+```
+
+May you think, of course, it is safe, so, this is the way for handling descriptors in EKG.
 
 ### Pool
 
-There is one solution for unsafe memory: a pool.
+A memory pool is a space where `n` size of memory block is reserved (dynamic or not), and occuped when neeeds. This block of memory is index-based, so picking descriptors from the pool require a known index. Allowing branch prediction.
 
 Pool is defined as:
 ```cpp
@@ -327,17 +381,19 @@ namespace ekg {
 }
 ```
 
-For defining how index elements from a pool:
+For defining how map-indices from a pool:
 ```cpp
 // ekg/io/memory.hpp
 
 #include <cstdint>
 
 namespace ekg {
-  typedef id_t uint64_t;
+  typedef uint64_t id_t;
+  typedef uint64_t flags_t;
 
   struct at_t {
   public:
+    ekg::flags_t type {};
     ekg::id_t id {};
     size_t index {};
   };
@@ -364,7 +420,7 @@ public:
 };
 ```
 
-With this descriptor-base done, we need now query it, and safety say if was found or not.
+With this descriptor-base done, we need now query it, and safety say if it was found or not.
 
 ```cpp
 meow_t &query(ekg::at_t at, ekg::pool<meow_t> &pool) {
@@ -409,30 +465,74 @@ namespace ekg::io {
 }
 
 namespace ekg {
-  template<typename t>
-  t &query(ekg::at_t &at) {
-    switch (at.id) {
-    case ekg::type::checkbox:
-      return *static_cast<t*>(
-        static_cast<void*>(
-          &ekg::resources.checkbox_pool.at(static_cast<size_t>(at.index))
-        )
-      );
-    }
+  ekg::checkbox_t &checkbox(ekg::at_t &at) {
+    if (at.index >= ekg::resources.checkbox_pool.size()) return;
+
+    ekg::checkbox_t &ref {
+      ekg::resources.checkbox_pool.at(at.index)
+    };
+
+    return (
+      ref.unique_id == at.id
+      ?
+      ekg::resources.checkbox_pool.at(at.index);
+      :
+      ekg::checkbox_t::not_found
+    );
   }
 }
 ```
 
-Querying any of descriptors is safe and flexible to runtime.
+Querying descriptors is totally safe.
 
 ```cpp
-ekg::at_t find_my_checkbox { .id = ekg::type::checkbox, .index = 64 };
-ekg::checkbox_t &checkbox {ekg::query<ekg::checkbox_t>(find_my_checkbox)};
+ekg::at_t find_my_checkbox { .id = 0, .index = 64 };
+ekg::checkbox_t &checkbox {ekg::checkbox(find_my_checkbox)};
 
 if (checkbox == ekg::checkbox_t::not_found) {
   ekg::log() << "not found :c";
 } else {
   ekg::log() << "found :3";
+}
+```
+
+Generic querying is safe, a necessary MACRO is defined:
+```cpp
+#define EKG_QUERY_DESCRIPTOR(at) \
+  ekg::checkbox &checkbox {ekg::checkbox(at)}; \
+  ekg::button_t &button {ekg::button(at)}; \
+  /* all descriptors */ \
+```
+
+An example of generic-querying use for children property:
+```cpp
+struct frame_t {
+public:
+  constexpr static ekg::frame_t not_found {/* reserved behavior-case */};
+public:
+  std::vector<ekg::at_t> children {};
+};
+
+// etc
+
+frame_t &frame {ekg::frame(my_stack, "window")}; // find for a frame tagged with 'window'
+if (frame == ekg::frame_t::not_found) {
+  return;
+}
+
+ekg::button_t &my_button {ekg::make(ekg::button_t { /* properties */ })};
+frame.children.push_back(my_button); // added
+
+ekg::checkbox_t &my_check {ekg::make(ekg::checkbox_t { /* properties */ })};
+frame.children.push_back(my_check); // added
+
+// etc
+
+ekg::frame_t &descriptor {ekg::frame(this->at_descriptor)};
+if (descriptor == ekg::frame_t::not_found) return;
+for (ekg::at_t &at : descriptor.children) {
+  EKG_QUERY_DESCRIPTOR(at);
+  height += child.rect.y + child.rect.h;
 }
 ```
 

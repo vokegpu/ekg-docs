@@ -112,7 +112,7 @@ int main() {
 
 ## Renderable-Widget Safety
 
-```c++
+```cpp
 #include <iostream>
 #include <vector>
 #include <memory>
@@ -160,7 +160,7 @@ int main() {
 
 # Safe-Instance Creation
 
-```c++
+```cpp
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -186,6 +186,71 @@ int main() {
     abstract *p_meow {new_widget_instance<meow>(&core)};
     p_meow->p_tag = "meow";
     std::cout << p_meow->p_tag << std::endl; // assert meow
+    return 0;
+}
+```
+
+## Dangerous Generic-Casting Using Template
+
+```cpp
+// Online C++ compiler to run C++ program online
+#include <iostream>
+#include <vector>
+#include <string>
+
+template<typename t>
+t meow() {
+    return t {}; 
+}
+
+struct a_t { std::string text {}; };
+struct b_t { int bla {}; };
+struct c_t { float meow {}; };
+struct d_t {};
+
+static std::vector<a_t> as {};
+static std::vector<b_t> bs {};
+static std::vector<c_t> cs {};
+static std::vector<d_t> ds {};
+
+#define illegal_cast(t, list, index) *(t*)((void*)&list.at(index));
+
+template<typename t>
+t &query(int type, size_t index) {
+    switch (type) {
+        case 0:
+            return illegal_cast(t, as, index);
+        case 1:
+            return illegal_cast(t, bs, index);
+        case 2:
+            return illegal_cast(t, cs, index);
+        case 3:
+            return illegal_cast(t, ds, index);
+    }
+    
+    static t never_return {};
+    return never_return;
+}
+
+#define A 0
+#define B 1
+#define C 2
+#define D 3
+
+int main() {
+    // Write C++ code here
+    
+    as.emplace_back() = a_t {.text = "meowmoemwomew"};
+    bs.emplace_back() = b_t { .bla = 2 };
+    cs.emplace_back();
+    ds.emplace_back();
+    
+    a_t &a {query<a_t>(A, 0)};
+    std::cout << a.text << std::endl;
+    
+    b_t &b {query<b_t>(B, 0)};
+    std::cout << b.bla << std::endl;
+
     return 0;
 }
 ```
