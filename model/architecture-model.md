@@ -1,4 +1,4 @@
-# Archtecture-Model
+# Architecture-Model
 
 ## Praface
 
@@ -358,7 +358,7 @@ if (checkbox == ekg::checkbox_t::not_found) {
 
 ### Generic-Query
 
-Okay here a big deal with descriptors and pools, generic is possible but limite to the archtecture of EKG, while not a EKG standard, you can make unsafe everything.
+Okay here a big deal with descriptors and pools, generic is possible but limite to the architecture of EKG, while not a EKG standard, you can make unsafe everything.
 
 ```
 template<typename t>
