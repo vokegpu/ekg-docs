@@ -265,7 +265,7 @@ bool kill(ekg::at_t &at) {
 Dealing with deadly virtual memory is safety, cleaning is not a priority because of erasing/inserting performance, we need to priority inserting, instead of immediate delete.
 
 ```cpp
-bool gc(const ekg::at_t &at) {
+void gc(const ekg::at_t &at) {
   size_t size {this->pool.size()};
   if (at.index >= size) {
     return false;
