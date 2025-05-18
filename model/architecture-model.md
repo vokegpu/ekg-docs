@@ -13,7 +13,7 @@ This applies to the descriptors, not the renderable widgets. Until descriptors m
 The argument is:
 > If usage of pointers are potentially unsafe, pointers must be not used, instead, a memory pool must be used.
 
-A replacement for [Bjarne Stroustrup](https://en.wikipedia.org/wiki/Bjarne_Stroustrup) definition of [object-oriented](https://en.wikipedia.org/wiki/Kristen_Nygaard) in the favor of descriptors: Object-state oriented.
+A replacement for [Bjarne Stroustrup](https://en.wikipedia.org/wiki/Bjarne_Stroustrup) definition of [object-oriented](https://en.wikipedia.org/wiki/Kristen_Nygaard) in favor of descriptors design: Object-state oriented.
 
 ![image](https://github.com/user-attachments/assets/fc643e9f-fe9c-4226-97e1-6d51ca7f68e4)
 
@@ -25,7 +25,7 @@ There is two ways to describing a reference in C++:
   | - | C-style: `meow_t *p`.  
   | - | C++-style: `meow_t &v`.  
 
-Both C and C are the same, as shown:
+Both C and C++ are the same, as shown:
 ```cpp
 void meow(int *p_meow) {
   *p_meow = 40;
