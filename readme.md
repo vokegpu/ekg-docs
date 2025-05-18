@@ -2,7 +2,7 @@
 
 ## Preface
 
-EKG docs contains tutorial about the EKG standard way to creating GUIs and the fundamentals of EKG model-archtecture
+EKG docs contains tutorial about the EKG standard way to creating GUIs and the fundamentals of EKG model-architecture.
 
 ## Programming GUIs with EKG
 
@@ -11,10 +11,10 @@ EKG docs contains tutorial about the EKG standard way to creating GUIs and the f
 * Hello-World
 * EKG-standard
 
-## EKG model-archtecture.
+## EKG model-architecture.
 
 This section includes: the root problem of legacy EKG, memory-handling model architecture, safety-proofs, standard format for input-binding(s) and more.
 
 * [The problem of legacy EKG memory-handling model](./model/the-problem.md)
-* [Memory-handling model](./model/archtecture-model.md)
+* [Memory-handling model](./model/architecture-model.md)
 * [Input-binding tag-style](./model/input-binding-tag-style.md)
