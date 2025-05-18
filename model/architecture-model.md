@@ -13,6 +13,11 @@ This applies to the descriptors, not the renderable widgets. Until descriptors m
 The argument is:
 > If usage of pointers are potentially unsafe, pointers must be not used, instead, a memory pool must be used.
 
+A replacement for [Bjarne Stroustrup](https://en.wikipedia.org/wiki/Bjarne_Stroustrup) definition of [object-oriented](https://en.wikipedia.org/wiki/Kristen_Nygaard) in use of descriptors: Object-state oriented.
+
+![image](https://github.com/user-attachments/assets/130bc32f-f75b-491e-a2fe-ca11ac148fe9)
+ 
+
 ### C++-Style Reference
 
 When executing programs in a OS, the memory accessed from the program is not directly the RAM, but a virtual place, reference is a pointer that points to the virtual place of something.
