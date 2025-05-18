@@ -213,13 +213,16 @@ namespace ekg {
   protected:
     t not_found;
     std::vector<t> pool {};
+    size_t dead_virtual_address_count {};
+  public:
+    size_t trash_capacity {20};
   public:
     pool(t not_found) : not_found(not_found) {}
   };
 }
 ```
 
-Quering specified `t` is defined as:
+Querying specified `t` is defined as:
 ```cpp
 t &query(ekg::at_t &at) {
   if (
@@ -243,53 +246,91 @@ t &query(ekg::at_t &at) {
 }
 ```
 
-`ekg::at_t` must be a reference at query, because here, the pool can re-index the entire elements, and MUST be synced with `ekg::at_t` if not found, everything should pre-declared to increase the memory-handling safety. 
+`ekg::at_t` must be a reference at query, because if an element is not found, the pool try to re-index and ultimately if nothing helps just return as `not_found`.
+
+Any dead element is marked with `is_dead` as defined here:
+
+```cpp
+bool kill(ekg::at_t &at) {
+  t &element {this->query(at)};
+  if (element == this->not_found) {
+    return false;
+  }
+
+  element.is_dead = true;
+  return static_cast<bool>(++this->dead_virtual_address_count);
+}
+```
+
+Dealing with deadly virtual memory is safety, cleaning is not a priority because of erasing/inserting performance, we need to priority inserting, instead of immediate delete.
+
+```cpp
+bool gc(const ekg::at_t &at) {
+  size_t size {this->pool.size()};
+  if (at.index >= size) {
+    return false;
+  }
+
+  if (this->dead_virtual_address_count < this->trash_capacity) {
+    return;
+  }
+
+  for (size_t it {}; it < size; it++) {
+    t &element {this->pool.at(it)}; 
+    if (!element.is_dead) {
+      continue;
+    }
+
+    this->pool.erase(this->pool.begin() + it);
+    size = this->pool.size();
+  }
+
+  this->dead_virtual_address_count = 0;
+}
+```
+
+All these definitions must be followed for a safety-strictly memory-handling control.
 
 ### Resources
 
 With pools we can store an unique specific descriptor, then, direct access by it is own index position.
-So we can store every single type of descriptors in each designed pool, with safe query functions:
+So we can store every single type of descriptors in each designed pool:
 
 ```cpp
-// ekg/io/resources.hpp
+// ekg/core/pools.hpp
 
 #include <array>
 
 namespace ekg::io {
-  extern struct resources_t {
+  extern struct pools_t {
   public:
-    ekg::pool<ekg::checkbox_t> checkbox_pool {};
-    ekg::pool<ekg::property_t> checkbox_property_pool {};
-    ekg::pool<ekg::button_t> button_pool {};
-    ekg::pool<ekg::property_t> button_property_pool {};
-  } resources;
+    ekg::pool<ekg::checkbox_t> checkbox {ekg::checkbox_t::not_found};
+    ekg::pool<ekg::property_t> checkbox_property {ekg::property_t::not_found};
+    ekg::pool<ekg::button_t> button {ekg::button_t::not_found};
+    ekg::pool<ekg::property_t> button_property {ekg::property_t::not_found};
+    /* etc */
+  } pools;
 }
 
 namespace ekg {
   ekg::checkbox_t &checkbox(ekg::at_t &at) {
-    if (at.index >= ekg::resources.checkbox_pool.size()) return;
-
-    ekg::checkbox_t &ref {
-      ekg::resources.checkbox_pool.at(at.index)
-    };
-
-    return (
-      ref.unique_id == at.id
-      ?
-      ekg::resources.checkbox_pool.at(at.index);
-      :
-      ekg::checkbox_t::not_found
-    );
+    return ekg::io::pools.checkbox.query(at);
   }
+
+  ekg::checkbox_t &button(ekg::at_t &at) {
+    return ekg::io::pools.button.query(at);
+  }
+
+  /* etc */
 
   ekg::property_t &property(ekg::at_t &at) {
     ekg::pool<ekg::property_t> *p_property_pool {nullptr};
     switch (at.type) {
     case ekg::type::checkbox:
-      p_property_pool = &ekg::resources.checkbox_property_pool;
+      p_property_pool = &ekg::core::pools.checkbox_property;
       break;
     case ekg::type::textbox:
-      p_property_pool = &ekg::resources.textbox_property_pool;
+      p_property_pool = &ekg::core::pools.textbox_property;
       break;
     }
 
@@ -297,24 +338,7 @@ namespace ekg {
       return ekg::property_t::not_found;
     }
 
-    bool found {};
-    if (
-        at.index >= p_property_pool->pool.size()
-        ||
-        p_property_pool->query(at).unique_id != at.unique_id
-    ) {
-      p_property_pool->index(at);
-    }
-
-    return (
-      at.index < p_property_pool->pool.size()
-      &&
-
-      ?
-
-      :
-      ekg::property_t::not_found
-    );
+    return p_property_pool->query(at);
   }
 }
 ```
@@ -322,8 +346,10 @@ namespace ekg {
 Querying descriptors is totally safe.
 
 ```cpp
-ekg::at_t find_my_checkbox { .id = 0, .index = 64 };
+ekg::at_t find_my_checkbox { .id = 20, .index = 64 };
 ekg::checkbox_t &checkbox {ekg::checkbox(find_my_checkbox)};
+
+/* brute force will occur if unique id 20 is not found */
 
 if (checkbox == ekg::checkbox_t::not_found) {
   ekg::log() << "not found :c";
@@ -332,45 +358,18 @@ if (checkbox == ekg::checkbox_t::not_found) {
 }
 ```
 
-Generic querying is safe, a necessary MACRO is defined:
-```cpp
-#define EKG_QUERY_DESCRIPTOR(at) \
-  ekg::checkbox &checkbox {ekg::checkbox(at)}; \
-  ekg::button_t &button {ekg::button(at)}; \
-  /* all descriptors */ \
+### Generic-Query
+
+Okay here a big deal with descriptors and pools, generic is possible but limite to the architecture of EKG, while not a EKG standard, you can make unsafe everything.
+
 ```
-
-An example of generic-querying use for children property:
-```cpp
-struct frame_t {
-public:
-  constexpr static ekg::frame_t not_found {/* reserved behavior-case */};
-public:
-  std::vector<ekg::at_t> children {};
-};
-
-// etc
-
-frame_t &frame {ekg::frame(my_stack, "window")}; // find for a frame tagged with 'window'
-if (frame == ekg::frame_t::not_found) {
-  return;
-}
-
-ekg::button_t &my_button {ekg::make(ekg::button_t { /* properties */ })};
-frame.children.push_back(my_button); // added
-
-ekg::checkbox_t &my_check {ekg::make(ekg::checkbox_t { /* properties */ })};
-frame.children.push_back(my_check); // added
-
-// etc
-
-ekg::frame_t &descriptor {ekg::frame(this->at_descriptor)};
-if (descriptor == ekg::frame_t::not_found) return;
-for (ekg::at_t &at : descriptor.children) {
-  EKG_QUERY_DESCRIPTOR(at);
-  height += child.rect.y + child.rect.h;
+template<typename t>
+t &query(ekg::at_t &at) {
+  /* bypass the compiler using illegal static any cast */
 }
 ```
+
+That is it.
 
 ## Conclusion
 
