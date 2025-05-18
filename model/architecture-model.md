@@ -122,7 +122,7 @@ if (!meows.empty()) {
 
 May you think, of course, it is safe, so, this is the way for handling descriptors in EKG.
 
-### Pool Concept
+### Pool-Concept
 
 A memory pool is a space where `n` size of memory block is reserved (dynamic or not), and occuped when neeeds. This block of memory is index-based, so picking descriptors from the pool require a known index. Allowing branch prediction.
 
@@ -202,7 +202,7 @@ if (search_meow == ekg::meow_t::not_found) {
 }
 ```
 
-### Pool Definition
+### Pool-Definition
 
 We have a pool concept, now we can increase the complexity of pool for the use case of EKG.
 
@@ -358,7 +358,7 @@ if (checkbox == ekg::checkbox_t::not_found) {
 
 ### Generic-Query
 
-Okay here a big deal with descriptors and pools, generic is possible but limite to the architecture of EKG, while not a EKG standard, you can make unsafe everything.
+Okay here a big deal with descriptors and pools, generic is possible but limite to the archtecture of EKG, while not a EKG standard, you can make unsafe everything.
 
 ```
 template<typename t>
@@ -371,4 +371,6 @@ That is it.
 
 ## Conclusion
 
-Now EKG is pool-safety, there is way to leak memory unless you force it.
+Likely, if someone says "a program is memory-safe" you can make some questions if is or not, but EKG, you can just read the argument principle, understand the model, and confirm: it is memory-safe.
+
+Of course, EKG is not done yet, but it is how we will cover the memory address for descriptors, soon, we will remove ALL object-oriented from EKG.
