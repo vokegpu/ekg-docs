@@ -245,6 +245,7 @@ Now some benefits we gain with this new model:
 * Memory-safe descriptors:  
   | - | Recyclable descriptors with many possible designs.  
   | - | Easily by-widget theme and many options settings.  
-  | - | No raw-ptr(s) or smart-ptr(s) for descriptors. As proven [here](./proofs.md#raw-pointers-unsafety) and [here](proofs.md#raw-pointers-crazy-unsafety), it is too dangerous for an interface context.
+  | - | No raw-ptr(s) or smart-ptr(s) for descriptors. As proven [here](./proofs.md#raw-pointers-unsafety) and [here](proofs.md#raw-pointers-crazy-unsafety), it is too dangerous for an interface context.  
+  | - | Efficiently stack-memory usage.
 
 * Stack-system for better query performance and widgets internal-logic.
