@@ -13,10 +13,9 @@ This applies to the descriptors, not the renderable widgets. Until descriptors m
 The argument is:
 > If usage of pointers are potentially unsafe, pointers must be not used, instead, a memory pool must be used.
 
-A replacement for [Bjarne Stroustrup](https://en.wikipedia.org/wiki/Bjarne_Stroustrup) definition of [object-oriented](https://en.wikipedia.org/wiki/Kristen_Nygaard) in use of descriptors: Object-state oriented.
+A replacement for [Bjarne Stroustrup](https://en.wikipedia.org/wiki/Bjarne_Stroustrup) definition of [object-oriented](https://en.wikipedia.org/wiki/Kristen_Nygaard) in the favor of descriptors: Object-state oriented.
 
 ![image](https://github.com/user-attachments/assets/130bc32f-f75b-491e-a2fe-ca11ac148fe9)
- 
 
 ### C++-Style Reference
 
@@ -123,11 +122,11 @@ if (!meows.empty()) {
 
 May you think, of course, it is safe, so, this is the way for handling descriptors in EKG.
 
-### Pool
+### Pool Concept
 
 A memory pool is a space where `n` size of memory block is reserved (dynamic or not), and occuped when neeeds. This block of memory is index-based, so picking descriptors from the pool require a known index. Allowing branch prediction.
 
-Pool is defined as:
+Pool-concept is defined as:
 ```cpp
 // ekg/io/memory.hpp
 
@@ -203,6 +202,49 @@ if (search_meow == ekg::meow_t::not_found) {
 }
 ```
 
+### Pool Definition
+
+We have a pool concept, now we can increase the complexity of pool for the use case of EKG.
+
+```cpp
+namespace ekg {
+  template<typename t>
+  class pool {
+  protected:
+    t not_found;
+    std::vector<t> pool {};
+  public:
+    pool(t not_found) : not_found(not_found) {}
+  };
+}
+```
+
+Quering specified `t` is defined as:
+```cpp
+t &query(ekg::at_t &at) {
+  if (
+      at.index >= this->pool.size()
+      ||
+      this->pool.at(at.index).unique_id != at.unique_id
+  ) {
+    size_t size {this->pool.size()};
+    for (size_t it {}; it < size; it++) {
+      t &element {this->pool.at(it)};
+      if (element.unique_id == at.unique_id) {
+        at.index = it;
+        return element;
+      }
+    }
+
+    return this->not_found;
+  }
+
+  return this->pool.at(at.index);
+}
+```
+
+`ekg::at_t` must be a reference at query, because here, the pool can re-index the entire elements, and MUST be synced with `ekg::at_t` if not found, everything should pre-declared to increase the memory-handling safety. 
+
 ### Resources
 
 With pools we can store an unique specific descriptor, then, direct access by it is own index position.
@@ -212,13 +254,14 @@ So we can store every single type of descriptors in each designed pool, with saf
 // ekg/io/resources.hpp
 
 #include <array>
-#include <functional>
 
 namespace ekg::io {
   extern struct resources_t {
   public:
     ekg::pool<ekg::checkbox_t> checkbox_pool {};
+    ekg::pool<ekg::property_t> checkbox_property_pool {};
     ekg::pool<ekg::button_t> button_pool {};
+    ekg::pool<ekg::property_t> button_property_pool {};
   } resources;
 }
 
@@ -236,6 +279,41 @@ namespace ekg {
       ekg::resources.checkbox_pool.at(at.index);
       :
       ekg::checkbox_t::not_found
+    );
+  }
+
+  ekg::property_t &property(ekg::at_t &at) {
+    ekg::pool<ekg::property_t> *p_property_pool {nullptr};
+    switch (at.type) {
+    case ekg::type::checkbox:
+      p_property_pool = &ekg::resources.checkbox_property_pool;
+      break;
+    case ekg::type::textbox:
+      p_property_pool = &ekg::resources.textbox_property_pool;
+      break;
+    }
+
+    if (!p_property_pool) {
+      return ekg::property_t::not_found;
+    }
+
+    bool found {};
+    if (
+        at.index >= p_property_pool->pool.size()
+        ||
+        p_property_pool->query(at).unique_id != at.unique_id
+    ) {
+      p_property_pool->index(at);
+    }
+
+    return (
+      at.index < p_property_pool->pool.size()
+      &&
+
+      ?
+
+      :
+      ekg::property_t::not_found
     );
   }
 }
@@ -297,7 +375,3 @@ for (ekg::at_t &at : descriptor.children) {
 ## Conclusion
 
 Now EKG is pool-safety, there is way to leak memory unless you force it.
-
-# Copyright
-
-Copyright (c) 2022-2025 Rina Wilk / vokegpu@gmail.com
