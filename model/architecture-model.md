@@ -15,7 +15,7 @@ The argument is:
 
 A replacement for [Bjarne Stroustrup](https://en.wikipedia.org/wiki/Bjarne_Stroustrup) definition of [object-oriented](https://en.wikipedia.org/wiki/Kristen_Nygaard) in the favor of descriptors: Object-state oriented.
 
-![image](https://github.com/user-attachments/assets/130bc32f-f75b-491e-a2fe-ca11ac148fe9)
+![image](https://github.com/user-attachments/assets/fc643e9f-fe9c-4226-97e1-6d51ca7f68e4)
 
 ### C++-Style Reference
 
