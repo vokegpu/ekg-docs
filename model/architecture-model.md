@@ -1,6 +1,6 @@
 # Architecture-Model
 
-## Praface
+## Preface
 
 As previously discussed [here](./the-problem.md), now  we need take all advantages of descriptors and modern C++ to create a new memory handling-model for EKG. 
 
