@@ -299,8 +299,6 @@ So we can store every single type of descriptors in each designed pool:
 ```cpp
 // ekg/core/pools.hpp
 
-#include <array>
-
 namespace ekg::io {
   extern struct pools_t {
   public:
@@ -317,7 +315,7 @@ namespace ekg {
     return ekg::io::pools.checkbox.query(at);
   }
 
-  ekg::checkbox_t &button(ekg::at_t &at) {
+  ekg::button_t &button(ekg::at_t &at) {
     return ekg::io::pools.button.query(at);
   }
 
