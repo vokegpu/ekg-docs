@@ -1,4 +1,4 @@
-# The Problem with Legacy EKG Memory-Handling Model
+# The Problem of Legacy EKG Memory-Handling Model
 
 ## Preface
 
