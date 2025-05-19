@@ -8,14 +8,14 @@ As previously discussed [here](./the-problem.md), now  we need take all advantag
 
 ### Model Fundamentals
 
-This applies to the descriptors, not the renderable widgets. Until descriptors memory-model are done, internal EKG systems will not implement pools for renderable widgets.
-
 The argument is:
 > If usage of pointers are potentially unsafe, pointers must be not used, instead, a memory pool must be used.
 
 A replacement for [Bjarne Stroustrup](https://en.wikipedia.org/wiki/Bjarne_Stroustrup) definition of [object-oriented](https://en.wikipedia.org/wiki/Kristen_Nygaard) in favor of descriptors design: Object-state oriented.
 
 ![image](https://github.com/user-attachments/assets/fc643e9f-fe9c-4226-97e1-6d51ca7f68e4)
+
+As proven [here](./proofs.md#safety-descriptor-pool-query) pools are the most safety use-case for EKG.
 
 ### C++-Style Reference
 
