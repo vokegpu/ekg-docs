@@ -266,11 +266,6 @@ Dealing with deadly virtual memory is safety, cleaning is not a priority because
 
 ```cpp
 void gc() {
-  size_t size {this->pool.size()};
-  if (at.index >= size) {
-    return false;
-  }
-
   if (this->dead_virtual_address_count < this->trash_capacity) {
     return;
   }
