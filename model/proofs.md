@@ -87,12 +87,9 @@ int main() {
 #include <iostream>
 #include <vector>
 #include <string>
-#include <functional>
-#include <array>
 
 struct at_t {
 public:
-    size_t id {};
     size_t index {};
 };
 
@@ -114,41 +111,33 @@ public:
     }
 };
 
-#define NOT_FOUND 34553453453
-
-static std::vector<meow_t> meow_pool {};
-static meow_t not_found_meow {.id = NOT_FOUND};
-
-static std::array<std::function<void*(size_t)>, 1> query_function {
-    [](size_t index) { 
-        return index >= meow_pool.size() ? &not_found_meow : &meow_pool.at(index);
-    }
-};
-
-enum type {
-    MEOW = 0
-};
+#define NOT_FOUND 6669
 
 template<typename t>
-constexpr t &query(size_t index, size_t id) {
-    return *static_cast<t*>(query_function[id](index));
+using pool = std::vector<t>;
+
+template<typename t>
+t &query(size_t index, pool<t> &t_pool, t &not_found) {
+    return index >= t_pool.size() ? not_found : t_pool.at(index);
 }
 
 class abstract {
 public:
-    at_t at_descriptor { .id = type::MEOW, .index = 0 };
+    at_t at_descriptor { .index = 0 };
 };
 
 int main() {
+    meow_t not_found_meow {.id = NOT_FOUND};
+    pool<meow_t> meow_pool {};
     meow_pool.emplace_back() = {.text = "MEOW-DESCRIPTOR"};
-    abstract boo {};
+    abstract boo {}; // `at_t` initialize with index 0
 
-    meow_t &slot0 {query<meow_t>(boo.at_descriptor.index, boo.at_descriptor.id)};
+    meow_t &slot0 {query<meow_t>(boo.at_descriptor.index, meow_pool, not_found_meow)};
     if (slot0 != not_found_meow) {
         std::cout << "found: " << slot0.text << "\n";
     }
 
-    meow_t &slot1 {query<meow_t>(1, type::MEOW)};
+    meow_t &slot1 {query<meow_t>(1, meow_pool, not_found_meow)};
     if (slot1 == not_found_meow) {
         std::cout << "not found";
     }
