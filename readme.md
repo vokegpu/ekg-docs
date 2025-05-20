@@ -11,7 +11,7 @@ EKG docs contains tutorial about the EKG standard way to creating GUIs and the f
 * Hello-World
 * EKG-standard
 
-## EKG Model-Architecture.
+## EKG Model-Architecture
 
 This section includes: the root problem of legacy EKG, memory-handling model architecture, safety-proofs, standard format for input-binding(s) and more.
 
