@@ -32,18 +32,102 @@ The property give to us the type of widget, so we can call any methods for each 
   }
 ```
 
+### Allocator
+
+The `ekg::service::allocator` stands for CPU-side geometry handling, while not related directly to the GPU-API used, we need make sure for capture each part of draw before send to the GPU its-self.
+`ekg::io::gpu_data_t` is the draw-call information, which map the stride of geometry resources located in VRAM. The CPU-side geometry resources use a simple vector to cache vertices.
+
+```cpp
+namespace ekg::service {
+  class allocator {
+  public:
+    static std::vector<voke::io::gpu_data_t> *p_current_gpu_data_buffer;
+    static std::vector<float> *p_current_geometry_buffer;
+  public:
+    void invoke() {
+      /* initialize default geometries */
+      /* reset GPU-data index */
+    }
+
+    voke::io::gpu_data_t &generate_data() {
+      /* etc */
+
+      this->gpu_data_instance++;
+
+      if (ekg::service::allocator::p_current_gpu_data_buffer) {
+        ekg::service::allocator::p_current_gpu_data_buffer->push_back(gpu_data);
+      }
+
+      return gpu_data;
+    }
+
+    void push_back_geometry(
+      float x,
+      float y,
+      float u,
+      float v
+    ) {
+      if (ekg::service::allocator::p_current_gpu_data_buffer) {
+        ekg::service::allocator::p_current_gpu_data_buffer->push_back(x);
+        ekg::service::allocator::p_current_gpu_data_buffer->push_back(y);
+        ekg::service::allocator::p_current_gpu_data_buffer->push_back(u);
+        ekg::service::allocator::p_current_gpu_data_buffer->push_back(v);
+      }
+
+      this->geometry_buffer.push_back(x);
+      this->geometry_buffer.push_back(y);
+      this->geometry_buffer.push_back(u);
+      this->geometry_buffer.push_back(v);
+
+      this->geometry_instance += 4;
+    }
+
+    void pass_gpu_data_buffer(std::vector<voke::io::gpu_data_t> &gpu_data_buffer) {
+      /* tweaks on current data index for prevent issues like out of bouding index */
+      this->gpu_data_buffer.insert(
+        this->gpu_data_buffer.begin() + this->gpu_data_instance,
+        gpu_data_buffer.begin(),
+        gpu_data_buffer.end()
+      );
+
+      this->gpu_data_instance += gpu_data_buffer.size();
+    }
+
+    void pass_geometry_buffer(std::vector<float> &geometry_buffer) {
+      /* tweaks on current data index for prevent issues like out of bouding index */
+
+      this->geometry_buffer.insert(
+        this->geometry_buffer.begin() + this->geometry_instance,
+        geometry_buffer.begin(),
+        geometry_buffer.end()
+      );
+
+      this->geometry_instance += geometry_buffer.size();
+    }
+
+    void revoke() {
+      /* send to GPU-VRAM all the CPU-side geometry resources */
+      /* reduce GPU-data size */
+    }
+  };
+}
+```
+
+The legacy EKG allocator does not cover how the GPU-VRAM is handled, there is no capacity-system like a `std::vector`, but this will be discussed later, not here. 
+
 ### Smart-Caching
 
-CPU-side should not waste cycles for calculate new geometry resources, I always thought about smart-caching geometry in CPU.
+The purpose for smart-caching is skiping unncessary complete redraws, reducing the CPU-side useless-pain wasting cycles.
 
-Local geometry-buffer is important for skip useless geometry re-calculations, as defined here:
+Local buffers is important for skip useless geometry re-calculations, as defined here:
 ```cpp
 // ekg/ui/abatract.hpp
 // ekg::ui
 
 struct abstract_t {
 public:
-  std::vector<float> gbuffer {};
+  std::vector<float> geometry_buffer {};
+  std::vector<voke::io::gpu_data_t> gpu_data_buffer {};
   /* etc */
 };
 ```
@@ -69,8 +153,8 @@ for (ekg::at_t &at : this->stack_list) {
 
   /**
    * The smart-cache occurs here, with two possible cases:
-   * 1- if should update: the redraw will recalculate the entire local geometry buffer (gbuffer) and update at end.
-   * 2- if should not update: the redraw will copy the latest geometry buffer (gbuffer). 
+   * 1- if should update: the redraw will recalculate the entire local geometry buffer (geometry_buffer and gpu_data_buffer) and update at end.
+   * 2- if should not update: the redraw will copy the latest geometry buffer (geometry_buffer and gpu_data_buffer). 
    **/
 
   EKG_WIDGET_CALL(
@@ -134,12 +218,104 @@ for (size_t it {}; it < size; it++) {
 }
 ```
 
-### Event
+The high-frequency rate-update can be fixed if `ekg::update()` is called under a fixed-runtime.
 
-It is the same as legacy code, but with memory-safe cover.
+### Overall
 
-```cpp
-
-```
+All others parts of runtime, likely `ekg::runtime::poll_events` and callback-feature may affect performance but not dicussed here, because this topic is focused on how handle draw(s) in CPU-side and GPU-side.
 
 ## GPU
+
+### Capacity-System for VRAM
+
+Likely, a `std::vector` cover the memory with capacity-system, where `n` is always larger than the current filled memory-block, this make possible inserting without re-allocating.
+
+Possible implementation:
+```cpp
+template<typename t>
+struct vector {
+protected:
+  t *p {};
+  size_t current_size {};
+  size_t current_capacity {};
+  bool shuld_resize {};
+public:
+  vector() {
+    this->current_capacity = 100;
+    this->p = new t[this->current_capacity];
+  }
+
+  ~vector() {
+    delete this->p;
+  }
+
+  void reserve(size_t size) {
+    this->current_capacity = size;
+    this->shuld_resize = true;
+  }
+
+  size_t size() {
+    return this->current_size;
+  }
+
+  size_t capacity() {
+    return this->current_capacity;
+  }
+
+  void check_memory_boundies() {
+    if (
+        this->shuld_resize
+        ||
+        this->current_size >= this->current_capacity
+    ) {
+      this->shuld_resize = false;
+      this->current_capacity *= 2;
+      size_t it {};
+
+      t *p {new t[this->current_capacity]};
+      memcpy(p, this->p, this->current_size);
+
+      delete this->p;
+      this->p = p;
+    }
+  }
+
+  void push_back(const t &copy) {
+    this->check_memory_boundies();
+    this->p[this->current_size++] = copy;
+  }
+
+  t &emplace_back() {
+    this->check_memory_boundies();
+    return this->p[this->current_size++];
+  }
+};
+
+vector<float> meow {};
+```
+
+That is it, a vector, the `t *p` is a block of memory, which increases if necessary, sadly the GPU is not cappable of do it, because we are limited to the simultaneosly limite of GPU.
+For bypass it we can reserve a specific amount of VRAM and fill it, OpenGL is able to resize, because the driver handle the buffers and desfragment it for us, but Vulkan no.
+
+#### OpenGL
+
+For OpenGL (3, 4, ES3, WebGL2/ES2) we will cover the block of memory by allocating initianlly a capacity.
+
+```cpp
+// ekg/os/ekg_opengl.hpp
+// ekg::os::opengl
+
+virtual void pass_geometry_buffer(
+  std::vector<float> &geometry_buffer
+) {
+  if (geometry_buffer.size() > this->gbuffer_capacity) {
+    glBufferData(
+      GL_ARRAY_BUFFER,
+      this->gbuffer_capacity,
+      geometry_buffer.data(),
+      GL_STATC_DRAW
+    );
+  }
+}
+
+```
