@@ -297,6 +297,8 @@ vector<float> meow {};
 That is it, a vector, the `t *p` is a block of memory, which increases if necessary, sadly the GPU is not cappable of do it, because we are limited to the simultaneosly limite of GPU.
 For bypass it we can reserve a specific amount of VRAM and fill it, OpenGL is able to resize, because the driver handle the buffers and desfragment it for us, but Vulkan no.
 
+For Vulkan we can enjoy of low-level mapping memory-buffer `t *p` pointing to a block of memory at VRAM, passing (correct-syncing) direct to PCIe, reducing the copy process at CPU-side and CPU-side cycles.
+
 #### OpenGL
 
 For OpenGL (3, 4, ES3, WebGL2/ES2) we will cover the block of memory by allocating initianlly a capacity.
@@ -311,11 +313,28 @@ virtual void pass_geometry_buffer(
   if (geometry_buffer.size() > this->gbuffer_capacity) {
     glBufferData(
       GL_ARRAY_BUFFER,
-      this->gbuffer_capacity,
+      sizeof(float) * this->gbuffer_capacity,
       geometry_buffer.data(),
       GL_STATC_DRAW
     );
+  } else {
+    glBufferSubData(
+      GL_ARRAY_BUFFER,
+      0,
+      sizeof(float) * geometry_buffer.size(),
+      geometry_buffer.data()
+    );
   }
-}
 
+  /* check for vram usage limit */
+  /* soon mapped buffers should be used instead this */
+}
 ```
+
+### Vulkan
+
+Not implemented yet.
+
+## Conclusion
+
+Dealing with CPU-cycles and GPU-memory is not a pain, as covered in this topic. Smart-caching, advanced usage of low-level Vulkan and the old OpenGL.

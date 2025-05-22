@@ -17,4 +17,7 @@ This section includes: the root problem of legacy EKG, memory-handling model arc
 
 * [The problem of legacy EKG memory-handling model](./model/the-problem.md)
 * [Memory-handling model](./model/architecture-model.md)
+* [UI descriptor-based model](./model/ui-descriptor-based-model.md)
+* [CPU-side and GPU-side performance-model](./model/performance-model.md)
+* [Callback model](./model/callback-model.md)
 * [Input-binding tag-style](./model/input-binding-tag-style.md)

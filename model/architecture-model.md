@@ -214,10 +214,17 @@ namespace ekg {
     t not_found;
     std::vector<t> pool {};
     size_t dead_virtual_address_count {};
+    ekg::id_t highest_unique_id {};
   public:
     size_t trash_capacity {20};
   public:
     pool(t not_found) : not_found(not_found) {}
+
+    ekg::at_t push_back(const t &copy) {
+      ekg::at_t at {.index = this->pool.size(), .unique_id = ++this->highest_unique_id};
+      this->pool.push_back(copy);
+      return at;
+    }
   };
 }
 ```
@@ -356,13 +363,27 @@ if (checkbox == ekg::checkbox_t::not_found) {
 Okay here a big deal with descriptors and pools, generic is possible but limited to the architecture of EKG, while not a EKG standard, you can make unsafe everything.
 
 ```cpp
+
+// ekg/io/memory.hpp
+template<typename t>
+constexpr t &any_static_cast(void *p_any) {
+  return *static_cast<t*>(p_any); // illegal-casting
+}
+
+// ekg/io/resource.hpp
 template<typename t>
 t &query(ekg::at_t &at) {
-  /* bypass the compiler using illegal static any cast */
+  if (at.type == ekg::type::frame) {
+    return ekg::any_static_cast<t>(&ekg::pools.frame.query(at));
+  } else if (at.type == ekg::type::checkbox) {
+    return ekg::any_static_cast<t>(&ekg::pools.checkbox.query(at));
+  } /* else if etc */
+  
+  return ekg::any_static_cast<t>(&ekg::pools.callback.query(at));
 }
 ```
 
-That is it.
+Not EKG standard, but you are able to implement at your own risk, that is it.
 
 ## Conclusion
 
