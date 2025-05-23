@@ -34,23 +34,38 @@ When a stack is created with `ekg::make<ekg::stack_t>` it is stored in a pool. F
 ```cpp
 // ekg/io/make.hpp
 namespace ekg {
-  ekg::stack_t &make(const ekg::stack_t &descriptor) {
+  ekg::stack_t &make(ekg::stack_t &stack, const ekg::stack_t &descriptor) {
     ekg::at_t at {
       ekg::pools.stack.push_back(descriptor)
     };
+
+    return ekg::pools.stack.query(at);
   }
 
-  ekg::callback_t &make(const ekg::callback_t &descriptor) {
+  ekg::callback_t &make(ekg::stack_t &stack, const ekg::callback_t &descriptor) {
     ekg::at_t at {
       ekg::pools.callbacks.push_back(descriptor)
     };
+
+    return ekg::pools.callbacks.query(at);
   }
 
   /* etc */
 }
 ```
 
+```cpp
+
+ekg::stack_t my_gui {
+  .tag = "my-gui"
+};
+
+my_gui.make<ekg::button_t>({});
+ekg::context("my-gui");
+ekg::ui::button(at);
+
+```
+
 ### Widgets
 
 ## Conclusions
-

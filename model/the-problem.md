@@ -226,16 +226,22 @@ And voila^2, new protype model. But it keeps bloated, how can we simplify this?
 Well we can, here is:
 
 ```cpp
-ekg::checkbox_t check {
-  /* add stuff */
+ekg::stack_t stack {
+  .tag = "my-gui"
 };
 
-ekg::make(check);
+ekg::checkbox_t check {};
+stack.make(check); // dif unique id
+
+ekg::stack_t &my_gui {ekg::make(stack)};
 
 check.text = "bla";
-ekg::make(bla);
+my_gui.make(check); // dif unique id
 
-bla.text = "boo";
+check.text = "quero xorar";
+my_gui.make(check); // dif unique id
+
+ekg::stack_t &s {ekg::gui("my-gui")};
 ```
 
 ## Conclusion
