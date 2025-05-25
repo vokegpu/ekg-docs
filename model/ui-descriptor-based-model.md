@@ -14,7 +14,9 @@ Strictly definitions:
 | - | For elabore complex node-descriptors, each descriptor virtual-address must end with suffix `_at` and each descriptor must have own unique `ekg::at_t at`.  
 | - | Of course the type of descriptor should be `static const ekg::type`.  
 | - | The not found option `static t not_found`.  
-| - | Ultimately the logic operators `==` `!=`, also, making sure `not_found` always is 'not-found', for prevent bypass risks.
+| - | Ultimately the logic operators `==` `!=`, also, making sure `not_found` is always 'not-found', for prevent bypass risks.
+
+If is not defined like this, EKG does not consider a property descriptor, because we can have many descriptors-like, but not descriptor concept from EKG.
 
 As defined here:
 
@@ -88,6 +90,31 @@ namespace ekg::io {
 }
 ```
 
+The nameclature pattern `*_t` allows to define a function `ekg::descriptor(/* etc */)` using the descriptor name, for querying a descriptor as defined here:
+```cpp
+namespace ekg {
+  descriptor_t &descriptor(ekg::at_t &at) {
+    /* etc */
+    return descriptor_t::not_found;
+  }
+
+  /**
+   * This is optionally may some descriptors will not have
+   * this type of query wrapper.
+   * 
+   * This may implement algorithms to reduce linear querying,
+   * but is not the best approach and does not allow direct
+   * branch prediction, as virtual-address do.
+   **/
+  descriptor_t &descriptor(std::string_view tag) {
+    /* etc */
+    return descriptor_t::not_found;
+  }
+}
+```
+
+As pointed in memory handling architecture model paper, we need make the virtual-address `ekg::at_t` as reference for prevent pointless behavior.
+
 Now let's cover the important descriptors from EKG.
 
 ### Stack
@@ -107,11 +134,78 @@ namespace ekg {
 }
 ```
 
-The make as defined here:
+The `ekg::make<ekg::stack_t>` as defined here:
 ```cpp
-namespace ekg
+case ekg::type::stack:
+  ekg::stack_t &temp {ekg::any_static_cast<ekg::stack_t>(&descriptor)};
+  ekg::at_t at {ekg::pools.stack.push_back(temp)};
+  ekg::stack_t &ref {ekg::pools.query(at)};
+  ref.at = at;
+  return ref;
 ```
 
+Stack query options:  
+| - | `ekg::stack_t &ekg::stack(ekg::at_t &at)` for virtual-address branch-prediction querying.  
+| - | `ekg::stack_t &ekg::stack(std::string_view tag)` for non-branch-prediction linear querying.
+
+### Callback
+
+A callback describe any task: internal-events, actions or free-use-case.
+
+As defined here:
+```cpp
+// ekg/task/callback.hpp
+
+namespace ekg {
+  struct info_t {
+  public:
+    std::string tag {};
+    void *p_data {nullptr}; // user-programmer address, not EKG-related
+  };
+
+  using callback_function_t = void(*)(ekg::info_t&)
+
+  struct callback_t {
+  public:
+    /* optional fields */
+    ekg::info_t info {};
+    std::function(void(ekg::info_t&)) lambda {};
+    ekg::callback_function_t function {nullptr};
+  };
+}
+```
+
+Note that we use a raw-ptr in `ekg::info_t`, yeah, but we can not cover memory safe here, using pools does not solve the problem here because the user-programmer must use of pools for things, and is not a standard, likely, the user-programmer must safety work by-self with it, since it is not related to EKG, EKG does not use this `p_data` for nothing, unless declare.
+
+The `ekg::make<ekg::callback_t>` as defined here:
+```cpp
+case ekg::type::callback:
+  ekg::callback_t &temp {ekg::any_static_cast<ekg::callback_t>(&descriptor)};
+  ekg::at_t at {ekg::pools.callback.push_back(temp)};
+  ekg::callback_t &ref {ekg::pools.query(at)};
+  ref.at = at;
+  return ref;
+```
+
+Callback query options:  
+| - | `ekg::callback_t &ekg::callback(ekg::at_t &at)` for virtual-address branch-prediction querying.
+
 ### Widgets
+
+Widget-descriptors is a group of UI elements descriptors, we will not cover all widgets here, but the pattern.
+
+For example a button.`
+
+```cpp
+// ekg/ui/button/button.hpp
+
+namespace ekg {
+  struct button_t {
+  public:
+    /* optional fields */
+    std::
+  };
+}
+```
 
 ## Conclusions
