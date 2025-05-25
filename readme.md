@@ -17,7 +17,7 @@ This section includes: the root problem of legacy EKG, memory-handling model arc
 
 * [The problem of legacy EKG memory-handling model](./model/the-problem.md)
 * [Memory-handling model](./model/architecture-model.md)
-* [Value low-frequency-based model](./model/value-low-frequneyc-model.md)
+* [Value low-frequency-based model](./model/value-low-frequency-model.md)
 * [UI descriptor-based model](./model/ui-descriptor-based-model.md)
 * [CPU-side and GPU-side performance-model](./model/performance-model.md)
 * [Input-binding tag-style](./model/input-binding-tag-style.md)
