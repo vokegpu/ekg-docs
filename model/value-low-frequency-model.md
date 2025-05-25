@@ -82,7 +82,7 @@ namespace ekg {
 }
 ```
 
-Signed address info contains the information about all current signed actions and the current bound. When mapping we should care of addres but DO NOT use them, we will not use, just compare, so it is safe. When unmapping we must use of all registeres address and check if any widget contains the ownership, if yes, we can safety unmap and transfer the ownership to null.
+Signed address info contains the information about all current signed actions and the current bound. When mapping we should care of address but DO NOT use them, we will not use, just compare, so it is safe. When unmapping tracked ownerships, if the current address is signed in EKG, EKG will reset all ownerships to `nullptr`, making the GUI safety, note: it does not disable the GUI or something, this only reset the onwership address.
 
 ```cpp
 // ekg/io/memory.hpp
