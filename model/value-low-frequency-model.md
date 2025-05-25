@@ -145,7 +145,7 @@ namespace ekg {
 }
 ```
 
-With this system, EKG allows low-latency memory coverage AND safety.
+With this system, EKG allows safety low-latency memory coverage.
 
 ### Value Standard Usage
 
