@@ -16,7 +16,7 @@ Strictly definitions:
 | - | For elabore complex node-descriptors, each descriptor virtual-address must end with suffix `_at` and each descriptor must have own unique `ekg::at_t at`.  
 | - | Of course the type of descriptor should be `static const ekg::type`.  
 | - | The not found option `static t not_found`.  
-| - | Ultimately the logic operators `==` `!=`, also, making sure `not_found` is always 'not-found', for prevent bypass risks.
+| - | Ultimately the logic operators `==` `!=`, also, making sure `not_found` is always 'not-found', for prevent bypass risks.  
 | - | Cast operator to `ekg::at_t` using the own at.
 
 If is not defined like this, EKG does not consider a property descriptor, because we can have many descriptors-like, but not descriptor concept from EKG.
