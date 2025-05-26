@@ -24,13 +24,11 @@ If is not defined like this, EKG does not consider a property descriptor, becaus
 As defined here:
 
 ```cpp
-// ekg/io/memory.hpp
 namespace ekg {
   typedef size_t id_t;
   static const ekg::id_t not_found {333666999};
 }
 
-// ekg/whatever/descriptor.hpp
 struct descriptor_t {
 public:
   static const ekg::type type {/* type */};
@@ -59,7 +57,6 @@ public:
 For registry decriptors, EKG define a function `make<t>` where `t` is the descriptor. Each descriptor must be handled by a pool.
 
 ```cpp
-// ekg/io/make.hpp
 namespace ekg {
   /**
    * User-programmer
@@ -130,7 +127,6 @@ A stack describe GUI-context: widgets.
 
 As defined here:
 ```cpp
-// ekg/ui/stack.hpp
 namespace ekg {
   struct stack_t {
   public:
@@ -161,8 +157,6 @@ A callback describe any task: internal-events, actions or free-use-case.
 
 As defined here:
 ```cpp
-// ekg/task/callback.hpp
-
 namespace ekg {
   struct info_t {
   public:
@@ -204,7 +198,6 @@ Callback query options:
 Actions:
 
 ```cpp
-// ekg/ui/action.hpp
 namespace ekg {
   enum class action {
     press,
@@ -225,7 +218,6 @@ namespace ekg {
 Layers:
 
 ```cpp
-// ekg/ui/action.hpp
 namespace ekg {
   enum class layer {
     background,
@@ -246,7 +238,6 @@ namespace ekg {
 Button can be defined as:
 
 ```cpp
-// ekg/ui/button/button.hpp
 namespace ekg {
   struct button_t {
   public:

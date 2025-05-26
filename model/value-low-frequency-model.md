@@ -66,7 +66,6 @@ It is too hard to find a way to improve the `ekg::value<t>`, EKG is a safety lib
 For working with `ekg::value<t>`, EKG must track all the virtual-address widgets where the ownership is under, as defeined here:
 
 ```cpp
-// ekg/io/memory.hpp
 namespace ekg {
   struct mapped_address_sign_info_t {
   public:
@@ -85,7 +84,6 @@ namespace ekg {
 Signed address info contains the information about all current signed actions and the current bound. When mapping we should care of address but DO NOT use them, we will not use, just compare, so it is safe. When unmapping tracked ownerships, if the current address is signed in EKG, EKG will reset all ownerships to `nullptr`, making the GUI safety, note: it does not disable the GUI or something, this only reset the onwership address.
 
 ```cpp
-// ekg/io/memory.hpp
 namespace ekg {
   void map(void *pv_address) {
     if (pv_address == nullptr) {

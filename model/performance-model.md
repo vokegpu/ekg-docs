@@ -121,9 +121,6 @@ The purpose for smart-caching is skiping unncessary complete redraws, reducing t
 
 Local buffers is important for skip useless geometry re-calculations, as defined here:
 ```cpp
-// ekg/ui/abatract.hpp
-// ekg::ui
-
 struct abstract_t {
 public:
   std::vector<float> geometry_buffer {};
@@ -135,9 +132,6 @@ public:
 The main rendering loop uses of smart-cache for improve CPU-usage.
 
 ```cpp
-// ekg/core/runtime.hpp
-// ekg::runtime::render
-
 this->allocator.invoke();
 
 for (ekg::at_t &at : this->stack_list) {
@@ -184,9 +178,6 @@ The `ekg::ui::*::on_pre_redraw` check for possibles low-latency changes. For exa
 High-frequency operations is designed to perform fixed-animations, active widgets and focused widgets. EKG should update synced with current framerate or a fixed chosen framerate. 
 
 ```cpp
-// ekg/core/runtime.hpp
-// ekg::runtime::update
-
 size_t size {this->high_frequency_list.size()};
 for (size_t it {}; it < size; it++) {
   ekg::at_t &at {this->high_frequency_list.at(it)};
@@ -304,9 +295,6 @@ For Vulkan we can enjoy of low-level mapping memory-buffer `t *p` pointing to a 
 For OpenGL (3, 4, ES3, WebGL2/ES2) we will cover the block of memory by allocating initianlly a capacity.
 
 ```cpp
-// ekg/os/ekg_opengl.hpp
-// ekg::os::opengl
-
 virtual void pass_geometry_buffer(
   std::vector<float> &geometry_buffer
 ) {

@@ -128,8 +128,6 @@ A memory pool is a space where `n` size of memory block is reserved (dynamic or 
 
 Pool-concept is defined as:
 ```cpp
-// ekg/io/memory.hpp
-
 #include <vector>
 
 namespace ekg {
@@ -140,8 +138,6 @@ namespace ekg {
 
 For defining how map-indices from a pool:
 ```cpp
-// ekg/io/memory.hpp
-
 #include <cstdint>
 
 namespace ekg {
@@ -299,8 +295,6 @@ With pools we can store an unique specific descriptor, then, direct access by it
 So we can store every single type of descriptors in each designed pool:
 
 ```cpp
-// ekg/core/pools.hpp
-
 namespace ekg::io {
   extern struct pools_t {
   public:
@@ -363,14 +357,11 @@ if (checkbox == ekg::checkbox_t::not_found) {
 Okay here a big deal with descriptors and pools, generic is possible but limited to the architecture of EKG, while not a EKG standard, you can make unsafe everything.
 
 ```cpp
-
-// ekg/io/memory.hpp
 template<typename t>
 constexpr t &any_static_cast(void *p_any) {
   return *static_cast<t*>(p_any); // illegal-casting
 }
 
-// ekg/io/resource.hpp
 template<typename t>
 t &query(ekg::at_t &at) {
   if (at.type == ekg::type::frame) {
