@@ -271,9 +271,16 @@ namespace ekg {
     ekg::actions_t<ekg::button_t::element_size> actions {};
     ekg::layers_t<ekg::button_t::element_size> layers {};
   public:
-    /* etc */ 
+    /* etc */
   };
 }
+```
+
+The `ekg::make<ekg::button_t>` can be defined as:
+```cpp
+case ekg::type::button:
+  ekg::button_t &ref {ekg::any_static_cast<ekg::button_t>(&descriptor)};
+  break;
 ```
 
 ** NEW WIDGETS WILL BE PLACED HERE SOON, THANKS **
