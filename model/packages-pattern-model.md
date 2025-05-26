@@ -28,6 +28,8 @@ As said, not all features may need a base-header, since any-header can be a base
 
 ### Implementation
 
+An example of how it should look, note: the EKG differ from this for obvious reasons, it is a fixed-example of notation.
+
 ```
 ekg/
   core/
