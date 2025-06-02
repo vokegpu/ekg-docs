@@ -98,7 +98,7 @@ meow_t b { .p_meow = &a }; // (?) this is horrible
 
 ```
 
-Unlike this, C++ reference allow compile-time type-safe programming, so, no mistakes occur, because you are building with known types.
+Unlike this, C++ reference allow compile-time type-safe programming, so here, no mistakes occur, because you are building with known types.
 
 ```cpp
 std::vector<meow_t> meows(2);
@@ -244,10 +244,15 @@ public:
 public:
   /* mandator field */
   ekg::at_t at {};
+  bool is_dead {};
 public:
   bool operator == (ekg::descriptor_t &descriptor) {
-    descriptor_t::not_found.at = ekg::at_t::not_found;
-    return this->unique_id == descriptor.unique_id;
+    descriptor_t::not_found.at = ekg::at_t::not_found; // assert
+    return (
+      (this->is_dead && descriptor_t::not_found.at == descriptor.at)
+      ||
+      (!this->is_dead && this->at == at)
+    );
   }
 
   bool operator != (ekg::descriptor_t &descriptor) {
@@ -470,6 +475,12 @@ if (meow_check == ekg::button_t::not_found) {
 ```
 
 Of course, the user-programmer (programmer who uses EKG library) will not even touch on this, this is for EKG developers.
+
+### The Ultimately Proof
+
+You can run this code:
+
+
 
 ## Conclusion
 

@@ -199,208 +199,182 @@ int main() {
 
 ```cpp
 #include <iostream>
+#include <cstdint>
 #include <vector>
-#include <string>
 
-struct at_t {
-public:
+namespace ekg {
+  enum class type {
+    MEOW,
+    MOO
+  };
+
+  typedef size_t flags_t;
+  typedef size_t id_t;
+  constexpr ekg::id_t not_found {29496526662939};
+
+  struct at_t {
+  public:
+    static ekg::at_t not_found; //{.unique_id = ekg::not_found, .flags = ekg::not_found};
+  public:
+    ekg::id_t unique_id {};
     size_t index {};
-};
-
-struct meow_t { // descriptor
-public:
-    size_t id {};
-    std::string text {};
-public:    
-    operator std::string() {
-        return this->text;
+    ekg::flags_t flags {};
+  public:
+    bool operator == (const ekg::at_t &at) {
+      ekg::at_t::not_found.unique_id = ekg::not_found;
+      ekg::at_t::not_found.flags = ekg::not_found;
+      return this->flags == at.flags && this->unique_id == at.unique_id;
     }
+
+    bool operator != (const ekg::at_t &at) {
+      return !(*this == at);
+    }
+  };
+
+  template<typename t>
+  class pool {
+  protected:
+    std::vector<t> loaded {};
+    ekg::id_t highest_unique_id {};
+    size_t dead_virtual_address_count {};
+    size_t trash_capacity {10};
+  public:
+    pool() {};
+
+    t &push_back(const t &copy) {
+      this->loaded.push_back(copy);
+
+      size_t index {this->loaded.size() - 1};
+      t &descriptor {this->loaded.at(index)};
+
+      descriptor.at.unique_id = this->highest_unique_id++;
+      descriptor.at.flags = static_cast<ekg::flags_t>(t::type);
+      descriptor.at.index = index;
+
+      return descriptor;
+    }
+
+    t &query(ekg::at_t &at) {
+      if (
+        at.index >= this->loaded.size()
+        ||
+        this->loaded.at(at.index).at.unique_id != at.unique_id
+      ) {
+        size_t size {this->loaded.size()};
+        for (size_t it {}; it < size; it++) {
+          t &descriptor {this->loaded.at(it)};
+          descriptor.at.index = it;
+          if (descriptor.at.unique_id == at.unique_id) {
+            at.index = it;
+            return descriptor;
+          }
+        }
     
-    bool operator == (meow_t &other) {
-        return this->id == other.id;
+        return t::not_found;
+      }
+
+      t &descriptor {this->loaded.at(at.index)};
+      return descriptor;
     }
 
-    bool operator != (meow_t &other) {
-        return this->id != other.id;
+    bool kill(ekg::at_t &at) {
+      t &element {this->query(at)};
+      if (element == t::not_found) {
+        return false;
+      }
+    
+      element.is_dead = true;
+      return static_cast<bool>(++this->dead_virtual_address_count);
     }
-};
 
-#define NOT_FOUND 6669
-
-template<typename t>
-using pool = std::vector<t>;
-
-template<typename t>
-t &query(size_t index, pool<t> &t_pool, t &not_found) {
-    return index >= t_pool.size() ? not_found : t_pool.at(index);
+    void gc() {
+      this->trash_capacity = 0; // for this example
+      if (this->dead_virtual_address_count < this->trash_capacity) {
+        return;
+      }
+    
+      size_t size {this->loaded.size()};
+      for (size_t it {}; it < size; it++) {
+        t &element {this->loaded.at(it)}; 
+        if (!element.is_dead) {
+          continue;
+        }
+    
+        this->loaded.erase(this->loaded.begin() + it);
+        size = this->loaded.size();
+      }
+    
+      this->dead_virtual_address_count = 0;
+    }
+  };
 }
 
-class abstract {
-public:
-    at_t at_descriptor { .index = 0 };
+#define ekg_descriptor(descriptor_t) \
+  public: \
+    ekg::at_t at {}; \
+    bool is_dead {}; \
+  public: \
+    bool operator == (descriptor_t &descriptor) { \
+      descriptor_t::not_found.at = ekg::at_t::not_found; \
+      return ( \
+        (this->is_dead && descriptor_t::not_found.at == descriptor.at) \
+        || \
+        (!this->is_dead && this->at == at) \
+      ); \
+    } \
+\
+    bool operator != (descriptor_t &descriptor) { \
+      return !(*this == descriptor); \
+    }
+
+namespace ekg {
+  struct meow_t {
+  public:
+    static constexpr ekg::type type {ekg::type::MEOW};
+    static meow_t not_found;
+  public:
+    std::string tag {};
+  public:
+    ekg_descriptor(ekg::meow_t);
+  };
+
+  //struct moo_t {
+  //public:
+  //  static constexpr ekg::type type {ekg::type::MOO};
+  //  static moo_t not_found;
+  //public:
+  //  std::string tag {};
+  //public:
+  //  ekg_descriptor(ekg::meow_t);
+  //};
+}
+
+ekg::at_t ekg::at_t::not_found {
+  .unique_id = ekg::not_found,
+  .flags = ekg::not_found
 };
+
+ekg::meow_t ekg::meow_t::not_found {
+  .at = ekg::at_t::not_found
+};
+
+ekg::pool<ekg::meow_t> meow_pools {}; // externm
 
 int main() {
-    meow_t not_found_meow {.id = NOT_FOUND};
-    pool<meow_t> meow_pool {};
-    meow_pool.emplace_back() = {.text = "MEOW-DESCRIPTOR"};
-    abstract boo {}; // `at_t` initialize with index 0
+  ekg::meow_t &ref0 {meow_pools.push_back({.tag = "moo"})};
+  std::vector<ekg::at_t> refs {};
+  refs.push_back(ref0.at);
 
-    meow_t &slot0 {query<meow_t>(boo.at_descriptor.index, meow_pool, not_found_meow)};
-    if (slot0 != not_found_meow) {
-        std::cout << "found: " << slot0.text << "\n";
-    }
+  ekg::meow_t &ref1 {meow_pools.query(ref0.at)};
+  meow_pools.kill(ref0.at);
 
-    meow_t &slot1 {query<meow_t>(1, meow_pool, not_found_meow)};
-    if (slot1 == not_found_meow) {
-        std::cout << "not found";
-    }
-
-    return 0;
-}
-```
-
-## Renderable-Widget Safety
-
-```cpp
-#include <iostream>
-#include <vector>
-#include <memory>
-#include <map>
-
-struct abstract_t {
-public:
-  const char *p_tag {};
-};
-
-void add_to_list(
-  std::vector<std::unique_ptr<abstract_t>> *p_list,
-  abstract_t *p_widget
-) {
-  p_list->emplace_back(
-    std::unique_ptr<abstract_t>(p_widget)
-  );
-}
-
-int main() {
-  std::vector<std::unique_ptr<abstract_t>> loaded_abstract_list {};
-  abstract_t *p_raw {};
-    
-  {
-    add_to_list(
-      &loaded_abstract_list,
-      (p_raw = new abstract_t {.p_tag = "meow"})
-    );
-  }
-    
-  std::cout << loaded_abstract_list.at(0)->p_tag << std::endl; // assert meow
-    
-  for (std::unique_ptr<abstract_t> &p_widget : loaded_abstract_list) {
-    std::cout << p_widget->p_tag << std::endl; // assert meow
+  if (ref1 == ekg::meow_t::not_found) {
+    std::cout << "safe" << std::endl;
   }
 
-  std::cout << p_raw->p_tag << std::endl; // assert meow
-  loaded_abstract_list.clear();
-    
-  std::cout << p_raw->p_tag << std::endl; // assert segmentation fault
-    
+  std::cout << "ga" << std::endl;
+  meow_pools.gc();
+
   return 0;
-}
-```
-
-# Safe-Instance Creation
-
-```cpp
-#include <iostream>
-#include <memory>
-#include <vector>
-
-struct abstract { const char *p_tag {}; virtual void meow() {};};
-struct meow : public abstract {};
-
-template<typename t>
-t *new_widget_instance(
-    std::vector<std::unique_ptr<abstract>> *p_core
-) {
-  return dynamic_cast<t*>(
-    p_core->emplace_back(
-      std::unique_ptr<abstract>(
-        dynamic_cast<abstract*>(new t {})
-      )
-    ).get()
-  );
-}
-
-int main() {
-    std::vector<std::unique_ptr<abstract>> core {};
-    abstract *p_meow {new_widget_instance<meow>(&core)};
-    p_meow->p_tag = "meow";
-    std::cout << p_meow->p_tag << std::endl; // assert meow
-    return 0;
-}
-```
-
-## Dangerous Generic-Casting Using Template
-
-```cpp
-// Online C++ compiler to run C++ program online
-#include <iostream>
-#include <vector>
-#include <string>
-
-template<typename t>
-t meow() {
-    return t {}; 
-}
-
-struct a_t { std::string text {}; };
-struct b_t { int bla {}; };
-struct c_t { float meow {}; };
-struct d_t {};
-
-static std::vector<a_t> as {};
-static std::vector<b_t> bs {};
-static std::vector<c_t> cs {};
-static std::vector<d_t> ds {};
-
-#define illegal_cast(t, list, index) *(t*)((void*)&list.at(index));
-
-template<typename t>
-t &query(int type, size_t index) {
-    switch (type) {
-        case 0:
-            return illegal_cast(t, as, index);
-        case 1:
-            return illegal_cast(t, bs, index);
-        case 2:
-            return illegal_cast(t, cs, index);
-        case 3:
-            return illegal_cast(t, ds, index);
-    }
-    
-    static t never_return {};
-    return never_return;
-}
-
-#define A 0
-#define B 1
-#define C 2
-#define D 3
-
-int main() {
-    // Write C++ code here
-    
-    as.emplace_back() = a_t {.text = "meowmoemwomew"};
-    bs.emplace_back() = b_t { .bla = 2 };
-    cs.emplace_back();
-    ds.emplace_back();
-    
-    a_t &a {query<a_t>(A, 0)};
-    std::cout << a.text << std::endl;
-    
-    b_t &b {query<b_t>(B, 0)};
-    std::cout << b.bla << std::endl;
-
-    return 0;
 }
 ```

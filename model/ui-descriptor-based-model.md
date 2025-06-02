@@ -35,10 +35,15 @@ public:
 public:
   /* mandator field */
   ekg::at_t at {};
+  bool is_dead {};
 public:
   bool operator == (ekg::descriptor_t &descriptor) {
     descriptor_t::not_found.at = ekg::at_t::not_found; // assert
-    return this->at == at;
+    return (
+      (this->is_dead && descriptor_t::not_found.at == descriptor.at)
+      ||
+      (!this->is_dead && this->at == at)
+    );
   }
 
   bool operator != (ekg::descriptor_t &descriptor) {
