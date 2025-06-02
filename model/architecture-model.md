@@ -241,7 +241,11 @@ public:
   static descriptor_t not_found;
 public:
   /* mandator field */
-  ekg::at_t at {};
+  ekg::at_t at {
+    .unique_id = ekg::not_found,
+    .index = ekg::not_found,
+    .flags = ekg::not_found
+  };
   bool is_dead {};
 public:
   bool operator == (ekg::descriptor_t &descriptor) {
@@ -278,7 +282,7 @@ protected:
   size_t trash_capacity {10};
 public:
   pool() {};
-}
+};
 ```
 
 Inserting, as defined:
@@ -328,7 +332,7 @@ t &query(ekg::at_t &at) {
 
 Any dead element is marked with `is_dead` as defined here:
 
-```
+```cpp
 bool kill(ekg::at_t &at) {
   t &element {this->query(at)};
   if (element == t::not_found) {

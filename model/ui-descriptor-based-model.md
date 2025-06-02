@@ -34,7 +34,11 @@ public:
   static descriptor_t not_found;
 public:
   /* mandator field */
-  ekg::at_t at {};
+  ekg::at_t at {
+    .unique_id = ekg::not_found,
+    .index = ekg::not_found,
+    .flags = ekg::not_found
+  };
   bool is_dead {};
 public:
   bool operator == (ekg::descriptor_t &descriptor) {
