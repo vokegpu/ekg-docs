@@ -122,7 +122,7 @@ if (!meows.empty()) {
 
 May you think, of course, it is safe, so, this is the way for handling descriptors in EKG.
 
-### Memory-Pool, Virtual Address and Descriptor
+### Memory-Model Simplification
 
 A memory pool is a space where `n` size of memory block is reserved (dynamic or not), and occuped when neeeds. This block of memory is index-based, so picking descriptors from the pool require a known index. Allowing branch prediction.
 
