@@ -140,7 +140,7 @@ for (ekg::at_t &at : this->stack) {
 this->allocator.revoke();
 ```
 
-The `ekg::ui::*::on_pre_redraw` check for possibles low-latency changes. For example, check if an internal flag was changed or one size is different. Ultimately the efficient part <goes> here with low-latency checks.
+The `ekg::ui::pass` check for possibles low-latency changes. For example, check if an internal flag was changed or one size is different. Ultimately the efficient part <goes> here with low-latency checks.
 
 ### High-Frequency 
 
