@@ -296,6 +296,7 @@ t &push_back(const t &copy) {
 
   return descriptor;
 }
+```
 
 Querying specified `t` is defined as:
 ```cpp
