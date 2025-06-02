@@ -210,23 +210,21 @@ namespace ekg {
 
   typedef size_t flags_t;
   typedef size_t id_t;
-  constexpr ekg::id_t not_found {29496526662939};
+  constexpr ekg::id_t not_found {29426662939};
 
   struct at_t {
   public:
     static ekg::at_t not_found; //{.unique_id = ekg::not_found, .flags = ekg::not_found};
   public:
-    ekg::id_t unique_id {};
-    size_t index {};
-    ekg::flags_t flags {};
+    ekg::id_t unique_id {ekg::not_found};
+    size_t index {ekg::not_found};
+    ekg::flags_t flags {ekg::not_found};
   public:
-    bool operator == (const ekg::at_t &at) {
-      ekg::at_t::not_found.unique_id = ekg::not_found;
-      ekg::at_t::not_found.flags = ekg::not_found;
+    bool operator == (ekg::at_t &at) {
       return this->flags == at.flags && this->unique_id == at.unique_id;
     }
 
-    bool operator != (const ekg::at_t &at) {
+    bool operator != (ekg::at_t &at) {
       return !(*this == at);
     }
   };
@@ -282,7 +280,7 @@ namespace ekg {
       if (element == t::not_found) {
         return false;
       }
-    
+
       element.is_dead = true;
       return static_cast<bool>(++this->dead_virtual_address_count);
     }
@@ -311,15 +309,14 @@ namespace ekg {
 
 #define ekg_descriptor(descriptor_t) \
   public: \
-    ekg::at_t at {}; \
+    ekg::at_t at {.unique_id = ekg::not_found, .index = ekg::not_found, .flags = ekg::not_found}; \
     bool is_dead {}; \
   public: \
     bool operator == (descriptor_t &descriptor) { \
-      descriptor_t::not_found.at = ekg::at_t::not_found; \
       return ( \
         (this->is_dead && descriptor_t::not_found.at == descriptor.at) \
         || \
-        (!this->is_dead && this->at == at) \
+        (!this->is_dead && this->at == descriptor.at) \
       ); \
     } \
 \
@@ -349,31 +346,62 @@ namespace ekg {
   //};
 }
 
-ekg::at_t ekg::at_t::not_found {
-  .unique_id = ekg::not_found,
-  .flags = ekg::not_found
-};
+ekg::at_t ekg::at_t::not_found {};
+ekg::meow_t ekg::meow_t::not_found {};
 
-ekg::meow_t ekg::meow_t::not_found {
-  .at = ekg::at_t::not_found
-};
+void delete_before_use() {
+  std::cout << "delete_before_use" << std::endl;
+    
+  ekg::pool<ekg::meow_t> meow_pools {};
+  ekg::meow_t &ref0 {meow_pools.push_back({.tag = "moo"})}; // create
 
-ekg::pool<ekg::meow_t> meow_pools {}; // externm
-
-int main() {
-  ekg::meow_t &ref0 {meow_pools.push_back({.tag = "moo"})};
   std::vector<ekg::at_t> refs {};
-  refs.push_back(ref0.at);
+  refs.push_back(ref0.at); // store the virtual address
 
-  ekg::meow_t &ref1 {meow_pools.query(ref0.at)};
-  meow_pools.kill(ref0.at);
-
+  ekg::meow_t &ref1 {meow_pools.query(refs.at(0))}; // query from virtual-address refs 
+  meow_pools.kill(ref0.at); // delete
+  
   if (ref1 == ekg::meow_t::not_found) {
     std::cout << "safe" << std::endl;
   }
+  
+  meow_pools.gc(); // clean
+  std::cout << "gc" << std::endl;
+}
 
-  std::cout << "ga" << std::endl;
-  meow_pools.gc();
+void lots_of_address() {
+  std::cout << "lots of address" << std::endl;
+    
+  ekg::pool<ekg::meow_t> meow_pools {};
+  std::vector<ekg::at_t> refs {};
+  
+  for (size_t it {}; it < 20; it++) {
+    refs.push_back(meow_pools.push_back({.tag = "moo"}).at);
+  }
+  
+  for (ekg::at_t &at : refs) {
+    ekg::meow_t &meow {meow_pools.query(at)};
+    if (meow == ekg::meow_t::not_found) {
+      std::cout << "never called" << std::endl;
+    }
+    
+    meow_pools.kill(at);
+  }
+  
+  for (ekg::at_t &at : refs) {
+    ekg::meow_t &meow {meow_pools.query(at)};
+    if (meow == ekg::meow_t::not_found) {
+      std::cout << "deleted memory" << std::endl;
+    }
+  }
+  
+  meow_pools.gc(); // clean
+  std::cout << "gc" << std::endl;
+}
+
+int main() {
+  delete_before_use();
+  lots_of_address();
 
   return 0;
 }

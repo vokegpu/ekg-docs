@@ -205,23 +205,21 @@ if (search_meow == ekg::meow_t::not_found) {
 A virtual address `ekg::at_t` points to a safety space, as defined:
 ```cpp
 namespace ekg {
-  constexpr ekg::id_t not_found {29496526662939}; // broken-heart hash
+  constexpr ekg::id_t not_found {29426662939}; // broken-heart hash
 
   struct at_t {
   public:
     static ekg::at_t not_found;
   public:
-    ekg::id_t unique_id {};
-    size_t index {};
-    ekg::flags_t flags {};
+    ekg::id_t unique_id {ekg::not_found};
+    size_t index {ekg::not_found};
+    ekg::flags_t flags {ekg::not_found};
   public:
-    bool operator == (const ekg::at_t &at) {
-      ekg::at_t::not_found.unique_id = ekg::not_found;
-      ekg::at_t::not_found.flags = ekg::not_found;
-      return this->at.flags == at.flags && this->at.unique_id == at.unique_id;
+    bool operator == (ekg::at_t &at) {
+      return this->flags == at.flags && this->unique_id == at.unique_id;
     }
 
-    bool operator != (const ekg::at_t &at) {
+    bool operator != (ekg::at_t &at) {
       return !(*this == at);
     }
   };
@@ -271,32 +269,33 @@ We have a pool concept, now we can increase the complexity of pool for the use c
 `ekg::pool<t>`, where `t` expect a descriptor (as defined before), as defined here:
 
 ```cpp
-namespace ekg {
-  template<typename t>
-  class pool {
-  protected:
-    std::vector<t> loaded {};
-    t not_found {};
-    ekg::id_t highest_unique_id {};
-  public:
-    pool(ekg::flags_t type, const t &not_found)
-      : type(type), not_found(not_found) {}
-
-    t &push_back(const t &copy) {
-      this->loaded.push_back(copy);
-
-      size_t index {this->loaded.size() - 1};
-      t &descriptor {this->loaded.at(index)};
-
-      descriptor.at.unique_id = this->highest_unique_id++;
-      descriptor.at.type = t::type;
-      descriptor.at.index = index;
-
-      return descriptor;
-    }
-  }
+template<typename t>
+class pool {
+protected:
+  std::vector<t> loaded {};
+  ekg::id_t highest_unique_id {};
+  size_t dead_virtual_address_count {};
+  size_t trash_capacity {10};
+public:
+  pool() {};
 }
 ```
+
+Inserting, as defined:
+
+```cpp
+t &push_back(const t &copy) {
+  this->loaded.push_back(copy);
+
+  size_t index {this->loaded.size() - 1};
+  t &descriptor {this->loaded.at(index)};
+
+  descriptor.at.unique_id = this->highest_unique_id++;
+  descriptor.at.flags = static_cast<ekg::flags_t>(t::type);
+  descriptor.at.index = index;
+
+  return descriptor;
+}
 
 Querying specified `t` is defined as:
 ```cpp
@@ -316,22 +315,22 @@ t &query(ekg::at_t &at) {
       }
     }
 
-    return this->not_found;
+    return t::not_found;
   }
-
   t &descriptor {this->loaded.at(at.index)};
   return descriptor;
 }
 ```
 
+
 `ekg::at_t` must be a reference at query, because if an element is not found, the pool try to re-index and ultimately if nothing helps just return as `not_found`.
 
 Any dead element is marked with `is_dead` as defined here:
 
-```cpp
+```
 bool kill(ekg::at_t &at) {
   t &element {this->query(at)};
-  if (element == this->not_found) {
+  if (element == t::not_found) {
     return false;
   }
 
@@ -342,20 +341,24 @@ bool kill(ekg::at_t &at) {
 
 Dealing with deadly virtual memory is safety, cleaning is not a priority because of erasing performance, we need to priority inserting, instead of immediate delete.
 
+So GC should be called at end of main program loop.
+
 ```cpp
 void gc() {
+  this->trash_capacity = 0; // for this example
   if (this->dead_virtual_address_count < this->trash_capacity) {
     return;
   }
 
+  size_t size {this->loaded.size()};
   for (size_t it {}; it < size; it++) {
-    t &element {this->pool.at(it)}; 
+    t &element {this->loaded.at(it)}; 
     if (!element.is_dead) {
       continue;
     }
 
-    this->pool.erase(this->pool.begin() + it);
-    size = this->pool.size();
+    this->loaded.erase(this->loaded.begin() + it);
+    size = this->loaded.size();
   }
 
   this->dead_virtual_address_count = 0;
