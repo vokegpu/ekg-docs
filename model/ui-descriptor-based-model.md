@@ -273,6 +273,27 @@ case ekg::type::button:
 
 ** NEW WIDGETS WILL BE PLACED HERE SOON, THANKS **
 
+### Necessary-Macros
+
+The property give to us the type of widget, so we can call any methods for each type of widget, this feels a bit ugly, but we need make memory-safe each part of code.
+
+```cpp
+#define ekg_abstract_todo(type, at, todo) \
+  switch (type) { \
+    case ekg::type::button: { \
+      ekg::button_t &descriptor { \
+        ekg::query<ekg::button_t>(at) \
+      }; \
+      if (descriptor == ekg::button_t::not_found) { \
+        break; \
+      } \
+      todo \
+      break; \
+    /* etc */ \
+    } \
+  } \
+```
+
 ## Conclusions
 
 EKG is a GUI library, that is it.

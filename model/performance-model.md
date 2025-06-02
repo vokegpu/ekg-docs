@@ -6,32 +6,6 @@ Both performance sides CPU and GPU must be detailed developed, for a real perfor
 
 ## CPU
 
-### Necessary-Macros
-
-The property give to us the type of widget, so we can call any methods for each type of widget, this feels a bit ugly, but we need make memory-safe each part of code.
-
-```cpp
-#define EKG_WIDGET_CALL(abstract, property, callable)
-  switch (property.type) {
-  case ekg::type::button:
-    ekg::button_t &button {ekg::button(property.descriptor_at)};
-    if (button == ekg::button_t::not_found) break;
-    ekg::ui::button::callable(property, abstract, button);
-    break;
-  case ekg::type::checkbox:
-    ekg::checkbox_t &checkbox {ekg::button(property.descriptor_at)};
-    if (checkbox == ekg::checkbox_t::not_found) break;
-    ekg::ui::checkbox::callable(property, abstract, checkbox);
-    break;
-  case ekg::type::listbox:
-    ekg::listbox_t &listbox {ekg::button(property.descriptor_at)};
-    if (listbox == ekg::listbox_::not_found) break;
-    ekg::ui::listbox::callable(property, abstract, listbox);
-    break;
-  /* etc */
-  }
-```
-
 ### Allocator
 
 The `ekg::service::allocator` stands for CPU-side geometry handling, while not related directly to the GPU-API used, we need make sure for capture each part of draw before send to the GPU its-self.
@@ -121,10 +95,10 @@ The purpose for smart-caching is skiping unncessary complete redraws, reducing t
 
 Local buffers is important for skip useless geometry re-calculations, as defined here:
 ```cpp
-struct abstract_t {
+struct buffer_t {
 public:
   std::vector<float> geometry_buffer {};
-  std::vector<voke::io::gpu_data_t> gpu_data_buffer {};
+  std::vector<voke::gpu::data_t> gpu_data_buffer {};
   /* etc */
 };
 ```
@@ -134,13 +108,8 @@ The main rendering loop uses of smart-cache for improve CPU-usage.
 ```cpp
 this->allocator.invoke();
 
-for (ekg::at_t &at : this->stack_list) {
-  ekg::ui::abstract_t &widget {ekg::ui::abstract(at)}; 
-  if (widget == ekg::ui::abstract_t::not_found || widget.is_dead || widget.is_invisible) {
-    continue;
-  }
-
-  ekg::property_t &property {ekg::property(widget.property_at)};
+for (ekg::at_t &at : this->stack) {
+  ekg::property_t &property {ekg::property(at)};
   if (property == ekg::property_t::not_found) {
     continue;
   }
@@ -151,20 +120,20 @@ for (ekg::at_t &at : this->stack_list) {
    * 2- if should not update: the redraw will copy the latest geometry buffer (geometry_buffer and gpu_data_buffer). 
    **/
 
-  EKG_WIDGET_CALL(
-    abstract,
-    property,
-    on_pre_redraw
+  ekg_abstract_todo(
+    property.descriptor_at.type,
+    property.descriptor_at,
+    ekg::ui::pass(property, descriptor);
   );
 
-  if (!widget.should_update_geometry) {
+  if (!property.should_update_geometry) {
     continue;
   }
 
-  EKG_WIDGET_CALL(
-    abstract,
-    property,
-    on_redraw
+  ekg_abstract_todo(
+    property.descriptor_at.type,
+    property.descriptor_at,
+    ekg::ui::buffering(property, descriptor);
   );
 }
 
@@ -189,17 +158,10 @@ for (size_t it {}; it < size; it++) {
     continue;
   }
 
-  ekg::ui::abstract_t &abstract {ekg::abstract(property.abstract_at)};
-  if (abstract == ekg::ui::abstract_t::not_found) {
-    this->this->high_frequency_list.erase(this->high_frequency_list.begin() + it);
-    size = this->high_frequency_list.size();
-    continue;
-  }
-
-  EKG_WIDGET_CALL(
-    abstract,
-    property,
-    update
+  ekg_abstract_todo(
+    property.descriptor_at.type,
+    property.descriptor_at,
+    ekg::ui::high_frequency(property, descriptor);
   );
 
   if (!property.is_high_frequency) {
