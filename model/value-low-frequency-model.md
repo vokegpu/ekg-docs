@@ -92,10 +92,10 @@ namespace ekg {
     } 
 
     ekg::stack_t &current_stack {
-      ekg::stack(ekg::gui.stack_at)
+      ekg::query<ekg::stack_t>(ekg::gui.binded_stack_at)
     };
 
-    if (current_stack == nullptr) {
+    if (current_stack == ekg::stack_t::not_found) {
       ekg::sign.current = ekg::not_found;
       return;
     }
@@ -124,14 +124,11 @@ namespace ekg {
       ekg::mapped_address_sign_info_t &info {ekg::sign.list.at(it)};
       if (info.pv_address == pv_address) {
         for (ekg::at_t &at : info.ats) {
-          switch (at.type) {
-          case ekg::type::checkbox:
-            ekg::checkbox_t &checkbox {ekg::checkbox(at)};
-            if (checkbox == ekg::checkbox_t::not_found) break; 
-            checkbox.value.ownership(nullptr);
-            break;
-          }
-
+          ekg_abstract_todo(
+            at.flags,
+            at,
+            ekg::ui::unmap(descriptor); // all UIs must have this
+          );
           /* etc */
         }
 
