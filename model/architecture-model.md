@@ -457,7 +457,7 @@ Usage example:
 
 ```cpp
 ekg::at_t find_my_checkbox { .id = 20, .index = 64 };
-ekg::button_t &meow_check {ekg::query<ekg::checkbox_t>(find_my_checkbox)};
+ekg::button_t &meow_check {ekg::query<ekg::button_t>(find_my_checkbox)};
 
 /* brute force will occur if unique id 20 is not found */
 /* and store the last index, allowing branch prediction */

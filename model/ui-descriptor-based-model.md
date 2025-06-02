@@ -94,9 +94,10 @@ namespace ekg::io {
 The nameclature pattern `*_t` allows to define a function `ekg::descriptor(/* etc */)` using the descriptor name, for querying a descriptor as defined here:
 ```cpp
 namespace ekg {
-  descriptor_t &descriptor(ekg::at_t &at) {
+  template<typename t>
+  t &query(ekg::at_t &at) {
     /* etc */
-    return descriptor_t::not_found;
+    return t::not_found;
   }
 
   /**
@@ -107,9 +108,10 @@ namespace ekg {
    * but is not the best approach and does not allow direct
    * branch prediction, as virtual-address do.
    **/
-  descriptor_t &descriptor(std::string_view tag) {
+  template<typename t>
+  t &query<t>(const std::string_view &tag) {
     /* etc */
-    return descriptor_t::not_found;
+    return t::not_found;
   }
 }
 ```
@@ -145,8 +147,8 @@ case ekg::type::stack:
 ```
 
 Stack query options:  
-| - | `ekg::stack_t &ekg::stack(ekg::at_t &at)` for virtual-address branch-prediction querying.  
-| - | `ekg::stack_t &ekg::stack(std::string_view tag)` for non-branch-prediction linear querying.
+| - | `ekg::stack_t &ekg::query<ekg::stack_t>(ekg::at_t &at)` for virtual-address branch-prediction querying.  
+| - | `ekg::stack_t &ekg::query<ekg::stack_t>(std::string_view tag)` for non-branch-prediction linear querying.
 
 ### Callback
 
@@ -186,7 +188,7 @@ case ekg::type::callback:
 ```
 
 Callback query options:  
-| - | `ekg::callback_t &ekg::callback(ekg::at_t &at)` for virtual-address branch-prediction querying.
+| - | `ekg::callback_t &ekg::query<callback_t>(ekg::at_t &at)` for virtual-address branch-prediction querying.
 
 ### Button
 
