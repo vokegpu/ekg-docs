@@ -98,7 +98,7 @@ meow_t b { .p_meow = &a }; // (?) this is horrible
 
 ```
 
-Unlike this, C++ reference allow compile-time type-safe programming, so here, no mistakes occur, because you are building with known types.
+Unlike this, C++ reference allows compile-time type-safe programming for this model, so, here no mistakes occur, because you are building with known types.
 
 ```cpp
 std::vector<meow_t> meows(2);
@@ -480,7 +480,9 @@ Of course, the user-programmer (programmer who uses EKG library) will not even t
 
 You can run this code:
 
+https://github.com/vokegpu/ekg-docs/blob/master/model/proofs.md#safety-descriptor-pool-query
 
+Pick STD17.
 
 ## Conclusion
 
