@@ -122,7 +122,7 @@ if (!meows.empty()) {
 
 May you think, of course, it is safe, so, this is the way for handling descriptors in EKG.
 
-### Pool-Concept
+### Memory-Pool, Virtual Address and Descriptor
 
 A memory pool is a space where `n` size of memory block is reserved (dynamic or not), and occuped when neeeds. This block of memory is index-based, so picking descriptors from the pool require a known index. Allowing branch prediction.
 
@@ -198,30 +198,98 @@ if (search_meow == ekg::meow_t::not_found) {
 }
 ```
 
-### Pool-Definition
+### Definition of Virtual Address, Descriptor and Memory-Pool
 
-We have a pool concept, now we can increase the complexity of pool for the use case of EKG.
+#### Virtual Address
+
+A virtual address `ekg::at_t` points to a safety space, as defined:
+```cpp
+namespace ekg {
+  constexpr ekg::id_t not_found {29496526662939}; // broken-heart hash
+
+  struct at_t {
+  public:
+    static ekg::at_t not_found;
+  public:
+    ekg::id_t unique_id {};
+    size_t index {};
+    ekg::flags_t flags {};
+  public:
+    bool operator == (const ekg::at_t &at) {
+      ekg::at_t::not_found.unique_id = ekg::not_found;
+      ekg::at_t::not_found.flags = ekg::not_found;
+      return this->at.flags == at.flags && this->at.unique_id == at.unique_id;
+    }
+
+    bool operator != (const ekg::at_t &at) {
+      return !(*this == at);
+    }
+  };
+}
+```
+
+#### Descriptor
+
+A complete technical details about descriptor will be discussed in some nexts topics, [here](./ui-descriptor-based-model.md), but now, for a simple definition, this is enough:
+
+```cpp
+namespace ekg {
+  typedef size_t id_t;
+}
+
+struct descriptor_t {
+public:
+  static constexpr ekg::type type {/* type */};
+  static descriptor_t not_found;
+public:
+  /* mandator field */
+  ekg::at_t at {};
+public:
+  bool operator == (ekg::descriptor_t &descriptor) {
+    descriptor_t::not_found.at = ekg::at_t::not_found;
+    return this->unique_id == descriptor.unique_id;
+  }
+
+  bool operator != (ekg::descriptor_t &descriptor) {
+    return !(*this == descriptor);
+  }
+
+  operator ekg::at_t() {
+    return this->at;
+  }
+};
+```
+
+#### Memory-Pool
+
+We have a pool concept, now we can increase the complexity of pool for the use case of EKG.  
+`ekg::pool<t>`, where `t` expect a descriptor (as defined before), as defined here:
 
 ```cpp
 namespace ekg {
   template<typename t>
   class pool {
   protected:
-    t not_found;
-    std::vector<t> pool {};
-    size_t dead_virtual_address_count {};
+    std::vector<t> loaded {};
+    t not_found {};
     ekg::id_t highest_unique_id {};
   public:
-    size_t trash_capacity {20};
-  public:
-    pool(t not_found) : not_found(not_found) {}
+    pool(ekg::flags_t type, const t &not_found)
+      : type(type), not_found(not_found) {}
 
-    ekg::at_t push_back(const t &copy) {
-      ekg::at_t at {.index = this->pool.size(), .unique_id = ++this->highest_unique_id};
-      this->pool.push_back(copy);
-      return at;
+    t &push_back(const t &copy) {
+      this->loaded.push_back(copy);
+
+      size_t index {this->loaded.size() - 1};
+      t &descriptor {this->loaded.at(index)};
+
+      descriptor.at.unique_id = this->highest_unique_id++;
+      descriptor.at.type = t::type;
+      descriptor.at.index = index;
+
+      return descriptor;
     }
-  };
+  }
 }
 ```
 
@@ -229,23 +297,25 @@ Querying specified `t` is defined as:
 ```cpp
 t &query(ekg::at_t &at) {
   if (
-      at.index >= this->pool.size()
-      ||
-      this->pool.at(at.index).unique_id != at.unique_id
+    at.index >= this->loaded.size()
+    ||
+    this->loaded.at(at.index).at.unique_id != at.unique_id
   ) {
-    size_t size {this->pool.size()};
+    size_t size {this->loaded.size()};
     for (size_t it {}; it < size; it++) {
-      t &element {this->pool.at(it)};
-      if (element.unique_id == at.unique_id) {
+      t &descriptor {this->loaded.at(it)};
+      descriptor.at.index = it;
+      if (descriptor.at.unique_id == at.unique_id) {
         at.index = it;
-        return element;
+        return descriptor;
       }
     }
 
     return this->not_found;
   }
 
-  return this->pool.at(at.index);
+  t &descriptor {this->loaded.at(at.index)};
+  return descriptor;
 }
 ```
 
@@ -265,7 +335,7 @@ bool kill(ekg::at_t &at) {
 }
 ```
 
-Dealing with deadly virtual memory is safety, cleaning is not a priority because of erasing/inserting performance, we need to priority inserting, instead of immediate delete.
+Dealing with deadly virtual memory is safety, cleaning is not a priority because of erasing performance, we need to priority inserting, instead of immediate delete.
 
 ```cpp
 void gc() {
@@ -289,7 +359,7 @@ void gc() {
 
 All these definitions must be followed for a safety-strictly memory-handling control.
 
-### Resources
+### Pools
 
 With pools we can store an unique specific descriptor, then, direct access by it is own index position.
 So we can store every single type of descriptors in each designed pool:
@@ -298,83 +368,108 @@ So we can store every single type of descriptors in each designed pool:
 namespace ekg::io {
   extern struct pools_t {
   public:
-    ekg::pool<ekg::checkbox_t> checkbox {ekg::checkbox_t::not_found};
-    ekg::pool<ekg::property_t> checkbox_property {ekg::property_t::not_found};
+    ekg::pool<ekg::stack_t> stack {ekg::stack_t::not_found};
+    ekg::pool<ekg::callback_t> callback {ekg::callback_t::not_found};
+    ekg::pool<ekg::sampler_t> sampler {ekg::sampler_t::not_found};
+    ekg::pool<ekg::property> button_property {ekg::property::not_found};
     ekg::pool<ekg::button_t> button {ekg::button_t::not_found};
-    ekg::pool<ekg::property_t> button_property {ekg::property_t::not_found};
     /* etc */
   } pools;
 }
 
 namespace ekg {
-  ekg::checkbox_t &checkbox(ekg::at_t &at) {
-    return ekg::io::pools.checkbox.query(at);
-  }
+  template<typename t>
+  t &make(
+    t descriptor
+  ) {
+    switch (t::type) {
+    case ekg::type::stack:
+      return ekg::pools.stack.push_back(
+        ekg::io::any_static_cast<ekg::sampler_t>(&descriptor)
+      );
+    case ekg::type::callback:
+      return ekg::pools.callback.push_back(
+        ekg::io::any_static_cast<ekg::callback_t>(&descriptor)
+      );
+    case ekg::type::sampler:
+      return ekg::pools.sampler.push_back(
+        ekg::io::any_static_cast<ekg::sampler_t>(&descriptor)
+      );
+    case ekg::type::button:
+      ekg::button_t &button {
+        ekg::pools.button.push_back(
+          ekg::io::any_static_cast<ekg::button_t>(&descriptor)
+        )
+      };
 
-  ekg::button_t &button(ekg::at_t &at) {
-    return ekg::io::pools.button.query(at);
-  }
+      ekg::property_t &property {
+        ekg::pools.button_property.push_back({})
+      };
 
-  /* etc */
+      property.is_childnizate = false;
+      property.is_children_docknizable = false;
 
-  ekg::property_t &property(ekg::at_t &at) {
-    ekg::pool<ekg::property_t> *p_property_pool {nullptr};
-    switch (at.type) {
-    case ekg::type::checkbox:
-      p_property_pool = &ekg::core::pools.checkbox_property;
-      break;
-    case ekg::type::textbox:
-      p_property_pool = &ekg::core::pools.textbox_property;
-      break;
+      button.at.flags = t::type;
+      property.descriptor_at = button.at;
+
+      property.at.flags = t::type;
+      button.property_at = property.at;
+
+      ekg::core::registry(property);
+      return button;
     }
 
-    if (!p_property_pool) {
-      return ekg::property_t::not_found;
-    }
-
-    return p_property_pool->query(at);
+    return t::not_found;
   }
 }
 ```
 
-Querying descriptors is totally safe.
+Querying descriptors is memory-safe, since the type of descriptor is static constexpr defined, any invalid virtual address will return `t::not_found`.
+
+```cpp
+template<typename t>
+t &query(
+  ekg::at_t &at
+) {
+  switch (t::type) {`
+    return ekg::io::any_static_cast<ekg::sampler_t>(
+      &ekg::pools.sampler.query(at)
+    );
+  case ekg::type::callback:
+    return ekg::io::any_static_cast<ekg::callback_t>(
+      &ekg::pools.callback.query(at)
+    );
+  case ekg::type::sampler:
+    return ekg::io::any_static_cast<ekg::sampler_t>(
+      &ekg::pools.sampler.query(at)
+    );
+  case ekg::type::button:
+    return ekg::io::any_static_cast<ekg::button_t>(
+      &ekg::pools.button.query(at)
+    );
+  }
+
+  return t::not_found;
+}
+```
+
+Usage example:
 
 ```cpp
 ekg::at_t find_my_checkbox { .id = 20, .index = 64 };
-ekg::checkbox_t &checkbox {ekg::checkbox(find_my_checkbox)};
+ekg::button_t &meow_check {ekg::query<ekg::checkbox_t>(find_my_checkbox)};
 
 /* brute force will occur if unique id 20 is not found */
+/* and store the last index, allowing branch prediction */
 
-if (checkbox == ekg::checkbox_t::not_found) {
+if (meow_check == ekg::button_t::not_found) {
   ekg::log() << "not found :c";
 } else {
   ekg::log() << "found :3";
 }
 ```
 
-### Generic-Query
-
-Okay here a big deal with descriptors and pools, generic is possible but limited to the architecture of EKG, while not a EKG standard, you can make unsafe everything.
-
-```cpp
-template<typename t>
-constexpr t &any_static_cast(void *p_any) {
-  return *static_cast<t*>(p_any); // illegal-casting
-}
-
-template<typename t>
-t &query(ekg::at_t &at) {
-  if (at.type == ekg::type::frame) {
-    return ekg::any_static_cast<t>(&ekg::pools.frame.query(at));
-  } else if (at.type == ekg::type::checkbox) {
-    return ekg::any_static_cast<t>(&ekg::pools.checkbox.query(at));
-  } /* else if etc */
-  
-  return ekg::any_static_cast<t>(&ekg::pools.callback.query(at));
-}
-```
-
-Not EKG standard, but you are able to implement at your own risk, that is it.
+Of course, the user-programmer (programmer who uses EKG library) will not even touch on this, this is for EKG developers.
 
 ## Conclusion
 

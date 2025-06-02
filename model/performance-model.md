@@ -321,6 +321,10 @@ virtual void pass_geometry_buffer(
 
 ### Vulkan
 
+### Font-Rendering
+
+Registry glyph info on GPU and access it from the UTF-8 sequence (x 2 3 4) each `n` number is 1 byte, then the sampler is dynamic resized. Not yet done.
+
 Not implemented yet.
 
 ## Conclusion

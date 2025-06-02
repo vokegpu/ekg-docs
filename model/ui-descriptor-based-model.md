@@ -14,7 +14,7 @@ A descriptor can be anything: stack, callback, button, label, etc.
 
 Strictly definitions:  
 | - | For elabore complex node-descriptors, each descriptor virtual-address must end with suffix `_at` and each descriptor must have own unique `ekg::at_t at`.  
-| - | Of course the type of descriptor should be `static const ekg::type`.  
+| - | Of course the type of descriptor should be `static constexpr ekg::type`.  
 | - | The not found option `static t not_found`.  
 | - | Ultimately the logic operators `==` `!=`, also, making sure `not_found` is always 'not-found', for prevent bypass risks.  
 | - | Cast operator to `ekg::at_t` using the own at.
@@ -26,31 +26,28 @@ As defined here:
 ```cpp
 namespace ekg {
   typedef size_t id_t;
-  static const ekg::id_t not_found {333666999};
 }
 
 struct descriptor_t {
 public:
-  static const ekg::type type {/* type */};
+  static constexpr ekg::type type {/* type */};
   static descriptor_t not_found;
 public:
-  /* mandator fields */
-  ekg::id_t unique_id {};
-  ekg::at_t other_descriptor_at {};
+  /* mandator field */
   ekg::at_t at {};
 public:
   bool operator == (ekg::descriptor_t &descriptor) {
-    descriptor_t::not_found.unique_id = ekg::not_found; // assert
-    return this->unique_id == descriptor.unique_id;
+    descriptor_t::not_found.at = ekg::at_t::not_found; // assert
+    return this->at == at;
   }
 
   bool operator != (ekg::descriptor_t &descriptor) {
     return !(*this == descriptor);
   }
 
-  operator &ekg::at_t() {
+  operator ekg::at_t() {
     return this->at;
-  } 
+  }
 };
 ```
 

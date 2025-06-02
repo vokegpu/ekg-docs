@@ -119,7 +119,7 @@ f_renderer.set_size(512);
 
 FT_Load_Char(
   typography_font_face.ft_face,
-  ekg::utf_string_to_char32("🐮"),
+  ekg::utf8_to_utf32("🐮"),
   FT_LOAD_RENDER | FT_LOAD_COLOR | FT_LOAD_DEFAULT
 );
 
