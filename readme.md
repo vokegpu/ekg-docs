@@ -17,9 +17,9 @@ Complete details about importants EKG technologies, this section includes: the r
 
 ### The Memory-Handling Model
 
-EKG is a memory-safety library, these two topics details and give the necessary proofs for this affirmation.
+EKG is a C++ secure library, these two topics details and give the necessary proofs for this affirmation.
 
-* note: the memory-handling model article is not complete yet (as EKG code is being implemented, this article will be rewrited to sync with the EKG origin) *
+**note: the memory-handling model article is not complete yet (as EKG code is being implemented, this article will be rewrited to sync with the EKG origin)**
 
 * [The problem of legacy EKG memory-handling model](./model/the-problem.md)
 * [Memory-handling model](./model/architecture-model.md)
