@@ -121,17 +121,18 @@ for (ekg::at_t &at : this->stack) {
    **/
 
   ekg_abstract_todo(
-    property.descriptor_at.type,
+    property.descriptor_at.flags,
     property.descriptor_at,
+
     ekg::ui::pass(property, descriptor);
   );
 
-  if (!property.should_update_geometry) {
+  if (!property.widget.should_update_geometry) {
     continue;
   }
 
   ekg_abstract_todo(
-    property.descriptor_at.type,
+    property.descriptor_at.flags,
     property.descriptor_at,
     ekg::ui::buffering(property, descriptor);
   );
@@ -159,12 +160,12 @@ for (size_t it {}; it < size; it++) {
   }
 
   ekg_abstract_todo(
-    property.descriptor_at.type,
+    property.descriptor_at.flags,
     property.descriptor_at,
     ekg::ui::high_frequency(property, descriptor);
   );
 
-  if (!property.is_high_frequency) {
+  if (!property.widget.is_high_frequency) {
     this->this->high_frequency_list.erase(this->high_frequency_list.begin() + it);
     size = this->high_frequency_list.size();
   }

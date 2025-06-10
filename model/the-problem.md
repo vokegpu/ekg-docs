@@ -136,7 +136,7 @@ sampler_alloc_info.gl_internal_format = GL_RGBA;
 sampler_alloc_info.gl_format = GL_BGRA;
 sampler_alloc_info.gl_type = GL_UNSIGNED_BYTE;
 sampler_alloc_info.gl_generate_mipmap = GL_TRUE;
-sampler_alloc_info.p_data = typography_font_face.ft_face->glyph->bitmap.buffer;
+sampler_alloc_info.pv_data = typography_font_face.ft_face->glyph->bitmap.buffer;
 
 return ekg::allocate_sampler(
   &sampler_alloc_info,
@@ -181,12 +181,9 @@ Now we must take all the previous knowneldge and implement for the user-programm
 Descriptors for create each UI element, descriptors for options, descriptors for details, descriptors for internal functions, descriptors for themes, and all descriptors for user-programmer application-side-input(s).
 
 ```cpp
-bool do_something {};
-
 ekg::make<ekg::frame_t>(
   { 
-    .tag = "idk a frame?",
-    .options = {
+    .tag = "meow",
     .rect = {.w = 50.0f, .h = 50.0f},
     .resize = ekg::dock::none,
     .drag = ekg::dock::full
@@ -195,26 +192,20 @@ ekg::make<ekg::frame_t>(
 
 ekg::make<ekg::label_t>(
   {
-    .tag = "idk meow?",
-    .text = "tijolo",
-    .dock = ekg::dock::fill,
-    .options = {
-    .text_dock = ekg::dock::left
+    .tag = "moo",
+    .text = "a tewt",
+    .dock_text = ekg::dock::left,
+    .dock = ekg::dock::fill
   }
 );
 
-
-ekg::make<ekg::checkbox_t>(
+ekg::make<ekg::button_t>(
   {
-    .tag = "idk ?<>?<>?>> meow?",
-    .text = "click here if u brain",
-    .value = ekg::value<bool>(&do_something),
-    .text = {
-      .value =
-    }
-    .options = {
-      .text_dock = ekg::dock::left,
-      .
+    .tag = "buttons and checks",
+    .dock = ekg::dock::next | ekg::dock::fill,
+    .checks = {
+      {.text = "check for meow", .box = ekg::dock::left, .dock = ekg::left}
+      /* etc */
     }
   }
 );
@@ -226,22 +217,36 @@ And voila^2, new protype model. But it keeps bloated, how can we simplify this?
 Well we can, here is:
 
 ```cpp
-ekg::stack_t stack {
-  .tag = "my-gui"
+ekg::stack_t my_stack {
+  .tag = "my-gui-context"
 };
 
-ekg::checkbox_t check {};
-stack.make(check); // dif unique id
+ekg::make<ekg::stack_t>(my_stack);
 
-ekg::stack_t &my_gui {ekg::make(stack)};
+ekg::button_t button {
+  .tag = "my-button",
+  .dock = ekg::dock::next | ekg::dock::fill,
+  .checks = {
+    {.text = "text"}
+  }
+};
 
-check.text = "bla";
-my_gui.make(check); // dif unique id
+ekg::button_t checkbox {
+  .tag = "my-button",
+  .dock = ekg::dock::next | ekg::dock::fill,
+  .checks = {
+    {.text = "text", .box = ekg::dock::left}
+  }
+};
 
-check.text = "quero xorar";
-my_gui.make(check); // dif unique id
+button.checks[0].text = "click-here";
+ekg::make<ekg::button_t>(button);
 
-ekg::stack_t &s {ekg::gui("my-gui")};
+button.checks[0].text = "click-here to!!o";
+ekg::make<ekg::button_t>(button);
+
+checkbox.checks[0].text = "check hewe";
+ekg::make<ekg::button_t>(checkbox);
 ```
 
 ## Conclusion

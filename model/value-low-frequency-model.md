@@ -18,9 +18,26 @@ protected:
   t value {};
   t *p {};
   t previous {};
+  bool changed {};
 public:
+  value(t *p_address) {
+    this->ownership(p_address);
+    this->changed = true;
+  }
+
+  value(t value) {
+    this->get() = value;
+    this->changed = true;
+  }
+
+  value(const char *p_char) {
+    this->get() = p_char;
+    this->changed = true;
+  }
+
   void set(const p &value) {
     this->get() = p;
+    this->changed = true;
   }
 
   t &get() {
@@ -36,6 +53,11 @@ public:
   }
 
   bool was_changed() {
+    if (this->was_changed) {
+      this->was_changed = false;
+      return true;
+    }
+
     t &get {this->get()};
     if (this->previous != get) {
       this->previous = get;
@@ -92,7 +114,7 @@ namespace ekg {
     } 
 
     ekg::stack_t &current_stack {
-      ekg::query<ekg::stack_t>(ekg::gui.binded_stack_at)
+      ekg::query<ekg::stack_t>(ekg::gui.bind.stack_at)
     };
 
     if (current_stack == ekg::stack_t::not_found) {
@@ -103,9 +125,8 @@ namespace ekg {
     size_t size {ekg::sign.list.size()};
     for (size_t it {}; it < size; it++) {
       ekg::mapped_address_sign_info_t &info {ekg::sign.list.at(it)};
-      if (sign.pv_address == pv_address) {
+      if (info.pv_address == pv_address) {
         ekg::sign.current = it;
-        should_put = false;
         return;
       }
     }

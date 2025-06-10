@@ -398,15 +398,15 @@ namespace ekg {
     switch (t::type) {
     case ekg::type::stack:
       return ekg::pools.stack.push_back(
-        ekg::io::any_static_cast<ekg::sampler_t>(&descriptor)
+        ekg::io::any_static_cast<t>(&descriptor)
       );
     case ekg::type::callback:
       return ekg::pools.callback.push_back(
-        ekg::io::any_static_cast<ekg::callback_t>(&descriptor)
+        ekg::io::any_static_cast<t>(&descriptor)
       );
     case ekg::type::sampler:
       return ekg::pools.sampler.push_back(
-        ekg::io::any_static_cast<ekg::sampler_t>(&descriptor)
+        ekg::io::any_static_cast<t>(&descriptor)
       );
     case ekg::type::button:
       ekg::button_t &button {
@@ -419,8 +419,8 @@ namespace ekg {
         ekg::pools.button_property.push_back({})
       };
 
-      property.is_childnizate = false;
-      property.is_children_docknizable = false;
+      property.widget.is_childnizate = false;
+      property.widget.is_children_docknizable = false;
 
       button.at.flags = t::type;
       property.descriptor_at = button.at;
