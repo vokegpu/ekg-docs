@@ -42,7 +42,6 @@ public:
   bool is_dead {};
 public:
   bool operator == (ekg::descriptor_t &descriptor) {
-    descriptor_t::not_found.at = ekg::at_t::not_found; // assert
     return (
       (this->is_dead && descriptor_t::not_found.at == descriptor.at)
       ||
@@ -118,7 +117,7 @@ namespace ekg {
    * branch prediction, as virtual-address do.
    **/
   template<typename t>
-  t &query<t>(const std::string_view &tag) {
+  t &query(const std::string_view &tag) {
     /* etc */
     return t::not_found;
   }
@@ -126,163 +125,6 @@ namespace ekg {
 ```
 
 As pointed in memory handling architecture model paper, we need make the virtual-address `ekg::at_t` as reference for prevent pointless behavior.
-
-Now let's cover the important descriptors from EKG.
-
-### Stack
-
-A stack describe GUI-context: widgets.
-
-As defined here:
-```cpp
-namespace ekg {
-  struct stack_t {
-  public:
-    /* optional fields */
-    std::string tag {};
-    ekg::vector<ekg::at_t> widgets {};
-  };
-}
-```
-
-The `ekg::make<ekg::stack_t>` as defined here:
-```cpp
-case ekg::type::stack:
-  ekg::stack_t &temp {ekg::any_static_cast<ekg::stack_t>(&descriptor)};
-  ekg::at_t at {ekg::pools.stack.push_back(temp)};
-  ekg::stack_t &ref {ekg::pools.query(at)};
-  ref.at = at;
-  return ref;
-```
-
-Stack query options:  
-| - | `ekg::stack_t &ekg::query<ekg::stack_t>(ekg::at_t &at)` for virtual-address branch-prediction querying.  
-| - | `ekg::stack_t &ekg::query<ekg::stack_t>(std::string_view tag)` for non-branch-prediction linear querying.
-
-### Callback
-
-A callback describe any task: internal-events, actions or free-use-case.
-
-As defined here:
-```cpp
-namespace ekg {
-  struct info_t {
-  public:
-    std::string tag {};
-    void *p_data {nullptr}; // user-programmer address, not EKG-related
-  };
-
-  using callback_function_t = void(*)(ekg::info_t&)
-
-  struct callback_t {
-  public:
-    /* optional fields */
-    ekg::info_t info {};
-    std::function(void(ekg::info_t&)) lambda {};
-    ekg::callback_function_t function {nullptr};
-  };
-}
-```
-
-Note that we use a raw-ptr in `ekg::info_t`, yeah, but we can not cover memory safe here, using pools does not solve the problem here because the user-programmer must use of pools for things, and is not a standard, likely, the user-programmer must safety work by-self with it, since it is not related to EKG, EKG does not use this `p_data` for nothing, unless declare.
-
-The `ekg::make<ekg::callback_t>` as defined here:
-```cpp
-case ekg::type::callback:
-  ekg::callback_t &temp {ekg::any_static_cast<ekg::callback_t>(&descriptor)};
-  ekg::at_t at {ekg::pools.callback.push_back(temp)};
-  ekg::callback_t &ref {ekg::pools.query(at)};
-  ref.at = at;
-  return ref;
-```
-
-Callback query options:  
-| - | `ekg::callback_t &ekg::query<callback_t>(ekg::at_t &at)` for virtual-address branch-prediction querying.
-
-### Button
-
-#### Notations
-
-Actions:
-
-```cpp
-namespace ekg {
-  enum class action {
-    press,
-    release,
-    drag,
-    scroll,
-    focus,
-    unfocus
-  };
-
-  constexpr size_t enum_action_size {static_cast<size_t>(ekg::action::unfocus) + 1};
-
-  template<size_t element_size>
-  using actions_t = std::array<std::array<ekg::at_t, element_size>, ekg::enum_action_size>
-}
-```
-
-Layers:
-
-```cpp
-namespace ekg {
-  enum class layer {
-    background,
-    highlight,
-    outline,
-    active
-  };
-
-  constexpr size_t enum_action_size {static_cast<size_t>(ekg::layer::active) + 1};
-
-  template<size_t element_size>
-  using layers_t = std::array<std::array<ekg::at_t, element_size>, ekg::enum_action_size>
-}
-```
-
-#### UI descriptors
-
-Button can be defined as:
-
-```cpp
-namespace ekg {
-  struct button_t {
-  public:
-    struct check_t {
-    public:
-      ekg::value<std::string> text {};
-      ekg::value<bool> value {};
-      ekg::flags_t dock {ekg::dock::left | ekg::dock::center};
-      bool box {};
-    };
-
-    constexpr static size_t rect {0};
-    constexpr static size_t box {1};
-    constexpr static size_t element_size {2};
-  public:
-    /* etc */
-
-    /* optional fields */
-    std::string tag {};
-    std::vector<ekg::button_t::check_t> checks {};
-    ekg::flags_t dock {ekg::dock::left};
-    ekg::actions_t<ekg::button_t::element_size> actions {};
-    ekg::layers_t<ekg::button_t::element_size> layers {};
-  public:
-    /* etc */
-  };
-}
-```
-
-The `ekg::make<ekg::button_t>` can be defined as:
-```cpp
-case ekg::type::button:
-  ekg::button_t &ref {ekg::any_static_cast<ekg::button_t>(&descriptor)};
-  break;
-```
-
-** NEW WIDGETS WILL BE PLACED HERE SOON, THANKS **
 
 ### Necessary-Macros
 
@@ -304,6 +146,20 @@ The property give to us the type of widget, so we can call any methods for each 
     } \
   } \
 ```
+
+Implemented here:
+- [ekg/io/descriptor.hpp](https://github.com/vokegpu/ekg-ui-library/blob/version-core/include/ekg/io/descriptor.hpp)
+
+### Descriptors
+
+Implementations:
+- [ekg/handler/callback.hpp](https://github.com/vokegpu/ekg-ui-library/blob/version-core/include/ekg/handler/callback.hpp)
+- [ekg/gpu/sampler.hpp](https://github.com/vokegpu/ekg-ui-library/blob/version-core/include/ekg/gpu/sampler.hpp)
+- [ekg/ui/property.hpp](https://github.com/vokegpu/ekg-ui-library/blob/version-core/include/ekg/ui/property.hpp)
+- [ekg/ui/stack.hpp](https://github.com/vokegpu/ekg-ui-library/blob/version-core/include/ekg/ui/stack.hpp)
+- [ekg/ui/button/buton.hpp](https://github.com/vokegpu/ekg-ui-library/blob/version-core/include/ekg/ui/button/button.hpp)
+- [ekg/ui/frame/frame.hpp](https://github.com/vokegpu/ekg-ui-library/blob/version-core/include/ekg/ui/frame/frame.hpp)
+- [ekg/ui/label/label.hpp](https://github.com/vokegpu/ekg-ui-library/blob/version-core/include/ekg/ui/label/label.hpp)
 
 ## Conclusions
 
