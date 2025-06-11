@@ -60,7 +60,7 @@ public:
 ```
 
 Implementation:
-- [ekg/io/descriptor.hpp](https://github.com/vokegpu/ekg-ui-library/blob/version-core/include/ekg/io/descriptor.hpp)
+- [ekg/io/descriptor.hpp](https://github.com/vokegpu/ekg/blob/version-core/include/ekg/io/descriptor.hpp)
 
 ### `ekg::make<t>` and `ekg::query<t>`
 
@@ -132,8 +132,8 @@ namespace ekg {
 As pointed in memory handling architecture model paper, we need make the virtual-address `ekg::at_t` as reference for prevent pointless behavior.
 
 Implementations:
-- [ekg/core/pools.hpp;ekg::query<t>](https://github.com/vokegpu/ekg-ui-library/blob/version-core/include/ekg/core/pools.hpp)
-- [ekg/core/pools.hpp;ekg::make<t>](https://github.com/vokegpu/ekg-ui-library/blob/version-core/include/ekg/core/pools.hpp)
+- [ekg/core/pools.hpp;ekg::query<t>](https://github.com/vokegpu/ekg/blob/version-core/include/ekg/core/pools.hpp)
+- [ekg/core/pools.hpp;ekg::make<t>](https://github.com/vokegpu/ekg/blob/version-core/include/ekg/core/pools.hpp)
 
 ### Necessary-Macros
 
@@ -157,20 +157,20 @@ The property give to us the type of widget, so we can call any methods for each 
 ```
 
 Implementation:
-- [ekg/core/pools.hpp](https://github.com/vokegpu/ekg-ui-library/blob/version-core/include/ekg/core/pools.hpp)
+- [ekg/core/pools.hpp](https://github.com/vokegpu/ekg/blob/version-core/include/ekg/core/pools.hpp)
 
 ### Descriptors
 
 There is no a fixed place for declaring descriptors, they can be found implemented any-where under EKG source. 
 
 Implementations:
-- [ekg/handler/callback.hpp](https://github.com/vokegpu/ekg-ui-library/blob/version-core/include/ekg/handler/callback.hpp)
-- [ekg/gpu/sampler.hpp](https://github.com/vokegpu/ekg-ui-library/blob/version-core/include/ekg/gpu/sampler.hpp)
-- [ekg/ui/property.hpp](https://github.com/vokegpu/ekg-ui-library/blob/version-core/include/ekg/ui/property.hpp)
-- [ekg/ui/stack.hpp](https://github.com/vokegpu/ekg-ui-library/blob/version-core/include/ekg/ui/stack.hpp)
-- [ekg/ui/button/buton.hpp](https://github.com/vokegpu/ekg-ui-library/blob/version-core/include/ekg/ui/button/button.hpp)
-- [ekg/ui/frame/frame.hpp](https://github.com/vokegpu/ekg-ui-library/blob/version-core/include/ekg/ui/frame/frame.hpp)
-- [ekg/ui/label/label.hpp](https://github.com/vokegpu/ekg-ui-library/blob/version-core/include/ekg/ui/label/label.hpp)
+- [ekg/handler/callback.hpp](https://github.com/vokegpu/ekg/blob/version-core/include/ekg/handler/callback.hpp)
+- [ekg/gpu/sampler.hpp](https://github.com/vokegpu/ekg/blob/version-core/include/ekg/gpu/sampler.hpp)
+- [ekg/ui/property.hpp](https://github.com/vokegpu/ekg/blob/version-core/include/ekg/ui/property.hpp)
+- [ekg/ui/stack.hpp](https://github.com/vokegpu/ekg/blob/version-core/include/ekg/ui/stack.hpp)
+- [ekg/ui/button/buton.hpp](https://github.com/vokegpu/ekg/blob/version-core/include/ekg/ui/button/button.hpp)
+- [ekg/ui/frame/frame.hpp](https://github.com/vokegpu/ekg/blob/version-core/include/ekg/ui/frame/frame.hpp)
+- [ekg/ui/label/label.hpp](https://github.com/vokegpu/ekg/blob/version-core/include/ekg/ui/label/label.hpp)
 
 ## Conclusions
 
