@@ -104,7 +104,7 @@ namespace ekg::io {
 }
 ```
 
-The nameclature pattern `*_t` allows to define a function `ekg::descriptor(/* etc */)` using the descriptor name, for querying a descriptor as defined here:
+Also the nameclature pattern `*_t` allows to define a function `ekg::descriptor(/* etc */)` using the descriptor name, but the query should be `query<t>` where `t` must be a valid descriptor, as defined here:
 ```cpp
 namespace ekg {
   template<typename t>
