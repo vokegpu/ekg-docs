@@ -59,6 +59,11 @@ public:
 };
 ```
 
+Implementation:
+- [ekg/io/descriptor.hpp](https://github.com/vokegpu/ekg-ui-library/blob/version-core/include/ekg/io/descriptor.hpp)
+
+### `ekg::make<t>` and `ekg::query<t>`
+
 For registry decriptors, EKG define a function `make<t>` where `t` is the descriptor. Each descriptor must be handled by a pool.
 
 ```cpp
@@ -126,6 +131,10 @@ namespace ekg {
 
 As pointed in memory handling architecture model paper, we need make the virtual-address `ekg::at_t` as reference for prevent pointless behavior.
 
+Implementations:
+- [ekg/core/pools.hpp;ekg::query<t>](https://github.com/vokegpu/ekg-ui-library/blob/version-core/include/ekg/core/pools.hpp)
+- [ekg/core/pools.hpp;ekg::make<t>](https://github.com/vokegpu/ekg-ui-library/blob/version-core/include/ekg/core/pools.hpp)
+
 ### Necessary-Macros
 
 The property give to us the type of widget, so we can call any methods for each type of widget, this feels a bit ugly, but we need make memory-safe each part of code.
@@ -147,10 +156,12 @@ The property give to us the type of widget, so we can call any methods for each 
   } \
 ```
 
-Implemented here:
-- [ekg/io/descriptor.hpp](https://github.com/vokegpu/ekg-ui-library/blob/version-core/include/ekg/io/descriptor.hpp)
+Implementation:
+- [ekg/core/pools.hpp](https://github.com/vokegpu/ekg-ui-library/blob/version-core/include/ekg/core/pools.hpp)
 
 ### Descriptors
+
+There is no a fixed place for declaring descriptors, they can be found implemented any-where under EKG source. 
 
 Implementations:
 - [ekg/handler/callback.hpp](https://github.com/vokegpu/ekg-ui-library/blob/version-core/include/ekg/handler/callback.hpp)
