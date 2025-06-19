@@ -406,3 +406,136 @@ int main() {
   return 0;
 }
 ```
+
+### Wha
+
+```cpp
+// Online C++ compiler to run C++ program online
+#include <iostream>
+#include <cstdint>
+
+/**
+ * Value system.
+ **/
+namespace ekg {
+  template<typename t>
+  class value {
+  protected:
+    t val {};
+    t *p {nullptr};
+    t previous {};
+    bool changed {};
+  public:
+    value() {
+      this->ownership(nullptr);
+    };
+
+    value(t *p_address) {
+      this->ownership(p_address);
+      this->changed = true;
+    }
+  
+    value(t val) {
+      this->get() = val;
+      this->changed = true;
+    }
+  
+    value(const char *p_char) {
+      this->get() = p_char;
+      this->changed = true;
+    }
+  
+    bool set(const t &val) {
+      this->get() = val;
+      this->changed = true;
+      return true;
+    }
+  
+    t &get() {
+      return this->p ? *this->p : this->val;
+    }
+    
+    template<typename s>
+    void ownership(s *p_address) {
+      if (p_address == nullptr) {
+        return;
+      }
+    
+      t *p_valid_address {
+          static_cast<t*>(static_cast<void*>(p_address))
+      };
+  
+      this->p = p_valid_address;
+    }
+  
+    void ownership(t *p_address) {
+      if (p_address == nullptr) {
+        return;
+      }
+  
+      this->p = p_address;
+    }
+  
+    bool was_changed() {
+      if (this->changed) {
+        this->changed = false;
+        return true;
+      }
+  
+      t &get {this->get()};
+      if (this->previous != get) {
+        this->previous = get;
+        return true;
+      }
+  
+      return false;
+    }
+  public:
+    template<typename s>
+    ekg::value<t> &operator = (const s &val) {
+      this->get() = val;
+      this->changed = true;
+      return *this;
+    }
+  };
+}
+
+struct range_t {
+public:
+    ekg::value<char[1]> value {};
+public:
+    template<typename t>
+    t &as() {
+       return *static_cast<t*>(static_cast<void*>(value.get()));
+    }
+};
+
+template<typename t>
+void do_me(t &bu) {
+    bu = 200;
+}
+
+#include <vector>
+
+std::vector<range_t> my_things {};
+
+int main() {
+    
+    
+    {
+    my_things.emplace_back().as<float>() = 450.0f;
+    my_things.emplace_back().as<int32_t>() = 20;
+    my_things.emplace_back().as<double>() = 19000.0;
+    my_things.emplace_back().as<uint8_t>() = 20;
+    }
+    float my {34.0f};
+    my_things[0].value.ownership(&my);
+    do_me(my);
+    std::cout << my_things[1].as<int32_t>() << std::endl;
+    
+    // Write C++ code here
+    std::cout << "Try programiz.pro";
+
+    return 0;
+}
+```
