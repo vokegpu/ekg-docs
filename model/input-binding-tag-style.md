@@ -1,16 +1,12 @@
 # Input-Binding Tag Style
 
-## Preface 🐄
+## Preface
 
 EKG needs standard a way for describing binding tag(s).
 
-🐈
+## Model
 
----
-
-## Fundamentals
-
-### Case
+### Fundamentals
 
 All mapped input(s) for custom tag(s) must follow a specific-case and text-description.
 

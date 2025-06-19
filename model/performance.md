@@ -1,12 +1,19 @@
-# Performance-Model
+# Performance
 
 ## Preface
 
 Both performance sides CPU and GPU must be detailed developed, for a real performance gain, here we will discuss everything about.
 
-## CPU
+## Model
 
-### Allocator
+Two topics will be defined here:
+
+* [CPU](./performance.md#CPU) --- about how buffers should be generated (technique) and overall-runtime execution.
+* [GPU](./performance.md#GPU) --- rendering part where how buffers should be used and overall APIs-video used.
+
+### CPU
+
+#### Allocator
 
 The `ekg::service::allocator` stands for CPU-side geometry handling, while not related directly to the GPU-API used, we need make sure for capture each part of draw before send to the GPU its-self.
 `ekg::io::gpu_data_t` is the draw-call information, which map the stride of geometry resources located in VRAM. The CPU-side geometry resources use a simple vector to cache vertices.
@@ -89,7 +96,7 @@ namespace ekg::service {
 
 The legacy EKG allocator does not cover how the GPU-VRAM is handled, there is no capacity-system like a `std::vector`, but this will be discussed later, not here. 
 
-### Smart-Caching
+#### Smart-Caching
 
 The purpose for smart-caching is skiping unncessary complete redraws, reducing the CPU-side useless-pain wasting cycles.
 
@@ -143,7 +150,7 @@ this->allocator.revoke();
 
 The `ekg::ui::pass` check for possibles low-latency changes. For example, check if an internal flag was changed or one size is different. Ultimately the efficient part <goes> here with low-latency checks.
 
-### High-Frequency 
+#### High-Frequency 
 
 High-frequency operations is designed to perform fixed-animations, active widgets and focused widgets. EKG should update synced with current framerate or a fixed chosen framerate. 
 
@@ -174,13 +181,17 @@ for (size_t it {}; it < size; it++) {
 
 The high-frequency rate-update can be fixed if `ekg::update()` is called under a fixed-runtime.
 
-### Overall
+#### CPU-Overall
 
 All others parts of runtime, likely `ekg::runtime::poll_events` and callback-feature may affect performance but not dicussed here, because this topic is focused on how handle draw(s) in CPU-side and GPU-side.
 
-## GPU
+### GPU
 
-### Capacity-System for VRAM
+#### Font-Rendering
+
+Registry glyph info on GPU and access it from the UTF-8 sequence (x 2 3 4) each `n` number is 1 byte, then the sampler is dynamic resized. Not yet done.
+
+#### Capacity-System for VRAM
 
 Likely, a `std::vector` cover the memory with capacity-system, where `n` is always larger than the current filled memory-block, this make possible inserting without re-allocating.
 
@@ -253,7 +264,11 @@ For bypass it we can reserve a specific amount of VRAM and fill it, OpenGL is ab
 
 For Vulkan we can enjoy of low-level mapping memory-buffer `t *p` pointing to a block of memory at VRAM, passing (correct-syncing) direct to PCIe, reducing the copy process at CPU-side and CPU-side cycles.
 
-#### OpenGL
+Topics:  
+| - | [OpenGL](./performance.md#OpenGL)  
+| - | [Vulkan](./performance.md#Vulkan)
+
+##### OpenGL
 
 For OpenGL (3, 4, ES3, WebGL2/ES2) we will cover the block of memory by allocating initianlly a capacity.
 
@@ -282,11 +297,7 @@ virtual void pass_geometry_buffer(
 }
 ```
 
-### Vulkan
-
-### Font-Rendering
-
-Registry glyph info on GPU and access it from the UTF-8 sequence (x 2 3 4) each `n` number is 1 byte, then the sampler is dynamic resized. Not yet done.
+##### Vulkan
 
 Not implemented yet.
 

@@ -1,10 +1,10 @@
-# Value Low-Frequency-Based Mmodel
+# Value Low-Frequency-Based
 
 ## Preface
 
 The way of taking information from user-programmer side to EKG is a dangerous discussion.
 
-## Runtime
+## Model
 
 ### The Concept
 

@@ -1,4 +1,4 @@
-# UI Descriptor-Based Model
+# UI Descriptor-Based
 
 ## Preface
 
@@ -6,7 +6,7 @@ Descriptor describe a state of something, EKG enjoy of descriptor-oriented progr
 
 Note: this topic always update because new added widgets.
 
-## Runtime
+## Model
 
 ### Descriptor Definition
 

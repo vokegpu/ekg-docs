@@ -1,10 +1,10 @@
-# Packages Pattern Model
+# Packages-Pattern
 
 ## Preface
 
 As far EKG is getting headers, the stupid package structure will affect the new features.
 
-## Source
+## Model
 
 ### Notation
 

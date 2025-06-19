@@ -1,12 +1,12 @@
-# Architecture-Model
+# Architecture
 
 ## Preface
 
 As previously discussed [here](./the-problem.md), now  we need take all advantages of descriptors and modern C++ to create a new memory handling-model for EKG. 
 
-## Runtime
+## Model
 
-### Model Fundamentals
+### Fundamentals
 
 The argument is:
 > If usage of pointers are potentially unsafe, pointers must be not used, instead, a memory pool must be used.
@@ -491,6 +491,8 @@ You can run this code:
 https://github.com/vokegpu/ekg-docs/blob/master/model/proofs.md#safety-descriptor-pool-query
 
 Pick STD17.
+
+For an objective proof with more dense mathematical proofs, you can read the paper here. (not done yet)
 
 ## Conclusion
 
