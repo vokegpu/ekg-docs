@@ -120,7 +120,7 @@ for (ekg::at_t &at : this->stack) {
    * 2- if should not update: the redraw will copy the latest geometry buffer (geometry_buffer and gpu_data_buffer). 
    **/
 
-  ekg_abstract_todo(
+  ekg_core_abstract_todo(
     property.descriptor_at.flags,
     property.descriptor_at,
 
@@ -131,7 +131,7 @@ for (ekg::at_t &at : this->stack) {
     continue;
   }
 
-  ekg_abstract_todo(
+  ekg_core_abstract_todo(
     property.descriptor_at.flags,
     property.descriptor_at,
     ekg::ui::buffering(property, descriptor);
@@ -159,7 +159,7 @@ for (size_t it {}; it < size; it++) {
     continue;
   }
 
-  ekg_abstract_todo(
+  ekg_core_abstract_todo(
     property.descriptor_at.flags,
     property.descriptor_at,
     ekg::ui::high_frequency(property, descriptor);

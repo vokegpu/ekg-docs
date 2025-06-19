@@ -1,0 +1,17 @@
+[project]
+name = "ekg"
+version = "2.0.0"
+
+git_repo_url = "https://github.com/vokegpu/ekg/"
+git_default_branch = "version-core"
+
+[paths]
+compile_commands = "./cmake-build/compile_commands.json"
+
+[pages]
+
+homepage = "readme.md"
+paths = [
+  "model/*.md",
+  "tutorial/*.md"
+]

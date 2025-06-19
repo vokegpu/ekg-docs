@@ -145,7 +145,7 @@ namespace ekg {
       ekg::mapped_address_sign_info_t &info {ekg::sign.list.at(it)};
       if (info.pv_address == pv_address) {
         for (ekg::at_t &at : info.ats) {
-          ekg_abstract_todo(
+          ekg_core_abstract_todo(
             at.flags,
             at,
             ekg::ui::unmap(descriptor); // all UIs must have this

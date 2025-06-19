@@ -419,8 +419,8 @@ namespace ekg {
         ekg::pools.button_property.push_back({})
       };
 
-      property.widget.is_childnizate = false;
-      property.widget.is_children_docknizable = false;
+      property.is_childnizate = false;
+      property.is_children_docknizable = false;
 
       button.at.flags = t::type;
       property.descriptor_at = button.at;

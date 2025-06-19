@@ -140,7 +140,7 @@ Implementations:
 The property give to us the type of widget, so we can call any methods for each type of widget, this feels a bit ugly, but we need make memory-safe each part of code.
 
 ```cpp
-#define ekg_abstract_todo(type, at, todo) \
+#define ekg_core_abstract_todo(type, at, todo) \
   switch (type) { \
     case ekg::type::button: { \
       ekg::button_t &descriptor { \
