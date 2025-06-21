@@ -310,11 +310,24 @@ template<typename t>
 class pool {
 protected:
   std::vector<t> loaded {};
+  std::vector<t> cached {};
   ekg::id_t highest_unique_id {};
   size_t dead_virtual_address_count {};
   size_t trash_capacity {10};
+  size_t virtual_memory_capacity {100};
 public:
-  pool() {};
+  /**
+   * A virtual-memory space should initialize a capacity first.
+   * 
+   * Some cases:
+   * - If memory is not enough intialliy, you can reserve more before use.
+   * - If memory required is out of reserved-space, a cached memory is used
+   * and only when GC runs, inserted into virtual-memory. Allowing dynamic
+   * virtual safety-memory inserting.
+   * 
+   * The GC should always run at end of any program loop.
+   **/
+  pool() { this->loaded.reserve(this->virtual_memory_capacity); };
 };
 ```
 
@@ -410,7 +423,7 @@ Of course, the user-programmer (programmer who uses EKG library) will not even t
 
 You can run this code:
 
-https://github.com/vokegpu/ekg-docs/blob/master/model/proofs.md#safety-descriptor-pool-query
+https://github.com/vokegpu/ekg-docs/blob/master/proofs/proofs.md#safety-descriptor-pool-query
 
 Pick STD17.
 
