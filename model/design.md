@@ -50,7 +50,7 @@ ekg::frame("meow", {.x = 0.0f, .y = 0.0f, .w = 200.0f}, ekg::dock::none)
   ->lol_really_builder_pattern("?");
 ```
 
-At this point, EKG legacy model resulted in many problems with at side of user-programer. 
+At this point, EKG legacy model resulted in many problems at side of user-programer. 
 Getters/setters is a cool way to improve security, but sometimes there is no reason for getters/setters. Like why a setter for set the frame dimensions? just no. EKG must re-write this part and write a new model pattern.
 
 ### Descriptors
@@ -97,9 +97,9 @@ It is not an unknown knowneldge that any-raw-ptr is insanely potentially unsafe,
 
 The legacy EKG abuses of raw-ptr(s), making it smart-ptr(s) does not make it totally-safety, for lot of reasons. Also the std can be verbose alot, for example `std::option<t, s>` or `std::shared_ptr<t>` or `std::unique_ptr<t>`.
 
-While overall softwares can be unsafe if used raw-ptr(s), you can not track if a memory-spaced desired exists until you touch, and this touch can cost the entire application to crash.
+While overall softwares can be unsafe if used raw-ptr(s), you can not track if a desired memory-space exists until you touch, and this touch can cost the entire application to crash.
 
-As proven [here](./proofs.md#raw-pointers-unsafety) and [here](proofs.md#raw-pointers-crazy-unsafety), it is too dangerous. Let this for memory-model topic.
+As proven [here](../proofs/proofs.md#raw-pointers-unsafety) and [here](../proofs/proofs.md#raw-pointers-crazy-unsafety), it is too dangerous. Let this for memory-model topic.
 
 ## The Solution
 
