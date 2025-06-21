@@ -1,10 +1,10 @@
-# Packages-Pattern
+# Formatting
 
 ## Preface
 
-As far EKG is getting headers, the stupid package structure will affect the new features.
+This topic is dedicated for any-formatting model: the package-pattern, input-binding or whatever needs a text.
 
-## Model
+## Package-Formatting Model
 
 ### Notation
 
@@ -99,6 +99,47 @@ new ekg::platform::sdl2(/* etc */);
 new ekg::gpu::opengl(/* etc */);
 ```
 
-## Conclusion
+## Input-Binding Tag Style Model
 
-This is important as quack.
+EKG needs standard a way for describing binding tag(s).
+
+### Fundamentals
+
+All mapped input(s) for custom tag(s) must follow a specific-case and text-description.
+
+`<where*>-<action*>-<description>`
+
+E.g a button action:
+```c++
+ekg::bind("button-active", "mouse-1");
+```
+
+E.g a frame action:
+```c++
+ekg::bind("frame-drag", "mouse-1");
+```
+
+E.g a listbox action:
+```c++
+ekg::bind("listbox-action-break-line", {"return", "keypad enter"});
+```
+
+As shown `<description>` is not necessary all the time.
+
+### Notation
+
+- `active` a desired functionality of something, like of a button press-and-release-over is named `active`, or a slider bar-dragging is `active`.
+- `action` a specific generic-case where needs a description.
+
+Others notations not written here are specialized, no notation-information is necessary.
+
+### Examples
+
+```c++
+ekg::bind("textbox-action-select-all", {"rctrl+a", "lctrl+a"});
+ekg::bind("textbox-action-select", {"rshift", "lshift"});
+```
+
+## Conclusions
+
+Formats allow a standardnization of EKG environment.

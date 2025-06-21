@@ -1,19 +1,15 @@
-# Performance
+# Rendering
 
 ## Preface
 
 Both performance sides CPU and GPU must be detailed developed, for a real performance gain, here we will discuss everything about.
 
-## Model
+* [CPU](./rendering.md#CPU) --- about how buffers should be generated (technique) and overall-runtime execution.
+* [GPU](./rendering.md#GPU) --- rendering part where how buffers should be used and overall APIs-video used.
 
-Two topics will be defined here:
+## CPU
 
-* [CPU](./performance.md#CPU) --- about how buffers should be generated (technique) and overall-runtime execution.
-* [GPU](./performance.md#GPU) --- rendering part where how buffers should be used and overall APIs-video used.
-
-### CPU
-
-#### Allocator
+### Allocator
 
 The `ekg::service::allocator` stands for CPU-side geometry handling, while not related directly to the GPU-API used, we need make sure for capture each part of draw before send to the GPU its-self.
 `ekg::io::gpu_data_t` is the draw-call information, which map the stride of geometry resources located in VRAM. The CPU-side geometry resources use a simple vector to cache vertices.
@@ -96,7 +92,7 @@ namespace ekg::service {
 
 The legacy EKG allocator does not cover how the GPU-VRAM is handled, there is no capacity-system like a `std::vector`, but this will be discussed later, not here. 
 
-#### Smart-Caching
+### Smart-Caching
 
 The purpose for smart-caching is skiping unncessary complete redraws, reducing the CPU-side useless-pain wasting cycles.
 
@@ -150,48 +146,21 @@ this->allocator.revoke();
 
 The `ekg::ui::pass` check for possibles low-latency changes. For example, check if an internal flag was changed or one size is different. Ultimately the efficient part <goes> here with low-latency checks.
 
-#### High-Frequency 
-
-High-frequency operations is designed to perform fixed-animations, active widgets and focused widgets. EKG should update synced with current framerate or a fixed chosen framerate. 
-
-```cpp
-size_t size {this->high_frequency_list.size()};
-for (size_t it {}; it < size; it++) {
-  ekg::at_t &at {this->high_frequency_list.at(it)};
-  ekg::property_t &property {ekg::property(at)};
-
-  if (property == ekg::property_t::not_found) {
-    this->this->high_frequency_list.erase(this->high_frequency_list.begin() + it);
-    size = this->high_frequency_list.size();
-    continue;
-  }
-
-  ekg_core_abstract_todo(
-    property.descriptor_at.flags,
-    property.descriptor_at,
-    ekg::ui::high_frequency(property, descriptor);
-  );
-
-  if (!property.widget.is_high_frequency) {
-    this->this->high_frequency_list.erase(this->high_frequency_list.begin() + it);
-    size = this->high_frequency_list.size();
-  }
-}
-```
-
-The high-frequency rate-update can be fixed if `ekg::update()` is called under a fixed-runtime.
-
-#### CPU-Overall
+### CPU-Overall
 
 All others parts of runtime, likely `ekg::runtime::poll_events` and callback-feature may affect performance but not dicussed here, because this topic is focused on how handle draw(s) in CPU-side and GPU-side.
 
-### GPU
+## GPU
 
-#### Font-Rendering
+APIs video topics:  
+| - | [OpenGL](./performance.md#OpenGL)  
+| - | [Vulkan](./performance.md#Vulkan)
+
+### Font-Rendering
 
 Registry glyph info on GPU and access it from the UTF-8 sequence (x 2 3 4) each `n` number is 1 byte, then the sampler is dynamic resized. Not yet done.
 
-#### Capacity-System for VRAM
+### Capacity-System for VRAM
 
 Likely, a `std::vector` cover the memory with capacity-system, where `n` is always larger than the current filled memory-block, this make possible inserting without re-allocating.
 
@@ -264,11 +233,7 @@ For bypass it we can reserve a specific amount of VRAM and fill it, OpenGL is ab
 
 For Vulkan we can enjoy of low-level mapping memory-buffer `t *p` pointing to a block of memory at VRAM, passing (correct-syncing) direct to PCIe, reducing the copy process at CPU-side and CPU-side cycles.
 
-Topics:  
-| - | [OpenGL](./performance.md#OpenGL)  
-| - | [Vulkan](./performance.md#Vulkan)
-
-##### OpenGL
+### OpenGL
 
 For OpenGL (3, 4, ES3, WebGL2/ES2) we will cover the block of memory by allocating initianlly a capacity.
 
@@ -297,7 +262,7 @@ virtual void pass_geometry_buffer(
 }
 ```
 
-##### Vulkan
+#### Vulkan
 
 Not implemented yet.
 

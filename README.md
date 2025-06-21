@@ -2,7 +2,12 @@
 
 ## Preface
 
-EKG docs contains tutorial about the EKG standard way to creating GUIs and the fundamentals of EKG model-architecture.
+EKG docs contains tutorial about the EKG standard way to creating GUIs and the fundamentals of EKG model.
+
+EKG is a significant project of my life, I wasted lot of time coding EKG, but it is what I love to do, graphics, GUIs, and GPU-accelerated softwares.
+
+Thank you Astah 🐈‍⬛,  
+Thank you God.
 
 ## Programming GUIs with EKG
 
@@ -21,17 +26,15 @@ EKG is a C++ secure library, these two topics details and give the necessary pro
 
 **note: the memory-handling model article is not complete yet (as EKG code is being implemented, this article will be rewrited to sync with the EKG origin)**
 
-* [The problem of legacy EKG memory-handling model](./model/the-problem.md)
-* [Memory-handling model](./model/architecture.md)
+* [Design Decisions](./model/design.md)
+* [Memory-Model](./model/architecture.md)
 
 Soon a paper should be done in `./publish/` with objective-proofs.
 
-### Descriptors, Performance and Patterns
+### Architecture, Rendering and Formatting
 
-* [Packages pattern model](./model/packages-pattern.md)
-* [UI descriptor-based model](./model/ui-descriptor-based.md)
-* [Value low-frequency-based model](./model/value-low-frequency.md)
-* [CPU-side and GPU-side performance model](./model/performance.md)
-* [Input-binding tag-style model](./model/input-binding-tag-style.md)
+* [Architecture](./model/architecture.md)
+* [Rendering](./model/rendering.md)
+* [Formatting](./model/formatting.md)
 
 This topic is important for contributing to EKG, so, should be caeful read before sending ~useless~ pull requests. As everything here on Vokegpu, take a read on [Vokegpu standard](https://github.com/vokegpu/standard).
