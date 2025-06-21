@@ -321,8 +321,8 @@ public:
    * 
    * Some cases:
    * - If memory is not enough intialliy, you can reserve more before use.
-   * - If memory required is out of reserved-space, a cached memory is used
-   * and only when GC runs, inserted into virtual-memory. Allowing dynamic
+   * - If memory required is out of reserved-space, a `cached` memory is used
+   * and only when GC runs that is inserted onto `loaded` --- Allowing dynamic
    * virtual safety-memory inserting.
    * 
    * The GC should always run at end of any program loop.
