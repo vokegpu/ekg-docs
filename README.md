@@ -37,4 +37,4 @@ Soon a paper should be done in `./publish/` with objective-proofs.
 * [Rendering](./model/rendering.md)
 * [Formatting](./model/formatting.md)
 
-This topic is important for contributing to EKG, so, should be caeful read before sending ~useless~ pull requests. As everything here on Vokegpu, take a read on [Vokegpu standard](https://github.com/vokegpu/standard).
+These topics are important for contributing to EKG, so, should be caeful read before sending ~useless~ pull requests. As everything here on Vokegpu, take a read on [Vokegpu standard](https://github.com/vokegpu/standard).
