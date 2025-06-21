@@ -233,11 +233,13 @@ namespace ekg {
   class pool {
   protected:
     std::vector<t> loaded {};
+    std::vector<t> cached {};
     ekg::id_t highest_unique_id {};
     size_t dead_virtual_address_count {};
     size_t trash_capacity {10};
+    size_t virtual_memory_capacity {100};
   public:
-    pool() {};
+    pool() { this->loaded.reserve(this->virtual_memory_capacity); };
 
     t &push_back(const t &copy) {
       this->loaded.push_back(copy);
