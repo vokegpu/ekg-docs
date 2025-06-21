@@ -1,7 +1,6 @@
 # EKG DOCS
 
-"Money does not buy knowledge, as does not buy love, but wasted knowledge is not wasted love in-someone"  
-  - Rina,
+"Money does not buy knowledge, as does not buy love, but wasted knowledge is not wasted love in-someone",
 
 Thank you Astah 🐈‍⬛,  
 Thank you God.
