@@ -20,14 +20,14 @@ Thank you God.
 
 Complete details about importants EKG technologies, this section includes: the root problem of legacy EKG, memory-handling model architecture, safety-proofs, package pattern, descriptors, standard format for input-binding(s) and more.
 
-### Design Decisions and Memory-Model
+### Memory-Safe Model
 
 EKG is a C++ secure library, these two topics details and give the necessary proofs for this affirmation.
 
-**note: the memory-handling model article is not complete yet (as EKG code is being implemented, this article will be rewrited to sync with the EKG origin)**
+* [Design](./model/design.md)
+* [Memory-Model](./model/memory.md)
 
-* [Design Decisions](./model/design.md)
-* [Memory-Model](./model/architecture.md)
+**note: the memory-handling model article is not complete yet (as EKG code is being implemented, this article will be rewrited to sync with the EKG origin)**
 
 Soon a paper should be done in `./publish/` with objective-proofs.
 
