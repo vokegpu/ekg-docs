@@ -1,13 +1,14 @@
 # EKG DOCS
 
-## Preface
-
-EKG docs contains tutorial about the EKG standard way to creating GUIs and the fundamentals of EKG model.
-
-EKG is a significant project of my life, I wasted lot of time coding EKG, but it is what I love to do, graphics, GUIs, and GPU-accelerated softwares.
+"Money does not buy knowledge, as does not buy love, but wasted knowledge is not wasted love in-someone"
+  - Rina,
 
 Thank you Astah 🐈‍⬛,  
 Thank you God.
+
+## Preface
+
+EKG docs contains tutorials about the EKG standard way to creating GUIs and the fundamentals of EKG model.
 
 ## Programming GUIs with EKG
 
